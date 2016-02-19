@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="OGP1516-Hillbillies/src"/>
+	<classpathentry kind="src" path="OGP1516-Hillbillies/src-provided"/>
+	<classpathentry kind="src" path="OGP1516-Hillbillies/tests"/>
+	<classpathentry kind="lib" path="OGP1516-Hillbillies/lib/AnnotationsDoclets.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="output" path="OGP1516-Hillbillies/bin"/>
+</classpath>
