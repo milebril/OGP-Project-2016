@@ -1,6 +1,7 @@
 package hillbillies.model;
 
 import be.kuleuven.cs.som.annotate.*;
+import static java.lang.Math.PI;
 
 public class Unit {
 	
@@ -17,13 +18,17 @@ public class Unit {
 	private int strength;
 	private int agility;
 	private int toughness;
+	private String name;
+	private float orientation = (float) (PI / 2);
+	
 	
 	
 	public Unit(int test) {
 		return;
 	}
 	
-
+/////////////////////////////////////////////weight/////////////////////////////////////////////
+	
 	/**
 	 * @invar  The weight of each unit must be a valid weight for any
 	 *         unit.
@@ -45,13 +50,13 @@ public class Unit {
 	 * @param  weight
 	 *         The weight to check.
 	 * @return 
-	 *       |if weight <= 1 || weight => 20:
+	 *       |if weight <= 1 || weight => 200:
 	 *       |	return false
 	 *       |else:
 	 *       |	return true
 	*/
 	public static boolean isValidWeight(int weight) {
-		if( 1 <= weight && weight <= 20)
+		if( MIN_VALUE_WEIGTH <= weight && weight <= MAX_VALUE_WEIGTH)
 			return true;
 		return false;
 	}
@@ -71,7 +76,10 @@ public class Unit {
 	public void setWeight(int weight) {
 		if (isValidWeight(weight))
 			this.weight = weight;
+		// else:
 	}
+	
+/////////////////////////////////////////////strength/////////////////////////////////////////////
 	
 	/**
 	 * @invar  The strength of each unit must be a valid strength for any
@@ -120,8 +128,10 @@ public class Unit {
 	public void setStrenght(int strenght) {
 		if (isValidStrength(strenght))
 			this.strength = strenght;
+		// else
 	}
 		
+/////////////////////////////////////////////agility/////////////////////////////////////////////
 	
 	/**
 	 * @invar  The agility of each unit must be a valid agility for any
@@ -144,7 +154,7 @@ public class Unit {
 	 * @param  agility
 	 *         The agility to check.
 	 * @return if a valid agility return true, else return false
-	 *       |if (MIN_VALUE_AGILITY <= strength <= MAX_VALUE_AGILITY):
+	 *       |if (MIN_VALUE_AGILITY <= agility <= MAX_VALUE_AGILITY):
 	 *       |	then return true;
 	 *       |else:
 	 *       |	then return false;
@@ -170,6 +180,115 @@ public class Unit {
 	public void setAgility(int agility) {
 		if (isValidAgility(agility))
 			this.agility = agility;
+		// else
 	}
+	
+/////////////////////////////////////////////toughness/////////////////////////////////////////////	
+	
+	/**
+	 * @invar  The toughness of each unit must be a valid toughness for any
+	 *         unit.
+	 *       | isValidToughness(toughness())
+	 */
+	
+	/**
+	 * Return the agility of this unit.
+	 */
+	@Basic @Raw
+	public int getToughness() {
+		return this.toughness;
+	}
+	
+	/**
+	 * Check whether the given toughness is a valid toughness for
+	 * any unit.
+	 *  
+	 * @param  toughness
+	 *         The toughness to check.
+	 * @return if a valid toughness return true, else return false
+	 *       |if (MIN_VALUE_TOUGHNESS <= toughness <= MAX_VALUE_TOUGHNESS):
+	 *       |	then return true;
+	 *       |else:
+	 *       |	then return false;
+	*/
+	public static boolean isValidToughness(int toughness) {
+		if( toughness <= MAX_VALUE_TOUGHNESS && toughness >= MIN_VALUE_TOUGHNESS)
+			return true;
+		return false;
+	}
+	
+	/**
+	 * Set the toughness of this unit to the given toughness.
+	 * 
+	 * @param  toughness
+	 *         The new toughness for this unit.
+	 * @post   If the given toughness is a valid toughness for any unit,
+	 *         the toughness of this new unit is equal to the given
+	 *         toughness.
+	 *       | if (isValidToughness(toughness))
+	 *       |   then new.getToughness() == toughness
+	 */
+	@Raw
+	public void setToughness(int toughness) {
+		if (isValidToughness(toughness))
+			this.toughness = toughness;
+		// else
+	}
+	
+/////////////////////////////////////////////name/////////////////////////////////////////////
+	
+/////////////////////////////////////////////position/////////////////////////////////////////////
+	
+/////////////////////////////////////////////Orientation/////////////////////////////////////////////
+	
+	/**
+	 * Return the orientation of this unit.
+	 */
+	@Basic @Raw
+	public float getOrientation() {
+		return this.orientation;
+	}
+	
+	/**
+	 * Check whether the given orientation is a valid orientation for
+	 * any unit.
+	 *  
+	 * @param  orientation
+	 *         The orientation to check.
+	 * @return if a valid orientation return true, else return false
+	 *       |if (0 <= toughness <= PI):
+	 *       |	then return true;
+	 *       |else:
+	 *       |	then return false;
+	*/
+	public static boolean isValidOrientation(int orientation) {
+		if( orientation <= PI && orientation >= 0)
+			return true;
+		return false;
+	}
+	
+	/**
+	 * Set the orientation of this unit to the given orientation.
+	 * 
+	 * @param  orientation
+	 *         The new orientation for this unit.
+	 * @post   If the given orientation is a valid orientation for any unit,
+	 *         the orientation of this new unit is equal to the given
+	 *         orientation.
+	 *       | if (isValidOrientation(orientation))
+	 *       |   then new.getOrientation() == orientation
+	 */
+	@Raw
+	public void setOrientation(int orientation) {
+		if (isValidOrientation(orientation))
+			this.orientation = orientation;
+		// else
+		// 360 gaat over in 0 en omgekeerd. dit moet nog ergens geiplementeerd worden
+	}
+/////////////////////////////////////////////current health/////////////////////////////////////////////
+	
+/////////////////////////////////////////////current stamina/////////////////////////////////////////////
+	
+/////////////////////////////////////////////Game time/////////////////////////////////////////////
 }
 
