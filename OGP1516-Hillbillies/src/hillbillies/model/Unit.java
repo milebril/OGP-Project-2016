@@ -236,7 +236,82 @@ public class Unit {
 	}
 	
 /////////////////////////////////////////////name/////////////////////////////////////////////
+
 	
+	/**
+	 * Return the name of this unit.
+	 */
+	@Basic @Raw
+	public String getName() {
+		return this.name;
+	}
+	
+	/**
+	 * Check whether the given name is a valid name for
+	 * any unit.
+	 *  
+	 * @param  name
+	 *         The name to check.
+	 * @return 
+	 *       |if is validName is true then return true
+	 *       |else return false
+	*/
+	public static boolean isValidName(String name) {
+		if (name.length() < 2)
+			return false;
+		if (StringDoesContainOnlyValidCharacters(name) == false)
+			return false;
+		return true;
+	}
+	
+	/**
+	 * Checks if a string contains only valid characters.
+	 * 
+	 * @param string 
+	 * 		  The string to check.
+	 * @return if a string contains invalid character return false.
+	 * 		   if the string only contains valid characters return true.	  
+	 *		|
+	 *		|	
+	 */
+	public static boolean StringDoesContainOnlyValidCharacters(String name){
+		// implementatie van de functie: ik dacht met behulp van een for loop kijken of ieder
+		// element van de string in het woorden boek zit van geldige tekens.
+		return true;
+	}	
+
+	/**
+	 * Set the name of this unit to the given name.
+	 * 
+	 * @param  name
+	 *         The new name for this unit.
+	 * @post   The name of this new unit is equal to
+	 *         the given name.
+	 *       | new.getName() == string name
+	 * @throws NoValidLength
+	 *         The given name is not a valid name for any
+	 *         unit because the length is too short.
+	 *       |   
+	 * @throws ContainsInvalidCharacter
+	 *         The given name is not a valid name for any
+	 *         unit because there is an invalid character in the name.	
+	 *       |
+	 */
+	@Raw
+	public void setName(String name) throws ExceptionName_Java {
+		// als de lengte niet correct is throw exception NoValidLength
+		if (! isValidName(name))
+			throw new ExceptionName_Java();
+		// als de string uit niet correcte tekens bestaat throw exception ContainsInvalidCharacter 
+		if (! isValidName(name))
+			throw new ExceptionName_Java();
+		this.name = name;
+	}
+	
+	/**
+	 * Variable registering the name of this unit.
+	 */
+	private property_type propertyName_Java;
 /////////////////////////////////////////////position/////////////////////////////////////////////
 	
 /////////////////////////////////////////////Orientation/////////////////////////////////////////////
