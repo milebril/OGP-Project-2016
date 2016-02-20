@@ -13,15 +13,24 @@ public class Unit {
 	public final static int MAX_VALUE_WEIGTH = 200;
 	public final static int MIN_VALUE_TOUGHNESS = 1;
 	public final static int MAX_VALUE_TOUGHNESS = 200;
+	public final static int MIN_VALUE_COORDINATE_GAMEWORLD = 0;
+	public final static int MAX_VALUE_COORDINATE_GAMEWORLD = 50;
 	
+	
+	/*
+	 * Variable registering the property_name_Eng of this object_name.
+	 */
 	private int weight;
 	private int strength;
 	private int agility;
 	private int toughness;
 	private String name;
 	private float orientation = (float) (PI / 2);
-	
-	
+	private int currentHealth;
+	private int currentStamina;
+	private int positionX;
+	private int positionY;
+	private int positionZ;
 	
 	public Unit(int test) {
 		return;
@@ -298,25 +307,74 @@ public class Unit {
 	 *       |
 	 */
 	@Raw
-	public void setName(String name) throws ExceptionName_Java {
+	public void setName(String name) /* throws ExceptionName_Java */ {
+		/*
 		// als de lengte niet correct is throw exception NoValidLength
 		if (! isValidName(name))
 			throw new ExceptionName_Java();
 		// als de string uit niet correcte tekens bestaat throw exception ContainsInvalidCharacter 
 		if (! isValidName(name))
 			throw new ExceptionName_Java();
+		*/
 		this.name = name;
 	}
 	
-	/**
-	 * Variable registering the name of this unit.
-	 */
-	private property_type propertyName_Java;
 /////////////////////////////////////////////position/////////////////////////////////////////////
+		
+	/**
+	 * Return the Position of this Unit.
+	 */
+	@Basic @Raw
+	public int[] getPosition() {
+		int[] position = {this.positionX , this.positionY, this.positionZ};
+		return position;
+	}
 	
+	/**
+	 * Check whether the given position is a valid position for
+	 * any Unit.
+	 *  
+	 * @param  position
+	 *         The position to check.
+	 * @return if position is a valid position return true else return false
+	 *       | 
+	*/
+	public static boolean isValidPosition(int[] position) {
+		for (int i=0; i< position.length; i++) {
+			if (position[i] < MIN_VALUE_COORDINATE_GAMEWORLD || position[i] > MAX_VALUE_COORDINATE_GAMEWORLD)
+				return false;
+		}
+		return false;
+	}
+	
+	/**
+	 * Set the position of this unit to the given position.
+	 * 
+	 * @param  position
+	 *         The new position for this unit.
+	 *         An array of integers contains the x,y and z coordinate of the unit
+	 * @post   The property_name_Eng of this new object_name_Eng is equal to
+	 *         the given property_name_Eng.
+	 *       | new.getPropertyName_Java() == propertyName_Java
+	 * @throws ExceptionName_Java
+	 *         The given property_name_Eng is not a valid property_name_Eng for any
+	 *         object_name_Eng.
+	 *       | ! isValidPropertyName_Java(getPropertyName_Java())
+	 */
+	@Raw
+	public void setPropertyName_Java(int[] position) /*throws ExceptionName_Java*/ {
+		/*
+		if (! isValidPropertyName_Java(propertyName_Java))
+			throw new ExceptionName_Java();
+		*/
+		this.positionX = position[0];
+		this.positionY = position[1];
+		this.positionZ = position[2];
+	}
+ 
 /////////////////////////////////////////////Orientation/////////////////////////////////////////////
 	
-	/**
+	/**1
 	 * Return the orientation of this unit.
 	 */
 	@Basic @Raw
@@ -361,9 +419,37 @@ public class Unit {
 		// 360 gaat over in 0 en omgekeerd. dit moet nog ergens geiplementeerd worden
 	}
 /////////////////////////////////////////////current health/////////////////////////////////////////////
-	
+
 /////////////////////////////////////////////current stamina/////////////////////////////////////////////
 	
 /////////////////////////////////////////////Game time/////////////////////////////////////////////
+	
+/////////////////////////////////////////////movement/////////////////////////////////////////////
+	
+/////////////////////////////////////////////pat finding/////////////////////////////////////////////
+	
+/////////////////////////////////////////////actions/////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////
+	
+/////////////////////////////////////////////work/////////////////////////////////////////////
+	
+/////////////////////////////////////////////Fighting/////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////
+	
+/////////////////////////////////////////////dodging/////////////////////////////////////////////
+	
+/////////////////////////////////////////////blocking/////////////////////////////////////////////
+	
+/////////////////////////////////////////////taking damage/////////////////////////////////////////////
+	
+/////////////////////////////////////////////updating orientation/////////////////////////////////////////////
+	
+//////////////////////////////////////////////////////////////////////////////////////////////////
+	
+/////////////////////////////////////////////resting/////////////////////////////////////////////
+	
+/////////////////////////////////////////////default behavior/////////////////////////////////////////////
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
 }
 
