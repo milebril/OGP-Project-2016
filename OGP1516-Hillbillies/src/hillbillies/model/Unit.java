@@ -14,8 +14,7 @@ public class Unit {
 	public final static int MIN_VALUE_TOUGHNESS = 1;
 	public final static int MAX_VALUE_TOUGHNESS = 200;
 	public final static int MIN_VALUE_COORDINATE_GAMEWORLD = 0;
-	public final static int MAX_VALUE_COORDINATE_GAMEWORLD = 50;
-	
+	public final static int MAX_VALUE_COORDINATE_GAMEWORLD = 50;	
 	
 	/*
 	 * Variable registering the property_name_Eng of this object_name.
@@ -31,8 +30,11 @@ public class Unit {
 	private int positionX;
 	private int positionY;
 	private int positionZ;
+	private int hitpoints;
 	
-	public Unit(int test) {
+/////////////////////////////////////////////Constructor/////////////////////////////////////////////	
+	
+	public Unit(int strenght) {
 		return;
 	}
 	
@@ -284,7 +286,7 @@ public class Unit {
 	public static boolean StringDoesContainOnlyValidCharacters(String name){
 		for (int i = 0; i < name.length(); i++) {
 			char c = name.charAt(i);
-			if (!(Character.isLetter(c) || Character.isSpaceChar(c) || c == 34 || c == 44 )) {
+			if (!(Character.isLetter(c) || Character.isSpaceChar(c) || c == '\"' || c == '\'' )) {
 				return false;
 			}	
 		}
@@ -416,7 +418,61 @@ public class Unit {
 		
 	}
 /////////////////////////////////////////////current health/////////////////////////////////////////////
+	/**
+	 * @invar  Each object_name can have its property_name_Eng as property_name_Eng.
+	 *       | canHaveAsPropertyName_Java(this.getPropertyName_Java())
+	 */
 
+	/**
+	 * Return the hitpoints of this unit.
+	 */
+	@Basic @Raw @Immutable
+	public int getHitpoints() {
+		return this.hitpoints;
+	}
+	
+	public int getMaxHitpoints() {
+		return (int) 200 * (this.weight/100) * (this.toughness/100);
+	}
+	
+	/**
+	 * 
+	 * @param amount
+	 * 
+	 * @pre ...
+	 * 		|amount > 0
+	 * @post ...
+	 * 		| if (this.hitpoints + amount > getMaxHitpoints()) Then new.hitpoints == getMaxHitpoints()
+	 * 		|		Else new.hitpoints == this.hitpoints + amount
+	 * 
+	 */
+	public void increaseHitpoints(int amount) {
+		assert amount > 0;
+		if (amount > getMaxHitpoints())
+			this.hitpoints = getMaxHitpoints();
+		else 
+			this.hitpoints = this.hitpoints + amount;
+	}
+	
+	/**
+	 * 
+	 * @param amount
+	 * @pre ...
+	 * 		|amount > 0
+	 * @post ...
+	 * 		| if (amount > getHitpoints()) Then new.hitpoints == 0
+	 * 		|		Else new.hitpoints == this.getHitpoints - amount
+	 * 
+	 */
+	public void decreaseHitpoints(int amount) {
+		assert amount > 0;
+		if (amount > getHitpoints()) 
+			this.hitpoints = 0;
+		else
+			this.hitpoints = this.hitpoints - amount;
+		
+	}
+	
 /////////////////////////////////////////////current stamina/////////////////////////////////////////////
 	
 /////////////////////////////////////////////Game time/////////////////////////////////////////////
