@@ -266,9 +266,7 @@ public class Unit {
 	 *       |else return false
 	*/
 	public static boolean isValidName(String name) {
-		if (name.length() < 2)
-			return false;
-		if (StringDoesContainOnlyValidCharacters(name) == false)
+		if (name.length() < 2 || StringDoesContainOnlyValidCharacters(name) == false)
 			return false;
 		return true;
 	}
@@ -280,12 +278,17 @@ public class Unit {
 	 * 		  The string to check.
 	 * @return if a string contains invalid character return false.
 	 * 		   if the string only contains valid characters return true.	  
-	 *		|
-	 *		|	
+	 *		| if (!(Character.isLetter(c) || Character.isSpaceChar(c) || c == 34 || c == 44 )) Then return false
+	 *		|		else return true
 	 */
 	public static boolean StringDoesContainOnlyValidCharacters(String name){
-		// implementatie van de functie: ik dacht met behulp van een for loop kijken of ieder
-		// element van de string in het woorden boek zit van geldige tekens.
+		for (int i = 0; i < name.length(); i++) {
+			char c = name.charAt(i);
+			if (!(Character.isLetter(c) || Character.isSpaceChar(c) || c == 34 || c == 44 )) {
+				return false;
+			}	
+		}
+		
 		return true;
 	}	
 
@@ -307,15 +310,10 @@ public class Unit {
 	 *       |
 	 */
 	@Raw
-	public void setName(String name) /* throws ExceptionName_Java */ {
-		/*
-		// als de lengte niet correct is throw exception NoValidLength
-		if (! isValidName(name))
-			throw new ExceptionName_Java();
-		// als de string uit niet correcte tekens bestaat throw exception ContainsInvalidCharacter 
-		if (! isValidName(name))
-			throw new ExceptionName_Java();
-		*/
+	public void setName(String name) throws IllegalNameException {
+		if (!isValidName(name))
+			throw new IllegalNameException(name);
+		
 		this.name = name;
 	}
 	
@@ -374,7 +372,7 @@ public class Unit {
  
 /////////////////////////////////////////////Orientation/////////////////////////////////////////////
 	
-	/**1
+	/**
 	 * Return the orientation of this unit.
 	 */
 	@Basic @Raw
@@ -389,13 +387,13 @@ public class Unit {
 	 * @param  orientation
 	 *         The orientation to check.
 	 * @return if a valid orientation return true, else return false
-	 *       |if (0 <= toughness <= PI):
+	 *       |if (0 <= orientation <= PI):
 	 *       |	then return true;
 	 *       |else:
 	 *       |	then return false;
 	*/
 	public static boolean isValidOrientation(int orientation) {
-		if( orientation <= PI && orientation >= 0)
+		if( orientation <= 2*PI && orientation >= 0)
 			return true;
 		return false;
 	}
@@ -413,10 +411,9 @@ public class Unit {
 	 */
 	@Raw
 	public void setOrientation(int orientation) {
-		if (isValidOrientation(orientation))
-			this.orientation = orientation;
-		// else
-		// 360 gaat over in 0 en omgekeerd. dit moet nog ergens geiplementeerd worden
+		//We hebben de isValidOrientation niet meer nodig?
+		this.orientation = (float) (Math.abs(orientation) % (2*PI));
+		
 	}
 /////////////////////////////////////////////current health/////////////////////////////////////////////
 
