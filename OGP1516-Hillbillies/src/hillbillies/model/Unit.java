@@ -31,6 +31,7 @@ public class Unit {
 	private int positionX;
 	private int positionY;
 	private int positionZ;
+	private boolean defaultBehaviorOn;
 	
 	public Unit(int test) {
 		return;
