@@ -25,12 +25,11 @@ public class Unit {
 	private int toughness;
 	private String name;
 	private float orientation = (float) (PI / 2);
-	private int currentHealth;
-	private int currentStamina;
 	private int positionX;
 	private int positionY;
 	private int positionZ;
 	private int hitpoints;
+	private int stamina;
 	
 /////////////////////////////////////////////Constructor/////////////////////////////////////////////	
 	
@@ -474,8 +473,57 @@ public class Unit {
 	}
 	
 /////////////////////////////////////////////current stamina/////////////////////////////////////////////
+
+	/**
+	 * Return the stamina of this unit.
+	 */
+	@Basic @Raw @Immutable
+	public int getStanima() {
+		return this.stamina;
+	}
 	
+	public int getMaxStamina() {
+		return (int) 200 * (this.weight/100) * (this.toughness/100);
+	}
+	
+	/**
+	 * 
+	 * @param amount
+	 * 
+	 * @pre ...
+	 * 		|amount > 0
+	 * @post ...
+	 * 		| if (this.stamina + amount > getMaxStamina()) Then new.stamina == getMaxStamina()
+	 * 		|		Else new.stamina == this.stamina + amount
+	 * 
+	 */
+	public void increaseStamina(int amount) {
+		assert amount > 0;
+		if (amount > getMaxStamina())
+			this.stamina = getMaxStamina();
+		else 
+			this.stamina = this.stamina + amount;
+	}
+	
+	/**
+	 * 
+	 * @param amount
+	 * @pre ...
+	 * 		|amount > 0
+	 * @post ...
+	 * 		| if (amount > getStamina()) Then new.stamina == 0
+	 * 		|		Else new.stamina == this.getStamina - amount
+	 * 
+	 */
+	public void decreaseStamina(int amount) {
+		assert amount > 0;
+		if (amount > getMaxStamina()) 
+			this.stamina = 0;
+		else
+			this.stamina = this.stamina - amount;
+	}
 /////////////////////////////////////////////Game time/////////////////////////////////////////////
+	
 	
 /////////////////////////////////////////////movement/////////////////////////////////////////////
 	
