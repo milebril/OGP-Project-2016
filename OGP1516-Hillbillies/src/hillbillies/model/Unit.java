@@ -414,6 +414,7 @@ public class Unit {
 	public void setOrientation(int orientation) {
 		//We hebben de isValidOrientation niet meer nodig?
 		this.orientation = (float) (Math.abs(orientation) % (2*PI));
+		// van <0 naar positief ??????
 		
 	}
 /////////////////////////////////////////////current health/////////////////////////////////////////////
@@ -474,8 +475,6 @@ public class Unit {
 	
 /////////////////////////////////////////////current stamina/////////////////////////////////////////////
 
-<<<<<<< HEAD
-=======
 	/**
 	 * Return the stamina of this unit.
 	 */
@@ -524,7 +523,6 @@ public class Unit {
 		else
 			this.stamina = this.stamina - amount;
 	}
->>>>>>> 5cdebde14dda53aba8f7caeaa39b6123eb92586c
 /////////////////////////////////////////////Game time/////////////////////////////////////////////
 	
 	
