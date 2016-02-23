@@ -403,6 +403,7 @@ public class Unit {
 	 * 
 	 * @param  orientation
 	 *         The new orientation for this unit.
+	 * @param  
 	 * @post   If the given orientation is a valid orientation for any unit,
 	 *         the orientation of this new unit is equal to the given
 	 *         orientation.
@@ -410,9 +411,17 @@ public class Unit {
 	 *       |   then new.getOrientation() == orientation
 	 */
 	@Raw
-	public void setOrientation(int orientation) {
-		//We hebben de isValidOrientation niet meer nodig?
-		this.orientation = (float) (Math.abs(orientation) % (2*PI));
+	public void setOrientation(float orientation) {
+		if (this.orientation >= (2*PI))
+			this.orientation = (float) (orientation % (2*PI));
+		float deler;
+		float restdeler;
+		if (this.orientation < 0){
+			restdeler = (float)((Math.abs(orientation) % (2*PI)));
+			deler = (float)((Math.abs(orientation) - restdeler) % (2*PI)) +1;
+			this.orientation = (float) ((float) deler * 2 * PI + orientation);
+		}
+		// van <0 naar positief ??????
 		
 	}
 /////////////////////////////////////////////current health/////////////////////////////////////////////
@@ -521,7 +530,10 @@ public class Unit {
 		else
 			this.stamina = this.stamina - amount;
 	}
+<<<<<<< HEAD
 
+=======
+>>>>>>> c7b1c8e158fc1fb0c27c389dc82d4a5f69ecd297
 /////////////////////////////////////////////Game time/////////////////////////////////////////////
 	
 	

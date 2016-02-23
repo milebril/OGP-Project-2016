@@ -33,7 +33,7 @@ public class Facade implements IFacade{
 	@Override
 	public Unit createUnit(String name, int[] initialPosition, int weight, int agility, int strength, int toughness,
 			boolean enableDefaultBehavior) throws ModelException {
-		Unit UnitTest = new Unit(50); 
+		Unit UnitTest = new Unit(50);
 		UnitTest.setWeight(weight);
 		UnitTest.setStrenght(strength);
 		UnitTest.setToughness(toughness);
