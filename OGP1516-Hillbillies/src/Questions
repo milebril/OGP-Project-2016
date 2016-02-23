@@ -1,0 +1,18 @@
+Vragen voor assistent:
+
+1) Orientation: werken we met neg. hoeken?
+
+2) Hoe werlt de pos. precies -> in facade wordt een int[] meegegeven voor start pos. bij het aanmaken newUnit. In de tekst
+	staat dat we met doubles en ints moeten werken?
+	
+3) Hitpoints/Stamina: increase/decrease? of werken met neg. waardes?
+
+4) Gametime: helemaal ondeuidelijk wat bedoelt wordt!
+
+5) Moeten we zelf JUnit test cases schrijven voor al onze methods?
+
+
+
+
+Vragen aan elkaar:
+
