@@ -25,9 +25,8 @@ public class Unit {
 	private int toughness;
 	private String name;
 	private float orientation = (float) (PI / 2);
-	private int positionX;
-	private int positionY;
-	private int positionZ;
+	private double[] unitPosition;
+	private int[] cubePosition;
 	private int hitpoints;
 	private int stamina;
 	
@@ -324,9 +323,8 @@ public class Unit {
 	 * Return the Position of this Unit.
 	 */
 	@Basic @Raw
-	public int[] getPosition() {
-		int[] position = {this.positionX , this.positionY, this.positionZ};
-		return position;
+	public double[] getPosition() {
+		return this.unitPosition;
 	}
 	
 	/**
@@ -335,12 +333,16 @@ public class Unit {
 	 *  
 	 * @param  position
 	 *         The position to check.
-	 * @return if position is a valid position return true else return false
-	 *       | 
+	 * @return if the unit's position is in the given world we return True, else fasle
+	 *       | if (unitPosition < 0 && unitPositio > 50) Then false
+	 *       |		else false
 	*/
-	public static boolean isValidPosition(int[] position) {
-		for (int i=0; i< position.length; i++) {
-			if (position[i] < MIN_VALUE_COORDINATE_GAMEWORLD || position[i] > MAX_VALUE_COORDINATE_GAMEWORLD)
+	public static boolean isValidPosition(double[] unitPosition) {
+		int N = unitPosition.length;
+		if (N > 3)
+			return false;
+		for (int i=0; i < unitPosition.length; i++) {
+			if (unitPosition[i] < MIN_VALUE_COORDINATE_GAMEWORLD || unitPosition[i] > MAX_VALUE_COORDINATE_GAMEWORLD)
 				return false;
 		}
 		return false;
@@ -352,23 +354,20 @@ public class Unit {
 	 * @param  position
 	 *         The new position for this unit.
 	 *         An array of integers contains the x,y and z coordinate of the unit
-	 * @post   The property_name_Eng of this new object_name_Eng is equal to
-	 *         the given property_name_Eng.
-	 *       | new.getPropertyName_Java() == propertyName_Java
-	 * @throws ExceptionName_Java
-	 *         The given property_name_Eng is not a valid property_name_Eng for any
-	 *         object_name_Eng.
-	 *       | ! isValidPropertyName_Java(getPropertyName_Java())
+	 * @post   The position of this new unit is equal to the given position.
+	 *       | new.getPosition() == Position
+	 * @throws IllegalArgumentException
+	 *         The given position is not a valid position for any
+	 *         unit.
+	 *       | ! isValidPosition(getPosition())
 	 */
 	@Raw
-	public void setPropertyName_Java(int[] position) /*throws ExceptionName_Java*/ {
-		/*
-		if (! isValidPropertyName_Java(propertyName_Java))
-			throw new ExceptionName_Java();
-		*/
-		this.positionX = position[0];
-		this.positionY = position[1];
-		this.positionZ = position[2];
+	public void setUnitPosition(double[] position) throws IllegalArgumentException {
+		if (! isValidPosition(position))
+			throw new IllegalArgumentException(); //exception;
+		this.unitPosition[0] = position[0];	
+		this.unitPosition[1] = position[1];
+		this.unitPosition[2] = position[2];
 	}
  
 /////////////////////////////////////////////Orientation/////////////////////////////////////////////
@@ -474,8 +473,6 @@ public class Unit {
 	
 /////////////////////////////////////////////current stamina/////////////////////////////////////////////
 
-<<<<<<< HEAD
-=======
 	/**
 	 * Return the stamina of this unit.
 	 */
@@ -524,7 +521,7 @@ public class Unit {
 		else
 			this.stamina = this.stamina - amount;
 	}
->>>>>>> 5cdebde14dda53aba8f7caeaa39b6123eb92586c
+
 /////////////////////////////////////////////Game time/////////////////////////////////////////////
 	
 	
