@@ -424,103 +424,155 @@ public class Unit {
 		// van <0 naar positief ??????
 		
 	}
-/////////////////////////////////////////////current health/////////////////////////////////////////////
+/////////////////////////////////////////////Hitpoints/////////////////////////////////////////////
+	
 	/**
-	 * @invar  Each object_name can have its property_name_Eng as property_name_Eng.
-	 *       | canHaveAsPropertyName_Java(this.getPropertyName_Java())
+	 * @invar  The hitpoints of each unit must be a valid hitpoints for any
+	 *         unit.
+	 *       | isValidHitpoints(getHitpoints())
 	 */
+
 
 	/**
 	 * Return the hitpoints of this unit.
 	 */
-	@Basic @Raw @Immutable
+	@Basic @Raw
 	public int getHitpoints() {
 		return this.hitpoints;
 	}
 	
+	/**
+	 * Check whether the given hitpoints is a valid hitpoints for
+	 * any unit.
+	 *  
+	 * @param  hitpoints
+	 *         The hitpoints to check.
+	 * @return 
+	 *       | result == 
+	*/
+	public static boolean isValidHitpoints(int hitpoints) {
+		return hitpoints >0;
+	}
+	
+	/**
+	 * Check the maximul value of hitpoints of this unit
+	 * 
+	 * @return Returns the maximum health of the given unit
+	 */
 	public int getMaxHitpoints() {
 		return (int) 200 * (this.weight/100) * (this.toughness/100);
 	}
 	
 	/**
+	 * Increase the hitpoints of this unit with the given hitpoints.
 	 * 
-	 * @param amount
-	 * 
-	 * @pre ...
-	 * 		|amount > 0
-	 * @post ...
-	 * 		| if (this.hitpoints + amount > getMaxHitpoints()) Then new.hitpoints == getMaxHitpoints()
-	 * 		|		Else new.hitpoints == this.hitpoints + amount
-	 * 
+	 * @param  hitpoints
+	 *         The amount of hitpoints to increase for this unit.
+	 * @pre    The given hitpoints must be a valid hitpoints for any
+	 *         unit.
+	 *       | isValidHitpoints(hitpoints)
+	 * @post   The hitpoints of this unit is equal to the old hitpoints plus the given hitpoints.
+	 *       | if (this.hitpoints + hitpoints > getMaxHitpoints()) Then new.hitpoints == getMaxHitpoints()
+	 * 		 |		Else new.hitpoints == this.hitpoints + hitpoints
 	 */
-	public void increaseHitpoints(int amount) {
-		assert amount > 0;
-		if (amount > getMaxHitpoints())
+	public void increaseHitpoints(int hitpoints) {
+		assert isValidHitpoints(hitpoints);
+		if (this.hitpoints + hitpoints > getMaxHitpoints())
 			this.hitpoints = getMaxHitpoints();
 		else 
-			this.hitpoints = this.hitpoints + amount;
+			this.hitpoints = this.hitpoints + hitpoints;
 	}
 	
 	/**
+	 * Decrease the hitpoints of this unit with the given hitpoints.
 	 * 
-	 * @param amount
-	 * @pre ...
-	 * 		|amount > 0
-	 * @post ...
-	 * 		| if (amount > getHitpoints()) Then new.hitpoints == 0
-	 * 		|		Else new.hitpoints == this.getHitpoints - amount
+	 * @param  hitpoints
+	 *         The amounts of hitpoints to decrease for this unit.
+	 * @pre    The given hitpoints must be a valid hitpoints for any unit.
+	 *       | isValidHitpoints(hitpoints)
+	 * @post   The hitpoints of this unit is equal to the old hitpoints minus the given one.
+	 *       |if (amount > getHitpoints()) Then new.hitpoints == 0
+	 * 		 |		Else new.hitpoints == this.getHitpoints - amount
 	 * 
 	 */
-	public void decreaseHitpoints(int amount) {
-		assert amount > 0;
-		if (amount > getHitpoints()) 
+	public void decreaseHitpoints(int hitpoints) {
+		assert isValidHitpoints(hitpoints);
+		if (hitpoints > getHitpoints()) 
 			this.hitpoints = 0;
 		else
-			this.hitpoints = this.hitpoints - amount;
+			this.hitpoints = this.hitpoints - hitpoints;
 		
 	}
 	
 /////////////////////////////////////////////current stamina/////////////////////////////////////////////
+	
+	/**
+	 * @invar  The Stamina of each unit must be a valid Stamina for any
+	 *         unit.
+	 *       | isValidStamina(getStamina())
+	 */
+
 
 	/**
-	 * Return the stamina of this unit.
+	 * Return the Stamina of this unit.
 	 */
-	@Basic @Raw @Immutable
-	public int getStanima() {
+	@Basic @Raw
+	public int getStamina() {
 		return this.stamina;
 	}
 	
+	/**
+	 * Check the maximum value of stamina of this unit
+	 * 
+	 * @return Returns the maximum stamina of the given unit
+	 */
 	public int getMaxStamina() {
 		return (int) 200 * (this.weight/100) * (this.toughness/100);
 	}
-	
+
 	/**
+	 * Check whether the given Stamina is a valid Stamina for
+	 * any unit.
+	 *  
+	 * @param  Stamina
+	 *         The Stamina to check.
+	 * @return 
+	 *       | result == amount > 0
+	*/
+	public static boolean isValidStamina(int stamina) {
+		return stamina > 0;
+	}
+			
+	/**
+	 * Increase the Stamina of this unit to the given Stamina.
 	 * 
-	 * @param amount
-	 * 
-	 * @pre ...
-	 * 		|amount > 0
-	 * @post ...
-	 * 		| if (this.stamina + amount > getMaxStamina()) Then new.stamina == getMaxStamina()
-	 * 		|		Else new.stamina == this.stamina + amount
+	 * @param  stamina
+	 *         The new Stamina for this unit.
+	 * @pre    The given Stamina must be a valid Stamina for any unit.
+	 *       | isValidStamina(stamina)
+	 * @post   The Stamina of this unit is equal to the the old stamina plus given Stamina.
+	 *       | if (this.stamina + amount > getMaxStamina()) Then new.stamina == getMaxStamina()
+	 * 		 |		Else new.stamina == this.stamina + amount
 	 * 
 	 */
-	public void increaseStamina(int amount) {
-		assert amount > 0;
-		if (amount > getMaxStamina())
+	public void increaseStamina(int stamina) {
+		assert isValidStamina(stamina);
+		if (stamina > getMaxStamina())
 			this.stamina = getMaxStamina();
 		else 
-			this.stamina = this.stamina + amount;
+			this.stamina = this.stamina + stamina;
 	}
 	
 	/**
+	 * Decreases the Stamina of this unit to the given Stamina.
 	 * 
-	 * @param amount
-	 * @pre ...
-	 * 		|amount > 0
-	 * @post ...
-	 * 		| if (amount > getStamina()) Then new.stamina == 0
-	 * 		|		Else new.stamina == this.getStamina - amount
+	 * @param  stamina
+	 *         The Stamina to decrease with for this unit.
+	 * @pre    The given Stamina must be a valid Stamina for any unit.
+	 *       | isValidStamina(stamina)
+	 * @post   The Stamina of this unit is equal to the the old stamina minus given Stamina.
+	 *       | if (amount > getStamina()) Then new.stamina == 0
+	 * 		 |		Else new.stamina == this.getStamina - amount
 	 * 
 	 */
 	public void decreaseStamina(int amount) {
@@ -530,10 +582,7 @@ public class Unit {
 		else
 			this.stamina = this.stamina - amount;
 	}
-<<<<<<< HEAD
 
-=======
->>>>>>> c7b1c8e158fc1fb0c27c389dc82d4a5f69ecd297
 /////////////////////////////////////////////Game time/////////////////////////////////////////////
 	
 	
