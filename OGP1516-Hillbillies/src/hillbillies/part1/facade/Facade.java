@@ -39,7 +39,7 @@ public class Facade implements IFacade{
 		UnitTest.setToughness(toughness);
 		UnitTest.setAgility(agility);
 		UnitTest.setName(name);
-		
+		UnitTest.setUnitPositionInInt(initialPosition);
 		// TODO Auto-generated method stub
 		return UnitTest;
 	}
@@ -57,8 +57,8 @@ public class Facade implements IFacade{
 	 */
 	@Override
 	public double[] getPosition(Unit unit) throws ModelException {
-		// TODO Auto-generated method stub
-		return null;
+		
+		return unit.getPosition();
 	}
 
 	/**
@@ -73,8 +73,8 @@ public class Facade implements IFacade{
 	 */
 	@Override
 	public int[] getCubeCoordinate(Unit unit) throws ModelException {
-		// TODO Auto-generated method stub
-		return null;
+		//int[] a = unit.getPositionInInt();
+		return unit.getPositionInInt();
 	}
 
 	/* Name */

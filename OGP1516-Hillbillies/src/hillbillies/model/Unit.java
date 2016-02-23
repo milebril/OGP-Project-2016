@@ -14,7 +14,7 @@ public class Unit {
 	public final static int MIN_VALUE_TOUGHNESS = 1;
 	public final static int MAX_VALUE_TOUGHNESS = 200;
 	public final static int MIN_VALUE_COORDINATE_GAMEWORLD = 0;
-	public final static int MAX_VALUE_COORDINATE_GAMEWORLD = 50;	
+	public final static int MAX_VALUE_COORDINATE_GAMEWORLD = 49;	
 	
 	/*
 	 * Variable registering the property_name_Eng of this object_name.
@@ -317,7 +317,7 @@ public class Unit {
 		this.name = name;
 	}
 	
-/////////////////////////////////////////////position/////////////////////////////////////////////
+/////////////////////////////////////////////position in doubles/////////////////////////////////////////////
 		
 	/**
 	 * Return the Position of this Unit.
@@ -345,7 +345,63 @@ public class Unit {
 			if (unitPosition[i] < MIN_VALUE_COORDINATE_GAMEWORLD || unitPosition[i] > MAX_VALUE_COORDINATE_GAMEWORLD)
 				return false;
 		}
-		return false;
+		return true;
+	}
+	
+	/**
+	 * Set the position of this unit to the given position.
+	 * 
+	 * @param  position
+	 *         The new position for this unit.
+	 *         An array of doubles contains the x,y and z coordinate of the unit
+	 * @post   The position of this new unit is equal to the given position.
+	 *       | new.getPosition() == Position
+	 * @throws IllegalArgumentException
+	 *         The given position is not a valid position for any
+	 *         unit.
+	 *       | ! isValidPosition(getPosition())
+	 */
+	@Raw
+	public void setUnitPosition(double[] position) throws IllegalArgumentException {
+		if (! isValidPosition(position))
+			throw new IllegalArgumentException(); //exception;
+		this.unitPosition[0] = position[0];	
+		this.unitPosition[1] = position[1];
+		this.unitPosition[2] = position[2];
+		this.cubePosition[0] = (int)position[0];	
+		this.cubePosition[1] = (int)position[1];
+		this.cubePosition[2] = (int)position[2];
+	}
+ 
+/////////////////////////////////////////////position in int/////////////////////////////////////////////	
+	
+	/**
+	 * Return the Position of this Unit.
+	 */
+	@Basic @Raw
+	public int[] getPositionInInt() {
+		return this.cubePosition;
+	}
+	
+	/**
+	 * Check whether the given position is a valid position for
+	 * any Unit.
+	 *  
+	 * @param  position
+	 *         The position to check.
+	 * @return if the unit's position is in the given world we return True, else fasle
+	 *       | if (unitPosition < 0 && unitPositio > 50) Then false
+	 *       |		else false
+	*/
+	public static boolean isValidPositionInInt(int[] unitPosition) {
+		int N = unitPosition.length;
+		if (N > 3)
+			return false;
+		for (int i=0; i < unitPosition.length; i++) {
+			if (unitPosition[i] < MIN_VALUE_COORDINATE_GAMEWORLD || unitPosition[i] > MAX_VALUE_COORDINATE_GAMEWORLD)
+				return false;
+		}
+		return true;
 	}
 	
 	/**
@@ -362,14 +418,17 @@ public class Unit {
 	 *       | ! isValidPosition(getPosition())
 	 */
 	@Raw
-	public void setUnitPosition(double[] position) throws IllegalArgumentException {
-		if (! isValidPosition(position))
+	public void setUnitPositionInInt(int[] position) throws IllegalArgumentException {
+		if (! isValidPositionInInt(position))
 			throw new IllegalArgumentException(); //exception;
-		this.unitPosition[0] = position[0];	
-		this.unitPosition[1] = position[1];
-		this.unitPosition[2] = position[2];
+		this.cubePosition[0] = position[0];	
+		this.cubePosition[1] = position[1];
+		this.cubePosition[2] = position[2];
+		this.unitPosition[0] = (double) position[0];	
+		this.unitPosition[1] = (double) position[1];
+		this.unitPosition[2] = (double) position[2];
+		
 	}
- 
 /////////////////////////////////////////////Orientation/////////////////////////////////////////////
 	
 	/**
