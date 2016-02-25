@@ -14,7 +14,7 @@ public class Unit {
 	public final static int MIN_VALUE_TOUGHNESS = 1;
 	public final static int MAX_VALUE_TOUGHNESS = 200;
 	public final static int MIN_VALUE_COORDINATE_GAMEWORLD = 0;
-	public final static int MAX_VALUE_COORDINATE_GAMEWORLD = 50;	
+	public final static int MAX_VALUE_COORDINATE_GAMEWORLD = 49;	
 	
 	/*
 	 * Variable registering the property_name_Eng of this object_name.
@@ -26,14 +26,23 @@ public class Unit {
 	private String name;
 	private float orientation = (float) (PI / 2);
 	private double[] unitPosition;
-	private int[] cubePosition;
 	private int hitpoints;
 	private int stamina;
 	
 /////////////////////////////////////////////Constructor/////////////////////////////////////////////	
 	
-	public Unit(int strenght) {
-		return;
+	public Unit (String name, int[] initialPosition, int weight, int agility, int strength, int toughness,
+			boolean enableDefaultBehavior) {
+		this.setWeight(weight);
+		this.setStrenght(strength);
+		this.setToughness(toughness);
+		this.setAgility(agility);
+		this.setName(name);
+		this.setUnitPosition(castIntToDouble(initialPosition));
+		//TODO hitpoints en stamina worden niet geinitialseerd, dit moet worden nagekeken
+		this.increaseHitpoints(getMaxHitpoints());
+		this.increaseStamina(getMaxStamina());
+		return ;
 	}
 	
 /////////////////////////////////////////////weight/////////////////////////////////////////////
@@ -317,7 +326,7 @@ public class Unit {
 		this.name = name;
 	}
 	
-/////////////////////////////////////////////position/////////////////////////////////////////////
+/////////////////////////////////////////////position in doubles/////////////////////////////////////////////
 		
 	/**
 	 * Return the Position of this Unit.
@@ -327,6 +336,24 @@ public class Unit {
 		return this.unitPosition;
 	}
 	
+	/**
+	 * cast an array of integers in an array of doubles
+	 * @param arrayInInt
+	 * @return arrayInDouble
+	 */
+	public double[] castIntToDouble (int[] arrayInInt){
+		double[] arrayInDouble = {(double) arrayInInt[0],(double) arrayInInt[1],(double) arrayInInt[2]};
+		return arrayInDouble;
+	}
+	/**
+	 * cast an array of doubles in an array of integers
+	 * @param arrayInDouble
+	 * @return arrayInInt
+	 */
+	public int[] castDoubleToInt (double[] arrayInDoubles){
+		int[] arrayInInt = {(int) arrayInDoubles[0],(int) arrayInDoubles[1],(int) arrayInDoubles[2]};
+		return arrayInInt;
+	}
 	/**
 	 * Check whether the given position is a valid position for
 	 * any Unit.
@@ -345,7 +372,7 @@ public class Unit {
 			if (unitPosition[i] < MIN_VALUE_COORDINATE_GAMEWORLD || unitPosition[i] > MAX_VALUE_COORDINATE_GAMEWORLD)
 				return false;
 		}
-		return false;
+		return true;
 	}
 	
 	/**
@@ -353,7 +380,7 @@ public class Unit {
 	 * 
 	 * @param  position
 	 *         The new position for this unit.
-	 *         An array of integers contains the x,y and z coordinate of the unit
+	 *         An array of doubles contains the x,y and z coordinate of the unit
 	 * @post   The position of this new unit is equal to the given position.
 	 *       | new.getPosition() == Position
 	 * @throws IllegalArgumentException
@@ -365,9 +392,8 @@ public class Unit {
 	public void setUnitPosition(double[] position) throws IllegalArgumentException {
 		if (! isValidPosition(position))
 			throw new IllegalArgumentException(); //exception;
-		this.unitPosition[0] = position[0];	
-		this.unitPosition[1] = position[1];
-		this.unitPosition[2] = position[2];
+		this.unitPosition = position;	
+
 	}
  
 /////////////////////////////////////////////Orientation/////////////////////////////////////////////
@@ -583,10 +609,13 @@ public class Unit {
 			this.stamina = this.stamina - amount;
 	}
 
-/////////////////////////////////////////////Game time/////////////////////////////////////////////
-	
+/////////////////////////////////////////////advance time/////////////////////////////////////////////
+	public void advanceTimeInUnit(double dt){
+		//TODO advance time
+	}
 	
 /////////////////////////////////////////////movement/////////////////////////////////////////////
+	
 	
 /////////////////////////////////////////////pat finding/////////////////////////////////////////////
 	
