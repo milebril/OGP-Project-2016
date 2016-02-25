@@ -38,12 +38,20 @@ public class Unit {
 		this.setToughness(toughness);
 		this.setAgility(agility);
 		this.setName(name);
-		this.setUnitPosition(castIntToDouble(initialPosition));
+		this.setUnitPosition(putUnitInCenter(castIntToDouble(initialPosition)));
 		//TODO hitpoints en stamina worden niet geinitialseerd, dit moet worden nagekeken
-		this.increaseHitpoints(getMaxHitpoints());
-		this.increaseStamina(getMaxStamina());
+		this.setHitpoints(getMaxHitpoints());
+		this.increaseStamina(50);
 		return ;
 	}
+	
+	public double[] putUnitInCenter(double[] initialPosistion) {
+		for (int i = 0; i < initialPosistion.length; i++) {
+			initialPosistion[i] += 0.5;
+		}
+		return initialPosistion;
+	}
+	
 	
 /////////////////////////////////////////////weight/////////////////////////////////////////////
 	
@@ -477,16 +485,20 @@ public class Unit {
 	 *       | result == 
 	*/
 	public static boolean isValidHitpoints(int hitpoints) {
-		return hitpoints >0;
+		return hitpoints > 0;
 	}
 	
 	/**
-	 * Check the maximul value of hitpoints of this unit
+	 * Check the maximum value of hitpoints of this unit
 	 * 
 	 * @return Returns the maximum health of the given unit
 	 */
 	public int getMaxHitpoints() {
-		return (int) 200 * (this.weight/100) * (this.toughness/100);
+		return (int) (200 * ((double) this.weight/100) * ((double) this.toughness/100));
+	}
+	
+	public void setHitpoints(int hitpoints) {
+		this.hitpoints = hitpoints;
 	}
 	
 	/**
@@ -553,7 +565,7 @@ public class Unit {
 	 * @return Returns the maximum stamina of the given unit
 	 */
 	public int getMaxStamina() {
-		return (int) 200 * (this.weight/100) * (this.toughness/100);
+		return (int) (200 * ((double) this.weight/100) * ((double) this.toughness/100));
 	}
 
 	/**
@@ -615,7 +627,9 @@ public class Unit {
 	}
 	
 /////////////////////////////////////////////movement/////////////////////////////////////////////
-	
+	public void moveToAdjacent(int dx, int dy, int dz) {
+		
+	}
 	
 /////////////////////////////////////////////pat finding/////////////////////////////////////////////
 	
