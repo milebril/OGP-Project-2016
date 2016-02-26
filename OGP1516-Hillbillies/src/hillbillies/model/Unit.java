@@ -26,15 +26,32 @@ public class Unit {
 	private String name;
 	private float orientation = (float) (PI / 2);
 	private double[] unitPosition;
-	private int[] cubePosition;
 	private int hitpoints;
 	private int stamina;
 	
 /////////////////////////////////////////////Constructor/////////////////////////////////////////////	
 	
-	public Unit(int strenght) {
-		return;
+	public Unit (String name, int[] initialPosition, int weight, int agility, int strength, int toughness,
+			boolean enableDefaultBehavior) {
+		this.setWeight(weight);
+		this.setStrenght(strength);
+		this.setToughness(toughness);
+		this.setAgility(agility);
+		this.setName(name);
+		this.setUnitPosition(putUnitInCenter(castIntToDouble(initialPosition)));
+		//TODO hitpoints en stamina worden niet geinitialseerd, dit moet worden nagekeken
+		this.setHitpoints(getMaxHitpoints());
+		this.increaseStamina(50);
+		return ;
 	}
+	
+	public double[] putUnitInCenter(double[] initialPosistion) {
+		for (int i = 0; i < initialPosistion.length; i++) {
+			initialPosistion[i] += 0.5;
+		}
+		return initialPosistion;
+	}
+	
 	
 /////////////////////////////////////////////weight/////////////////////////////////////////////
 	
@@ -313,6 +330,24 @@ public class Unit {
 	}
 	
 	/**
+	 * cast an array of integers in an array of doubles
+	 * @param arrayInInt
+	 * @return arrayInDouble
+	 */
+	public double[] castIntToDouble (int[] arrayInInt){
+		double[] arrayInDouble = {(double) arrayInInt[0],(double) arrayInInt[1],(double) arrayInInt[2]};
+		return arrayInDouble;
+	}
+	/**
+	 * cast an array of doubles in an array of integers
+	 * @param arrayInDouble
+	 * @return arrayInInt
+	 */
+	public int[] castDoubleToInt (double[] arrayInDoubles){
+		int[] arrayInInt = {(int) arrayInDoubles[0],(int) arrayInDoubles[1],(int) arrayInDoubles[2]};
+		return arrayInInt;
+	}
+	/**
 	 * Check whether the given position is a valid position for
 	 * any Unit.
 	 *  
@@ -350,70 +385,10 @@ public class Unit {
 	public void setUnitPosition(double[] position) throws IllegalArgumentException {
 		if (! isValidPosition(position))
 			throw new IllegalArgumentException(); //exception;
-		this.unitPosition[0] = position[0];	
-		this.unitPosition[1] = position[1];
-		this.unitPosition[2] = position[2];
-		this.cubePosition[0] = (int)position[0];	
-		this.cubePosition[1] = (int)position[1];
-		this.cubePosition[2] = (int)position[2];
+		this.unitPosition = position;	
+
 	}
  
-/////////////////////////////////////////////position in int/////////////////////////////////////////////	
-	
-	/**
-	 * Return the Position of this Unit.
-	 */
-	@Basic @Raw
-	public int[] getPositionInInt() {
-		return this.cubePosition;
-	}
-	
-	/**
-	 * Check whether the given position is a valid position for
-	 * any Unit.
-	 *  
-	 * @param  position
-	 *         The position to check.
-	 * @return if the unit's position is in the given world we return True, else fasle
-	 *       | if (unitPosition < 0 && unitPositio > 50) Then false
-	 *       |		else false
-	*/
-	public static boolean isValidPositionInInt(int[] unitPosition) {
-		int N = unitPosition.length;
-		if (N > 3)
-			return false;
-		for (int i=0; i < unitPosition.length; i++) {
-			if (unitPosition[i] < MIN_VALUE_COORDINATE_GAMEWORLD || unitPosition[i] > MAX_VALUE_COORDINATE_GAMEWORLD)
-				return false;
-		}
-		return true;
-	}
-	
-	/**
-	 * Set the position of this unit to the given position.
-	 * 
-	 * @param  position
-	 *         The new position for this unit.
-	 *         An array of integers contains the x,y and z coordinate of the unit
-	 * @post   The position of this new unit is equal to the given position.
-	 *       | new.getPosition() == Position
-	 * @throws IllegalArgumentException
-	 *         The given position is not a valid position for any
-	 *         unit.
-	 *       | ! isValidPosition(getPosition())
-	 */
-	@Raw
-	public void setUnitPositionInInt(int[] position) throws IllegalArgumentException {
-		if (! isValidPositionInInt(position))
-			throw new IllegalArgumentException(); //exception;
-		this.cubePosition[0] = position[0];	
-		this.cubePosition[1] = position[1];
-		this.cubePosition[2] = position[2];
-		this.unitPosition[0] = (double) position[0];	
-		this.unitPosition[1] = (double) position[1];
-		this.unitPosition[2] = (double) position[2];
-		
-	}
 /////////////////////////////////////////////Orientation/////////////////////////////////////////////
 	
 	/**
@@ -493,16 +468,20 @@ public class Unit {
 	 *       | result == 
 	*/
 	public static boolean isValidHitpoints(int hitpoints) {
-		return hitpoints >0;
+		return hitpoints > 0;
 	}
 	
 	/**
-	 * Check the maximul value of hitpoints of this unit
+	 * Check the maximum value of hitpoints of this unit
 	 * 
 	 * @return Returns the maximum health of the given unit
 	 */
 	public int getMaxHitpoints() {
-		return (int) 200 * (this.weight/100) * (this.toughness/100);
+		return (int) (200 * ((double) this.weight/100) * ((double) this.toughness/100));
+	}
+	
+	public void setHitpoints(int hitpoints) {
+		this.hitpoints = hitpoints;
 	}
 	
 	/**
@@ -569,7 +548,7 @@ public class Unit {
 	 * @return Returns the maximum stamina of the given unit
 	 */
 	public int getMaxStamina() {
-		return (int) 200 * (this.weight/100) * (this.toughness/100);
+		return (int) (200 * ((double) this.weight/100) * ((double) this.toughness/100));
 	}
 
 	/**
@@ -625,10 +604,15 @@ public class Unit {
 			this.stamina = this.stamina - amount;
 	}
 
-/////////////////////////////////////////////Game time/////////////////////////////////////////////
-	
+/////////////////////////////////////////////advance time/////////////////////////////////////////////
+	public void advanceTimeInUnit(double dt){
+		//TODO advance time
+	}
 	
 /////////////////////////////////////////////movement/////////////////////////////////////////////
+	public void moveToAdjacent(int dx, int dy, int dz) {
+		
+	}
 	
 /////////////////////////////////////////////pat finding/////////////////////////////////////////////
 	
