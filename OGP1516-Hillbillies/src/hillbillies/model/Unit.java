@@ -81,10 +81,8 @@ public class Unit {
 	 * @param  weight
 	 *         The weight to check.
 	 * @return 
-	 *       |if weight <= 1 || weight => 200:
-	 *       |	return false
-	 *       |else:
-	 *       |	return true
+	 *       |if weight <= 1 || weight => 200 Then return == true
+	 *       |		Else return == false
 	*/
 	public static boolean isValidWeight(int weight) {
 		if( MIN_VALUE_WEIGTH <= weight && weight <= MAX_VALUE_WEIGTH)
@@ -101,13 +99,12 @@ public class Unit {
 	 *         the weight of this new Unit is equal to the given
 	 *         weight.
 	 *       | if (isValidWeight(weight))
-	 *       |   then new.getWeight() == weight
+	 *       |   Then new.getWeight() == weight
 	 */
 	@Raw
 	public void setWeight(int weight) {
 		if (isValidWeight(weight))
 			this.weight = weight;
-		// else:
 	}
 	
 /////////////////////////////////////////////strength/////////////////////////////////////////////
@@ -133,10 +130,8 @@ public class Unit {
 	 * @param  strength
 	 *         The strength to check.
 	 * @return if a valid strength return true, else return false
-	 *       |if (MIN_VALUE_STRENGTH <= strength <= MAX_VALUE_STRENGTH):
-	 *       |	then return true;
-	 *       |else:
-	 *       |	then return false;
+	 *       |if (MIN_VALUE_STRENGTH <= strength <= MAX_VALUE_STRENGTH) Then return == true
+	 *       |		Else return == false
 	*/
 	public static boolean isValidStrength(int strength) {
 		if( strength <= MAX_VALUE_STRENGTH && strength >= MIN_VALUE_STRENGTH)
@@ -159,13 +154,12 @@ public class Unit {
 	public void setStrenght(int strenght) {
 		if (isValidStrength(strenght))
 			this.strength = strenght;
-		// else
 	}
 		
 /////////////////////////////////////////////agility/////////////////////////////////////////////
 	
 	/**
-	 * @invar  The agility of each unit must be a valid agility for any
+	 * @invar The agility of each unit must be a valid agility for any
 	 *         unit.
 	 *       | isValidStrength(strength())
 	 */
@@ -185,10 +179,8 @@ public class Unit {
 	 * @param  agility
 	 *         The agility to check.
 	 * @return if a valid agility return true, else return false
-	 *       |if (MIN_VALUE_AGILITY <= agility <= MAX_VALUE_AGILITY):
-	 *       |	then return true;
-	 *       |else:
-	 *       |	then return false;
+	 *       |if (MIN_VALUE_AGILITY <= agility <= MAX_VALUE_AGILITY) Then return == true
+	 *       |		Else return == false
 	*/
 	public static boolean isValidAgility(int agility) {
 		if( agility <= MAX_VALUE_AGILITY && agility >= MIN_VALUE_AGILITY)
@@ -237,10 +229,8 @@ public class Unit {
 	 * @param  toughness
 	 *         The toughness to check.
 	 * @return if a valid toughness return true, else return false
-	 *       |if (MIN_VALUE_TOUGHNESS <= toughness <= MAX_VALUE_TOUGHNESS):
-	 *       |	then return true;
-	 *       |else:
-	 *       |	then return false;
+	 *       |if (MIN_VALUE_TOUGHNESS <= toughness <= MAX_VALUE_TOUGHNESS) Then return == true
+	 *       |		Else return == false
 	*/
 	public static boolean isValidToughness(int toughness) {
 		if( toughness <= MAX_VALUE_TOUGHNESS && toughness >= MIN_VALUE_TOUGHNESS)
@@ -322,14 +312,9 @@ public class Unit {
 	 * @post   The name of this new unit is equal to
 	 *         the given name.
 	 *       | new.getName() == string name
-	 * @throws NoValidLength
-	 *         The given name is not a valid name for any
-	 *         unit because the length is too short.
-	 *       |   
-	 * @throws ContainsInvalidCharacter
-	 *         The given name is not a valid name for any
-	 *         unit because there is an invalid character in the name.	
-	 *       |
+	 * @throws IllegalNameException
+	 * 		Exception thrown when an invalid name is given
+	 * 		| ! isValidName(name)
 	 */
 	@Raw
 	public void setName(String name) throws IllegalNameException {
@@ -426,10 +411,8 @@ public class Unit {
 	 * @param  orientation
 	 *         The orientation to check.
 	 * @return if a valid orientation return true, else return false
-	 *       |if (0 <= orientation <= PI):
-	 *       |	then return true;
-	 *       |else:
-	 *       |	then return false;
+	 *       |if (0 <= orientation <= PI) Then return true
+	 *     	 |		Else return false
 	*/
 	public static boolean isValidOrientation(int orientation) {
 		if( orientation <= 2*PI && orientation >= 0)
