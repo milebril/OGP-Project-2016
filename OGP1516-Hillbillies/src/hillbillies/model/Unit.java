@@ -28,6 +28,11 @@ public class Unit {
 	private double[] unitPosition;
 	private int hitpoints;
 	private int stamina;
+	private boolean isWorking = false;
+	private boolean isResting = false;
+	private boolean isAttacking = false;
+	private boolean isDefending = false;
+	private boolean defaultBehaviour = false;
 	
 /////////////////////////////////////////////Constructor/////////////////////////////////////////////	
 	
@@ -630,6 +635,10 @@ public class Unit {
 /////////////////////////////////////////////Fighting/////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////
 	
+/////////////////////////////////////////////Attacking/////////////////////////////////////////////
+
+
+
 /////////////////////////////////////////////dodging/////////////////////////////////////////////
 	
 /////////////////////////////////////////////blocking/////////////////////////////////////////////
@@ -642,6 +651,64 @@ public class Unit {
 	
 /////////////////////////////////////////////resting/////////////////////////////////////////////
 	
+	/**
+	 * Return the state of resting of this unit.
+	 */
+	@Basic @Raw
+	public boolean isTheUnitResting() {
+		return this.isResting;
+	}
+	
+	/**
+	 * Check if the unit is able to rest.
+	 *  
+	 *
+	 * @return if the unit can rest return true
+	 *       | result == 
+	*/
+	public boolean canRest( ) {
+		if (this.isAttacking == true || this.isDefending == true 
+				|| (this.hitpoints == getMaxHitpoints() 
+				&& this.stamina == getMaxStamina() ))
+			return false;
+		return true;
+	}
+	
+	/**
+	 * Set the property_name_Eng of this object_name_Eng to the given property_name_Eng.
+	 * 
+	 * @param  propertyName_Java
+	 *         The new property_name_Eng for this object_name_Eng.
+	 * @post   The property_name_Eng of this new object_name_Eng is equal to
+	 *         the given property_name_Eng.
+	 *       | new.getPropertyName_Java() == propertyName_Java
+	 * @throws ExceptionName_Java
+	 *         The given property_name_Eng is not a valid property_name_Eng for any
+	 *         object_name_Eng.
+	 *       | ! isValidPropertyName_Java(getPropertyName_Java())
+	 */
+	/*
+	@Raw
+	public void setPropertyName_Java(property_type_Java propertyName_Java) 
+			throws ExceptionName_Java {
+		if (! isValidPropertyName_Java(propertyName_Java))
+			throw new ExceptionName_Java();
+		this.propertyName_Java = propertyName_Java;
+	}
+*/
+	
+	public void resting (double dt) /*throws Exception is niet resting*/{
+		/*if (! isValidPropertyName_Java(Exception))
+			throw new Exception();*/
+		if (this.hitpoints <= getMaxHitpoints())
+			//TODO increase hitpoints
+			return;
+		if (this.stamina <= getMaxStamina())
+			//TODO increase stamina
+			return;
+		//TODO stop resting
+		return;
+	}
 /////////////////////////////////////////////default behavior/////////////////////////////////////////////
 
 //////////////////////////////////////////////////////////////////////////////////////////////////

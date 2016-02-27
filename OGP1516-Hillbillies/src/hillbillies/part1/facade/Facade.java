@@ -515,7 +515,7 @@ public class Facade implements IFacade{
 	 * Return whether the given unit is currently resting.
 	 * 
 	 * @param unit
-	 *            The unit for which to retrieve the atate
+	 *            The unit for which to retrieve the state
 	 * @return true if the unit is currently resting; false otherwise
 	 * @throws ModelException
 	 *             A precondition was violated or an exception was thrown.
