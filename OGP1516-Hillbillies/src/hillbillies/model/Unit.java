@@ -3,6 +3,8 @@ package hillbillies.model;
 import be.kuleuven.cs.som.annotate.*;
 import static java.lang.Math.PI;
 
+import java.util.Random;
+
 public class Unit {
 	
 	public final static int MIN_VALUE_STRENGTH = 1;
@@ -28,6 +30,7 @@ public class Unit {
 	private double[] unitPosition;
 	private int hitpoints;
 	private int stamina;
+	private boolean isSprinting = false;
 	private boolean isWorking = false;
 	private boolean isResting = false;
 	private boolean isAttacking = false;
@@ -616,33 +619,127 @@ public class Unit {
 	
 /////////////////////////////////////////////movement/////////////////////////////////////////////
 	public void moveToAdjacent(int dx, int dy, int dz) {
-		double[] pos = this.getPosition();
+		double oldZ = getPosition()[2];
+		
+		double[] pos = getPosition();
 		pos[0] += dx;
 		pos[1] += dy;
 		pos[2] += dz;
 		
 		setUnitPosition(pos);
-		
 	}
 	
-/////////////////////////////////////////////pat finding/////////////////////////////////////////////
+	public double getBaseSpeed() {
+		return 1.5 * (((double) getStrength() + (double) getAgility()) / (200 * ((double) getWeight() / 100)));
+	}
+	
+	public double getWalkingSpeed(double oldZ, double newZ) {
+		System.out.println(oldZ - newZ);
+		if (oldZ < newZ) 
+			return 0.5 * getBaseSpeed();
+		else if (oldZ > newZ)
+			return 1.2 * getBaseSpeed();
+		return getBaseSpeed();
+	}
+	
+	public double getSprintSpeed(double oldZ, double newZ) {
+		return 2 * getWalkingSpeed(oldZ, newZ);
+	}
+	
+	public boolean isSprinting() {
+		return this.isSprinting;
+	}
+	
+	public void startSprinting(){
+		this.isSprinting = true;
+	}
+	
+	public void stopSprinting() {
+		this.isSprinting = false;
+	}
+	
+/////////////////////////////////////////////path finding/////////////////////////////////////////////
 	
 /////////////////////////////////////////////actions/////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////
 	
 /////////////////////////////////////////////work/////////////////////////////////////////////
 	
+	
+	
 /////////////////////////////////////////////Fighting/////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////
 	
 /////////////////////////////////////////////Attacking/////////////////////////////////////////////
-
-
+	public void attacking() {
+		//enkel units aanvallen die aan adjecent liggen
+		//duurt 1 sec
+	}
+	
+	public void defending() {
+		//dodging
+		
+		//dan blocking
+		
+		//anders take dmg
+	}
 
 /////////////////////////////////////////////dodging/////////////////////////////////////////////
+	public double dodgeChance(Unit attacker, Unit defender) {
+		return 0.2 * (defender.getAgility()/attacker.getAgility());
+	}
+	
+	public boolean succesfullDodge(Unit attacker, Unit defender) {
+		Random random = new Random();
+		int chance = random.nextInt((int) (dodgeChance(attacker, defender) * 100) - 1);
+		if (chance == 0) 
+			return true;
+		else
+			return false;
+	}
+	
+	public void moveToRandomAdjecant() {
+		Random rand = new Random();
+		double newX = rand.nextInt(2) - 1;
+		double newY = rand.nextInt(2) - 1;
+		
+		double[] newPos = getPosition();
+		newPos[0] += newX;
+		newPos[1] += newY;
+		
+		if(isValidPosition(newPos) && (newPos != getPosition())) {
+			this.setUnitPosition(newPos);
+		} else {
+			moveToRandomAdjecant();
+		}
+		
+	}
+	
+	public void dodgeAttacker(Unit attacker, Unit defender) {
+		if (succesfullDodge(attacker, defender)) {
+			moveToRandomAdjecant();
+		} 
+	}
 	
 /////////////////////////////////////////////blocking/////////////////////////////////////////////
+	public double blockChance(Unit attacker, Unit defender) {
+		return 0.25 * ((defender.getStrength() + defender.getStamina()) / (attacker.getStrength() + attacker.getStamina()));
+	}
 	
+	public boolean succesfullBlock(Unit attacker, Unit defender) {
+		Random random = new Random();
+		int chance = random.nextInt((int) (blockChance(attacker, defender) * 100) - 1);
+		if (chance == 0) 
+			return true;
+		else
+			return false;
+	}
+	
+	public void blockAttacker(Unit attacker, Unit defender){
+		if (succesfullBlock(attacker, defender)) {
+			//incaseer geen dmg
+		}
+	}
 /////////////////////////////////////////////taking damage/////////////////////////////////////////////
 	
 /////////////////////////////////////////////updating orientation/////////////////////////////////////////////

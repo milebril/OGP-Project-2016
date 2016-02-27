@@ -508,7 +508,6 @@ public class Facade implements IFacade{
 	@Override
 	public void rest(Unit unit) throws ModelException {
 		// TODO Auto-generated method stub
-		
 	}
 
 	/**
