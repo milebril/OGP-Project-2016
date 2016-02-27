@@ -45,8 +45,8 @@ public class Unit {
 		this.setName(name);
 		this.setUnitPosition(putUnitInCenter(castIntToDouble(initialPosition)));
 		//TODO hitpoints en stamina worden niet geinitialseerd, dit moet worden nagekeken
-		this.setHitpoints(getMaxHitpoints());
-		this.increaseStamina(50);
+		this.increaseHitpoints(getMaxHitpoints());
+		this.increaseStamina(getMaxStamina());
 		return ;
 	}
 	
@@ -616,6 +616,12 @@ public class Unit {
 	
 /////////////////////////////////////////////movement/////////////////////////////////////////////
 	public void moveToAdjacent(int dx, int dy, int dz) {
+		double[] pos = this.getPosition();
+		pos[0] += dx;
+		pos[1] += dy;
+		pos[2] += dz;
+		
+		setUnitPosition(pos);
 		
 	}
 	
