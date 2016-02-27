@@ -36,7 +36,10 @@ public class Unit {
 	private boolean isAttacking = false;
 	private boolean isDefending = false;
 	private boolean defaultBehaviour = false;
+	private boolean isWalking = false;
 	private double timeLeftWorking;
+	private double[] walkingTo;
+	private double baseForWalkingSpeed;
 	
 /////////////////////////////////////////////Constructor/////////////////////////////////////////////	
 	
@@ -619,36 +622,43 @@ public class Unit {
 			this.resting(dt);
 		if (this.isWorking == true)
 			this.working(dt);
+		if (this.isWalking == true)
+			this.walking(dt);
 		//TODO advance time
 	}
 	
 /////////////////////////////////////////////movement/////////////////////////////////////////////
-	public void moveToAdjacent(int dx, int dy, int dz) {
-		double oldZ = getPosition()[2];
-		
+	public void startWalking(int dx, int dy, int dz) {
+		this.isWalking = true;
+		this.isWorking = false;
+		this.isResting = false;
 		double[] pos = getPosition();
-		pos[0] += dx;
-		pos[1] += dy;
-		pos[2] += dz;
-		
-		setUnitPosition(pos);
+		walkingTo[0] = pos[0] + dx;
+		walkingTo[1] = pos[1] + dy;
+		walkingTo[2] = pos[2] + dz;
+		this.baseForWalkingSpeed = 1.5 * (((double) getStrength() + (double) getAgility()) / (200 * ((double) getWeight() / 100)));
 	}
 	
-	public double getBaseSpeed() {
-		return 1.5 * (((double) getStrength() + (double) getAgility()) / (200 * ((double) getWeight() / 100)));
+	private void walking(double dt){
+		double dx = (this.walkingTo[0] - this.unitPosition[0]);
+		double dy = (this.walkingTo[1] - this.unitPosition[1]);
+		double dz = (this.walkingTo[2] - this.unitPosition[2]);
+		double distance = Math.sqrt(dx * dx + dy * dy + dz * dz);
+		this.unitPosition[0] += this.getSpeed() * ((this.walkingTo[0]- this.unitPosition[0])/ distance) * dt;
+		this.unitPosition[1] += this.getSpeed() * ((this.walkingTo[1]- this.unitPosition[1])/ distance) * dt;
+		this.unitPosition[2] += this.getSpeed() * ((this.walkingTo[2]- this.unitPosition[2])/ distance) * dt;
+		this.updateOrientation();
 	}
 	
-	public double getWalkingSpeed(double oldZ, double newZ) {
-		System.out.println(oldZ - newZ);
-		if (oldZ < newZ) 
-			return 0.5 * getBaseSpeed();
-		else if (oldZ > newZ)
-			return 1.2 * getBaseSpeed();
-		return getBaseSpeed();
+	private void updateOrientation(){
+		//TODO de unit moet kijken waar hij naar toe loopt.
 	}
 	
-	public double getSprintSpeed(double oldZ, double newZ) {
-		return 2 * getWalkingSpeed(oldZ, newZ);
+	private double getSpeed(){
+		double speed = this.baseForWalkingSpeed;
+		if(this.isSprinting() == true)
+			return 2 * speed;
+		return speed;
 	}
 	
 	public boolean isSprinting() {
@@ -849,10 +859,10 @@ public class Unit {
 	public void resting (double dt) /*throws Exception is niet resting*/{
 		/*if (! isValidPropertyName_Java(Exception))
 			throw new Exception();*/
-		if (this.hitpoints <= getMaxHitpoints()){
+		if (this.hitpoints < getMaxHitpoints()){
 			this.restoreHitpoints(dt);
 			return;
-		}else if (this.stamina <= getMaxStamina()){
+		}else if (this.stamina < getMaxStamina()){
 			this.restoreStamina(dt);
 			return;
 		}

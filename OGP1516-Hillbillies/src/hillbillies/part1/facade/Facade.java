@@ -317,7 +317,7 @@ public class Facade implements IFacade{
 	 */
 	@Override
 	public void moveToAdjacent(Unit unit, int dx, int dy, int dz) throws ModelException {
-		unit.moveToAdjacent(dx, dy, dz);
+		unit.startWalking(dx, dy, dz);
 		
 	}
 
