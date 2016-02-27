@@ -442,8 +442,7 @@ public class Facade implements IFacade{
 	 */
 	@Override
 	public void work(Unit unit) throws ModelException {
-		// TODO Auto-generated method stub
-		
+		unit.startWorking();
 	}
 
 	/**
@@ -457,8 +456,7 @@ public class Facade implements IFacade{
 	 */
 	@Override
 	public boolean isWorking(Unit unit) throws ModelException {
-		// TODO Auto-generated method stub
-		return false;
+		return unit.isTheUnitWorking();
 	}
 
 	/* Attacking */
@@ -507,7 +505,7 @@ public class Facade implements IFacade{
 	 */
 	@Override
 	public void rest(Unit unit) throws ModelException {
-		// TODO Auto-generated method stub
+		unit.startResting();
 	}
 
 	/**
@@ -521,8 +519,7 @@ public class Facade implements IFacade{
 	 */
 	@Override
 	public boolean isResting(Unit unit) throws ModelException {
-		// TODO Auto-generated method stub
-		return false;
+		return unit.isTheUnitResting();
 	}
 
 	/* Default behavior */

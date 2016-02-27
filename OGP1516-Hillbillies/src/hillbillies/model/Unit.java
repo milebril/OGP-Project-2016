@@ -16,7 +16,7 @@ public class Unit {
 	public final static int MIN_VALUE_TOUGHNESS = 1;
 	public final static int MAX_VALUE_TOUGHNESS = 200;
 	public final static int MIN_VALUE_COORDINATE_GAMEWORLD = 0;
-	public final static int MAX_VALUE_COORDINATE_GAMEWORLD = 49;	
+	public final static int MAX_VALUE_COORDINATE_GAMEWORLD = 49;
 	
 	/*
 	 * Variable registering the property_name_Eng of this object_name.
@@ -36,6 +36,7 @@ public class Unit {
 	private boolean isAttacking = false;
 	private boolean isDefending = false;
 	private boolean defaultBehaviour = false;
+	private double timeLeftWorking;
 	
 /////////////////////////////////////////////Constructor/////////////////////////////////////////////	
 	
@@ -614,6 +615,10 @@ public class Unit {
 
 /////////////////////////////////////////////advance time/////////////////////////////////////////////
 	public void advanceTimeInUnit(double dt){
+		if (this.isResting == true)
+			this.resting(dt);
+		if (this.isWorking == true)
+			this.working(dt);
 		//TODO advance time
 	}
 	
@@ -665,8 +670,55 @@ public class Unit {
 	
 /////////////////////////////////////////////work/////////////////////////////////////////////
 	
+	/**
+	 * Return the state of working of this unit.
+	 */
+	@Basic @Raw
+	public boolean isTheUnitWorking() {
+		return this.isWorking;
+	}
 	
+	/**
+	 * Check if the unit is able to work.
+	 *  
+	 *
+	 * @return if the unit can work return true
+	 *       | result == 
+	*/
+	public boolean canWork( ) {
+		if (this.isAttacking == true || this.isDefending == true || this.timeLeftWorking == 0)
+			// TODO movement implementeren ???????????????????????????????????????
+			// no loopt hij en werkt hij tegelijkertijd
+			return false;
+		return true;
+	}
 	
+	public void working(double dt){
+		if(this.canWork() == true){ 
+			if (this.timeLeftWorking == 0){
+				//TODO work is done?????????????????????????????????????????????????????????????????????????
+				this.stopResting();
+			}else{
+				this.timeLeftWorking = this.timeLeftWorking - (1 * dt);
+				if(this.timeLeftWorking <= 0){
+					this.timeLeftWorking = 0;
+				}
+				//TODO wat als de strength van een unit wordt aangepast tijdens het werken??????????????????
+			}
+		}else{
+			this.stopWorking();
+		}
+	}
+	
+	private void stopWorking(){
+		this.isWorking = false;
+	}
+	
+	public void startWorking(){
+		this.isWorking = true;
+		this.isResting = false;
+		this.timeLeftWorking = (500 / this.strength);
+	}
 /////////////////////////////////////////////Fighting/////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////
 	
@@ -797,15 +849,38 @@ public class Unit {
 	public void resting (double dt) /*throws Exception is niet resting*/{
 		/*if (! isValidPropertyName_Java(Exception))
 			throw new Exception();*/
-		if (this.hitpoints <= getMaxHitpoints())
-			//TODO increase hitpoints
+		if (this.hitpoints <= getMaxHitpoints()){
+			this.restoreHitpoints(dt);
 			return;
-		if (this.stamina <= getMaxStamina())
-			//TODO increase stamina
+		}else if (this.stamina <= getMaxStamina()){
+			this.restoreStamina(dt);
 			return;
-		//TODO stop resting
+		}
+		this.stopResting();
 		return;
 	}
+	
+	private void restoreHitpoints (double dt){
+		double hitpointsToRestore = 5 * (this.toughness / 200) * dt;
+		increaseHitpoints((int)hitpointsToRestore);
+		// TODO check wat er met de overshot van de cast to int moet gebeuren
+	}
+	
+	private void restoreStamina (double dt){
+		double staminaToRestore = 5 * (this.toughness / 100) * dt;
+		increaseStamina((int)staminaToRestore);
+		// TODO check wat er met de overshot van de cast to int moet gebeuren
+	}
+
+	public void startResting (){
+		this.isResting = true;
+		this.isWorking = false;
+	}
+	
+	public void stopResting (){
+		this.isResting = false;
+	}
+	
 /////////////////////////////////////////////default behavior/////////////////////////////////////////////
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
