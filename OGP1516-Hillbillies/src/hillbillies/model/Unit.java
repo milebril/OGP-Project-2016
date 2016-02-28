@@ -3,6 +3,9 @@ package hillbillies.model;
 import be.kuleuven.cs.som.annotate.*;
 import static java.lang.Math.PI;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Random;
 
 public class Unit {
@@ -52,8 +55,8 @@ public class Unit {
 		this.setName(name);
 		this.setUnitPosition(putUnitInCenter(castIntToDouble(initialPosition)));
 		//TODO hitpoints en stamina worden niet geinitialseerd, dit moet worden nagekeken
-		this.increaseHitpoints(getMaxHitpoints());
-		this.increaseStamina(getMaxStamina());
+		this.increaseHitpoints(20);
+		this.increaseStamina(10);
 		return ;
 	}
 	
@@ -827,64 +830,42 @@ public class Unit {
 	*/
 	public boolean canRest( ) {
 		if (this.isAttacking == true || this.isDefending == true 
-				|| (this.hitpoints == getMaxHitpoints() 
-				&& this.stamina == getMaxStamina() ))
+				|| (getHitpoints() >= getMaxHitpoints() && getStamina() >= getMaxStamina() ))
 			return false;
 		return true;
 	}
 	
-	/**
-	 * Set the property_name_Eng of this object_name_Eng to the given property_name_Eng.
-	 * 
-	 * @param  propertyName_Java
-	 *         The new property_name_Eng for this object_name_Eng.
-	 * @post   The property_name_Eng of this new object_name_Eng is equal to
-	 *         the given property_name_Eng.
-	 *       | new.getPropertyName_Java() == propertyName_Java
-	 * @throws ExceptionName_Java
-	 *         The given property_name_Eng is not a valid property_name_Eng for any
-	 *         object_name_Eng.
-	 *       | ! isValidPropertyName_Java(getPropertyName_Java())
-	 */
-	/*
-	@Raw
-	public void setPropertyName_Java(property_type_Java propertyName_Java) 
-			throws ExceptionName_Java {
-		if (! isValidPropertyName_Java(propertyName_Java))
-			throw new ExceptionName_Java();
-		this.propertyName_Java = propertyName_Java;
-	}
-*/
-	
-	public void resting (double dt) /*throws Exception is niet resting*/{
-		/*if (! isValidPropertyName_Java(Exception))
-			throw new Exception();*/
-		if (this.hitpoints < getMaxHitpoints()){
-			this.restoreHitpoints(dt);
+	public void resting (double dt) {
+		this.isResting = true;
+		stopWorking();
+		
+		if (getHitpoints() < getMaxHitpoints()){
+			restoreHitpoints();
 			return;
 		}else if (this.stamina < getMaxStamina()){
-			this.restoreStamina(dt);
+			restoreStamina();
 			return;
 		}
 		this.stopResting();
 		return;
 	}
 	
-	private void restoreHitpoints (double dt){
-		double hitpointsToRestore = 5 * (this.toughness / 200) * dt;
-		increaseHitpoints((int)hitpointsToRestore);
-		// TODO check wat er met de overshot van de cast to int moet gebeuren
+	private void restoreHitpoints (){		
+		double hitpointsToRestore = 5 * ((double) getToughness() / 200);
+		increaseHitpoints((int) hitpointsToRestore); //double 1.25 int 1
 	}
 	
-	private void restoreStamina (double dt){
-		double staminaToRestore = 5 * (this.toughness / 100) * dt;
-		increaseStamina((int)staminaToRestore);
-		// TODO check wat er met de overshot van de cast to int moet gebeuren
+	private void restoreStamina (){
+		double staminaToRestore = 5 * ((double) this.toughness / 100);
+		System.out.println((int) staminaToRestore);
+		increaseStamina((int) staminaToRestore); //double 2.5 int 2
 	}
 
 	public void startResting (){
-		this.isResting = true;
-		this.isWorking = false;
+		if (canRest()) {
+			resting(1);
+		} else
+			return;
 	}
 	
 	public void stopResting (){
