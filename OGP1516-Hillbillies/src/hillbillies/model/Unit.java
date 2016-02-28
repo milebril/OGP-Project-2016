@@ -41,7 +41,7 @@ public class Unit {
 	private boolean defaultBehaviour = false;
 	private boolean isWalking = false;
 	private double timeLeftWorking;
-	private double[] walkingTo;
+	private double[] walkingTo = {0,0,0};
 	private double baseForWalkingSpeed;
 	
 /////////////////////////////////////////////Constructor/////////////////////////////////////////////	
@@ -636,31 +636,66 @@ public class Unit {
 		this.isWorking = false;
 		this.isResting = false;
 		double[] pos = getPosition();
-		walkingTo[0] = pos[0] + dx;
-		walkingTo[1] = pos[1] + dy;
-		walkingTo[2] = pos[2] + dz;
+		this.walkingTo[0] = pos[0] + dx;
+		if (this.walkingTo[0]<= (double) MIN_VALUE_COORDINATE_GAMEWORLD)
+			this.walkingTo[0] = (double) MIN_VALUE_COORDINATE_GAMEWORLD;
+		if (this.walkingTo[0]>= (double) MAX_VALUE_COORDINATE_GAMEWORLD)
+			this.walkingTo[0] = (double) MAX_VALUE_COORDINATE_GAMEWORLD;
+		this.walkingTo[1] = pos[1] + dy;
+		if (this.walkingTo[1]<= (double) MIN_VALUE_COORDINATE_GAMEWORLD)
+			this.walkingTo[1] = (double) MIN_VALUE_COORDINATE_GAMEWORLD;
+		if (this.walkingTo[1]>= (double) MAX_VALUE_COORDINATE_GAMEWORLD)
+			this.walkingTo[1] = (double) MAX_VALUE_COORDINATE_GAMEWORLD;
+		this.walkingTo[2] = pos[2] + dz;
+		if (this.walkingTo[2]<= (double) MIN_VALUE_COORDINATE_GAMEWORLD)
+			this.walkingTo[2] = (double) MIN_VALUE_COORDINATE_GAMEWORLD;
+		if (this.walkingTo[2]>= (double) MAX_VALUE_COORDINATE_GAMEWORLD)
+			this.walkingTo[2] = (double) MAX_VALUE_COORDINATE_GAMEWORLD;
 		this.baseForWalkingSpeed = 1.5 * (((double) getStrength() + (double) getAgility()) / (200 * ((double) getWeight() / 100)));
 	}
 	
 	private void walking(double dt){
+		if (this.canMove() == true){
+			this.isWalking = false;
+			//TODO er zit een fout in stop walking. dit kan zijn door de fout bij floating points.
+			return;
+		}
+		double speed = getSpeed();
 		double dx = (this.walkingTo[0] - this.unitPosition[0]);
 		double dy = (this.walkingTo[1] - this.unitPosition[1]);
 		double dz = (this.walkingTo[2] - this.unitPosition[2]);
 		double distance = Math.sqrt(dx * dx + dy * dy + dz * dz);
-		this.unitPosition[0] += this.getSpeed() * ((this.walkingTo[0]- this.unitPosition[0])/ distance) * dt;
-		this.unitPosition[1] += this.getSpeed() * ((this.walkingTo[1]- this.unitPosition[1])/ distance) * dt;
-		this.unitPosition[2] += this.getSpeed() * ((this.walkingTo[2]- this.unitPosition[2])/ distance) * dt;
+		this.unitPosition[0] += speed * ((this.walkingTo[0]- this.unitPosition[0])/ distance) * dt;
+		this.unitPosition[1] += speed * ((this.walkingTo[1]- this.unitPosition[1])/ distance) * dt;
+		this.unitPosition[2] += speed * ((this.walkingTo[2]- this.unitPosition[2])/ distance) * dt;
 		this.updateOrientation();
+	}
+	
+	public boolean isTheUnitMoving(){
+		return this.isWalking;
+	}
+	
+	private boolean canMove(){
+		if(this.walkingTo[0] == this.unitPosition[0] && 
+				this.walkingTo[1] == this.unitPosition[1] &&
+				this.walkingTo[2] == this.unitPosition[2]){
+			return true;
+		}
+		return false;
 	}
 	
 	private void updateOrientation(){
 		//TODO de unit moet kijken waar hij naar toe loopt.
 	}
 	
-	private double getSpeed(){
+	public double getSpeed(){
 		double speed = this.baseForWalkingSpeed;
 		if(this.isSprinting() == true)
-			return 2 * speed;
+			speed = speed * 2;
+		if (this.walkingTo[2]>this.unitPosition[2])
+			speed = speed * 0.5;
+		if (this.walkingTo[2]<this.unitPosition[2])
+			speed = speed * 1.2;
 		return speed;
 	}
 	
@@ -730,6 +765,7 @@ public class Unit {
 	public void startWorking(){
 		this.isWorking = true;
 		this.isResting = false;
+		this.isWalking = false;
 		this.timeLeftWorking = (500 / this.strength);
 	}
 /////////////////////////////////////////////Fighting/////////////////////////////////////////////
@@ -857,15 +893,14 @@ public class Unit {
 	
 	private void restoreStamina (){
 		double staminaToRestore = 5 * ((double) this.toughness / 100);
-		System.out.println((int) staminaToRestore);
+		//System.out.println((int) staminaToRestore);
 		increaseStamina((int) staminaToRestore); //double 2.5 int 2
 	}
 
 	public void startResting (){
-		if (canRest()) {
-			resting(1);
-		} else
-			return;
+		this.isWalking = false;
+		this.isWorking = false;
+		this.isResting = true;
 	}
 	
 	public void stopResting (){

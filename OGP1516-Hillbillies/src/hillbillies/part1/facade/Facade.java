@@ -332,8 +332,7 @@ public class Facade implements IFacade{
 	 */
 	@Override
 	public double getCurrentSpeed(Unit unit) throws ModelException {
-		// TODO Auto-generated method stub
-		return 0;
+		return unit.getSpeed();
 	}
 
 	/**
@@ -347,8 +346,7 @@ public class Facade implements IFacade{
 	 */
 	@Override
 	public boolean isMoving(Unit unit) throws ModelException {
-		// TODO Auto-generated method stub
-		return false;
+		return unit.isTheUnitMoving();
 	}
 
 	/**
@@ -361,8 +359,7 @@ public class Facade implements IFacade{
 	 */
 	@Override
 	public void startSprinting(Unit unit) throws ModelException {
-		// TODO Auto-generated method stub
-		
+		unit.startSprinting();
 	}
 
 	/**
@@ -375,8 +372,7 @@ public class Facade implements IFacade{
 	 */
 	@Override
 	public void stopSprinting(Unit unit) throws ModelException {
-		// TODO Auto-generated method stub
-		
+		unit.stopSprinting();
 	}
 
 	/**
@@ -390,8 +386,7 @@ public class Facade implements IFacade{
 	 */
 	@Override
 	public boolean isSprinting(Unit unit) throws ModelException {
-		// TODO Auto-generated method stub
-		return false;
+		return unit.isSprinting();
 	}
 
 	/* Orientation */
@@ -407,8 +402,7 @@ public class Facade implements IFacade{
 	 */
 	@Override
 	public double getOrientation(Unit unit) throws ModelException {
-		// TODO Auto-generated method stub
-		return 0;
+		return unit.getOrientation();
 	}
 
 	/* Extended movement */
