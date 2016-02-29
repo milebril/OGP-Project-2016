@@ -420,8 +420,7 @@ public class Facade implements IFacade{
 	 */
 	@Override
 	public void moveTo(Unit unit, int[] cube) throws ModelException {
-		// TODO Auto-generated method stub
-		unit.moveTo(cube);
+		unit.startPathfinding( cube);
 	}
 
 	/* Working */

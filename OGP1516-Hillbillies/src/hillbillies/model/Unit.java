@@ -45,6 +45,8 @@ public class Unit {
 	private double baseForWalkingSpeed;
 	private double counterForHitpoints = 0;
 	private double counterForStamina = 0;
+	private boolean isPathfinding = false;
+	private int[] pathfindingTo = {0,0,0};
 	
 	
 /////////////////////////////////////////////Constructor/////////////////////////////////////////////	
@@ -630,15 +632,15 @@ public class Unit {
 		//TODO om de zoveeltijd resten
 		if (this.isWorking == true)
 			this.working(dt);
-		if (this.isWalking)
+		if (this.isWalking == true)
 			this.walking(dt);
+		if (this.isPathfinding == true)
+			this.pathfinding(dt);
 		//TODO advance time
 	}
 	
 /////////////////////////////////////////////movement/////////////////////////////////////////////
 	public void startWalking(int dx, int dy, int dz) {
-		System.out.println("moveing aangeroepen");
-		
 		this.isWalking = true;
 		this.isWorking = false;
 		this.isResting = false;
@@ -666,7 +668,6 @@ public class Unit {
 		
 		if (!isValidPosition(walkingTo)){
 			this.isWalking = false;
-			//TODO er zit een fout in stop walking. dit kan zijn door de fout bij floating points.
 			return;
 		}
 		
@@ -682,7 +683,7 @@ public class Unit {
 	}
 		
 	private void canMove(double dx, double dy, double dz, double vx, double vy, double vz, double dt){
-		if(Math.abs(dx) <= vx * dt && Math.abs(dy) <= vy * dt && Math.abs(dz) <= vz * dt){
+		if(Math.abs(dx) <= Math.abs(vx) * dt && Math.abs(dy) <= Math.abs(vy) * dt && Math.abs(dz) <= Math.abs(vz) * dt){
 			setUnitPosition(this.walkingTo.clone());
 			this.isWalking = false;
 		}
@@ -717,20 +718,35 @@ public class Unit {
 	
 /////////////////////////////////////////////path finding/////////////////////////////////////////////
 	
-	public void moveTo(int cube[]) {
-		double[] moveTo = castIntToDouble(cube);
-		putUnitInCenter(moveTo);
-		int dx = 0, dy = 0, dz = 0;
-		
-		while (getPosition() != moveTo) {
+	public void startPathfinding(int[] cube){
+		this.isPathfinding = true;
+		this.isResting = false;
+		this.isWalking = false;
+		this.isWorking = false;
+		this.pathfindingTo = cube.clone();
+	}
+	
+	private void pathfinding (double dt){
+		if (this.isWalking == true){
+			return;
+		}
+		else{
+			double[] moveTo = castIntToDouble(pathfindingTo.clone());
+			putUnitInCenter(moveTo);
+			int dx = 0, dy = 0, dz = 0;
+			if (getPosition() == moveTo ){
+				this.isPathfinding = false;
+				return;
+			}
+			
 			if (getPosition()[0] == moveTo[0]) {
-				System.out.println("hier");
 				dx = 0;
 			} else if (getPosition()[0] < moveTo[0]) {
 				dx = 1;
 			} else {
 				dx = -1;
 			}
+			
 			if (getPosition()[1] == moveTo[1]) {
 				dy = 0;
 			} else if (getPosition()[1] < moveTo[1]) {
@@ -738,6 +754,7 @@ public class Unit {
 			} else {
 				dy = -1;
 			}
+			
 			if (getPosition()[2] == moveTo[2]) {
 				dz = 0;
 			} else if (getPosition()[2] < moveTo[2]) {
@@ -746,17 +763,12 @@ public class Unit {
 				dz = -1;
 			}
 			
-			//System.out.println(dx + " " + dy + " " + dz);
-			
 			startWalking(dx, dy, dz);
-		}
-		
-		
-		
-		System.out.println(moveTo[0] +" " + moveTo[1] + " " + moveTo[2]);
+			System.out.print(this.unitPosition[0]);
+			System.out.print(this.unitPosition[1]);
+			System.out.print(this.unitPosition[2]);
+			}
 	}
-	
-	
 /////////////////////////////////////////////actions/////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////
 	
