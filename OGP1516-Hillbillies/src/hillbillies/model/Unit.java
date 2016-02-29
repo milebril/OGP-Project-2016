@@ -453,6 +453,7 @@ public class Unit {
 			deler = (float)((Math.abs(orientation) - restdeler) % (2*PI)) +1;
 			this.orientation = (float) ((float) deler * 2 * PI + orientation);
 		}
+		
 		// van <0 naar positief ??????
 		
 	}
@@ -625,7 +626,7 @@ public class Unit {
 			this.resting(dt);
 		if (this.isWorking == true)
 			this.working(dt);
-		if (this.isWalking == true)
+		if (this.isWalking)
 			this.walking(dt);
 		//TODO advance time
 	}
@@ -636,57 +637,59 @@ public class Unit {
 		this.isWorking = false;
 		this.isResting = false;
 		double[] pos = getPosition();
+		
 		this.walkingTo[0] = pos[0] + dx;
-		if (this.walkingTo[0]<= (double) MIN_VALUE_COORDINATE_GAMEWORLD)
-			this.walkingTo[0] = (double) MIN_VALUE_COORDINATE_GAMEWORLD;
-		if (this.walkingTo[0]>= (double) MAX_VALUE_COORDINATE_GAMEWORLD)
-			this.walkingTo[0] = (double) MAX_VALUE_COORDINATE_GAMEWORLD;
 		this.walkingTo[1] = pos[1] + dy;
-		if (this.walkingTo[1]<= (double) MIN_VALUE_COORDINATE_GAMEWORLD)
-			this.walkingTo[1] = (double) MIN_VALUE_COORDINATE_GAMEWORLD;
-		if (this.walkingTo[1]>= (double) MAX_VALUE_COORDINATE_GAMEWORLD)
-			this.walkingTo[1] = (double) MAX_VALUE_COORDINATE_GAMEWORLD;
 		this.walkingTo[2] = pos[2] + dz;
-		if (this.walkingTo[2]<= (double) MIN_VALUE_COORDINATE_GAMEWORLD)
-			this.walkingTo[2] = (double) MIN_VALUE_COORDINATE_GAMEWORLD;
-		if (this.walkingTo[2]>= (double) MAX_VALUE_COORDINATE_GAMEWORLD)
-			this.walkingTo[2] = (double) MAX_VALUE_COORDINATE_GAMEWORLD;
+		
+		System.out.println((double) Math.round(this.walkingTo[0] * 10d) / 10d + " " + this.walkingTo[1] + " " + this.walkingTo[2]);
+		
 		this.baseForWalkingSpeed = 1.5 * (((double) getStrength() + (double) getAgility()) / (200 * ((double) getWeight() / 100)));
 	}
 	
 	private void walking(double dt){
-		if (this.canMove() == true){
+		double dx = (this.walkingTo[0] - this.unitPosition[0]);
+		double dy = (this.walkingTo[1] - this.unitPosition[1]);
+		double dz = (this.walkingTo[2] - this.unitPosition[2]);
+		
+		double speed = getSpeed();
+		
+		double distance = Math.sqrt(dx * dx + dy * dy + dz * dz);
+		
+		double vx = speed * (dx / distance);
+		double vy = speed * (dy/ distance);
+		double vz = speed * (dz / distance);
+		
+		//System.out.println(dx + " " + vx*dt);
+		
+		if (!isValidPosition(walkingTo)){
 			this.isWalking = false;
 			//TODO er zit een fout in stop walking. dit kan zijn door de fout bij floating points.
 			return;
 		}
-		double speed = getSpeed();
-		double dx = (this.walkingTo[0] - this.unitPosition[0]);
-		double dy = (this.walkingTo[1] - this.unitPosition[1]);
-		double dz = (this.walkingTo[2] - this.unitPosition[2]);
-		double distance = Math.sqrt(dx * dx + dy * dy + dz * dz);
-		this.unitPosition[0] += speed * ((this.walkingTo[0]- this.unitPosition[0])/ distance) * dt;
-		this.unitPosition[1] += speed * ((this.walkingTo[1]- this.unitPosition[1])/ distance) * dt;
-		this.unitPosition[2] += speed * ((this.walkingTo[2]- this.unitPosition[2])/ distance) * dt;
-		this.updateOrientation();
+		
+		this.unitPosition[0] += vx * dt;
+		this.unitPosition[1] += vy * dt;
+		this.unitPosition[2] += vz * dt;
+		updateOrientation(vx, vy);
+		canMove(dx, dy, dz, vx, vy, vz, dt);
 	}
 	
 	public boolean isTheUnitMoving(){
 		return this.isWalking;
 	}
-	
-	private boolean canMove(){
-		if(this.walkingTo[0] == this.unitPosition[0] && 
-				this.walkingTo[1] == this.unitPosition[1] &&
-				this.walkingTo[2] == this.unitPosition[2]){
-			return true;
+		
+	private void canMove(double dx, double dy, double dz, double vx, double vy, double vz, double dt){
+		if(Math.abs(dx) <= vx * dt && Math.abs(dy) <= vy * dt && Math.abs(dz) <= vz * dt){
+			System.out.println("hier");
+			setUnitPosition(this.walkingTo.clone());
+			this.isWalking = false;
 		}
-		return false;
 	}
 	
-	private void updateOrientation(){
-		//TODO de unit moet kijken waar hij naar toe loopt.
-	}
+	private void updateOrientation(double vx, double vy){
+		this.orientation = ((float) Math.atan2(vy, vx)); 
+		}
 	
 	public double getSpeed(){
 		double speed = this.baseForWalkingSpeed;
@@ -712,6 +715,9 @@ public class Unit {
 	}
 	
 /////////////////////////////////////////////path finding/////////////////////////////////////////////
+	
+	
+	
 	
 /////////////////////////////////////////////actions/////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////
