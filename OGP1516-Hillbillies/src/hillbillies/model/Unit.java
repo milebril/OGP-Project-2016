@@ -43,6 +43,9 @@ public class Unit {
 	private double timeLeftWorking;
 	private double[] walkingTo = {0,0,0};
 	private double baseForWalkingSpeed;
+	private double counterForHitpoints = 0;
+	private double counterForStamina = 0;
+	
 	
 /////////////////////////////////////////////Constructor/////////////////////////////////////////////	
 	
@@ -624,6 +627,8 @@ public class Unit {
 	public void advanceTimeInUnit(double dt){
 		if (this.isResting == true)
 			this.resting(dt);
+		//TODO minstens 1 hp restoren
+		//TODO om de zoveeltijd resten
 		if (this.isWorking == true)
 			this.working(dt);
 		if (this.isWalking)
@@ -882,25 +887,32 @@ public class Unit {
 		stopWorking();
 		
 		if (getHitpoints() < getMaxHitpoints()){
-			restoreHitpoints();
+			restoreHitpoints(dt);
 			return;
 		}else if (this.stamina < getMaxStamina()){
-			restoreStamina();
+			restoreStamina(dt);
 			return;
 		}
 		this.stopResting();
 		return;
 	}
 	
-	private void restoreHitpoints (){		
-		double hitpointsToRestore = 5 * ((double) getToughness() / 200);
-		increaseHitpoints((int) hitpointsToRestore); //double 1.25 int 1
+	private void restoreHitpoints (double dt){	
+		double hitpointsToRestore = 5 * ((double) getToughness() / 200) * dt;
+		counterForHitpoints += hitpointsToRestore;
+		if(counterForHitpoints >= 1) {
+			counterForHitpoints--;
+			increaseHitpoints(1);
+		}
 	}
 	
-	private void restoreStamina (){
-		double staminaToRestore = 5 * ((double) this.toughness / 100);
-		//System.out.println((int) staminaToRestore);
-		increaseStamina((int) staminaToRestore); //double 2.5 int 2
+	private void restoreStamina (double dt){
+		double staminaToRestore = 5 * ((double) this.toughness / 100) * dt;
+		counterForStamina += staminaToRestore;
+		if(counterForStamina >= 1) {
+			counterForStamina--;
+			increaseStamina(1);
+		}
 	}
 
 	public void startResting (){
