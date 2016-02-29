@@ -57,9 +57,8 @@ public class Unit {
 		this.setAgility(agility);
 		this.setName(name);
 		this.setUnitPosition(putUnitInCenter(castIntToDouble(initialPosition)));
-		//TODO hitpoints en stamina worden niet geinitialseerd, dit moet worden nagekeken
-		this.increaseHitpoints(20);
-		this.increaseStamina(10);
+		this.increaseHitpoints(getMaxHitpoints());
+		this.increaseStamina(getMaxStamina());
 		return ;
 	}
 	
@@ -638,6 +637,8 @@ public class Unit {
 	
 /////////////////////////////////////////////movement/////////////////////////////////////////////
 	public void startWalking(int dx, int dy, int dz) {
+		System.out.println("moveing aangeroepen");
+		
 		this.isWalking = true;
 		this.isWorking = false;
 		this.isResting = false;
@@ -646,9 +647,7 @@ public class Unit {
 		this.walkingTo[0] = pos[0] + dx;
 		this.walkingTo[1] = pos[1] + dy;
 		this.walkingTo[2] = pos[2] + dz;
-		
-		System.out.println((double) Math.round(this.walkingTo[0] * 10d) / 10d + " " + this.walkingTo[1] + " " + this.walkingTo[2]);
-		
+				
 		this.baseForWalkingSpeed = 1.5 * (((double) getStrength() + (double) getAgility()) / (200 * ((double) getWeight() / 100)));
 	}
 	
@@ -664,8 +663,6 @@ public class Unit {
 		double vx = speed * (dx / distance);
 		double vy = speed * (dy/ distance);
 		double vz = speed * (dz / distance);
-		
-		//System.out.println(dx + " " + vx*dt);
 		
 		if (!isValidPosition(walkingTo)){
 			this.isWalking = false;
@@ -686,7 +683,6 @@ public class Unit {
 		
 	private void canMove(double dx, double dy, double dz, double vx, double vy, double vz, double dt){
 		if(Math.abs(dx) <= vx * dt && Math.abs(dy) <= vy * dt && Math.abs(dz) <= vz * dt){
-			System.out.println("hier");
 			setUnitPosition(this.walkingTo.clone());
 			this.isWalking = false;
 		}
@@ -721,7 +717,44 @@ public class Unit {
 	
 /////////////////////////////////////////////path finding/////////////////////////////////////////////
 	
-	
+	public void moveTo(int cube[]) {
+		double[] moveTo = castIntToDouble(cube);
+		putUnitInCenter(moveTo);
+		int dx = 0, dy = 0, dz = 0;
+		
+		while (getPosition() != moveTo) {
+			if (getPosition()[0] == moveTo[0]) {
+				System.out.println("hier");
+				dx = 0;
+			} else if (getPosition()[0] < moveTo[0]) {
+				dx = 1;
+			} else {
+				dx = -1;
+			}
+			if (getPosition()[1] == moveTo[1]) {
+				dy = 0;
+			} else if (getPosition()[1] < moveTo[1]) {
+				dy = 1;
+			} else {
+				dy = -1;
+			}
+			if (getPosition()[2] == moveTo[2]) {
+				dz = 0;
+			} else if (getPosition()[2] < moveTo[2]) {
+				dz = 1;
+			} else {
+				dz = -1;
+			}
+			
+			//System.out.println(dx + " " + dy + " " + dz);
+			
+			startWalking(dx, dy, dz);
+		}
+		
+		
+		
+		System.out.println(moveTo[0] +" " + moveTo[1] + " " + moveTo[2]);
+	}
 	
 	
 /////////////////////////////////////////////actions/////////////////////////////////////////////
