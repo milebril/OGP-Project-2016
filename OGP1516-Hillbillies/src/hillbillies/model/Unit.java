@@ -43,6 +43,7 @@ public class Unit {
 	private double counterForStamina = 0;
 	private boolean isPathfinding = false;
 	private int[] pathfindingTo = {0,0,0};
+	private Unit defenderClone;
 	
 	
 /////////////////////////////////////////////Constructor/////////////////////////////////////////////	
@@ -621,6 +622,8 @@ public class Unit {
 	}
 
 /////////////////////////////////////////////advance time/////////////////////////////////////////////
+	private double attTime = 0;
+	
 	public void advanceTimeInUnit(double dt){
 		if (this.isResting == true)
 			this.resting(dt);
@@ -633,7 +636,12 @@ public class Unit {
 		if (this.isPathfinding == true)
 			this.pathfinding(dt);
 		if (this.isAttacking == true) {
+			attTime += dt;
+			updateOrientation(defenderClone);
+			if (attTime >= 1) {
+				attacking(defenderClone);
 			}
+		}
 		//TODO advance time
 	}
 	
@@ -829,11 +837,24 @@ public class Unit {
 //////////////////////////////////////////////////////////////////////////////////////////////////
 	
 /////////////////////////////////////////////Attacking////////////////////////////////////////////
+	
 	public void startAttacking(Unit defender) {
-		stopWorking();
-		stopResting();
-		this.isWalking = false;
-		this.isPathfinding = false;
+		if (targetOnValidPosition(defender)) {
+			stopWorking();
+			stopResting();
+			this.isWalking = false;
+			this.isPathfinding = false;
+			
+			defenderClone = defender;
+			
+			System.out.println(defenderClone.getPosition()[0]);
+			
+			//defenderClone = new Unit(defender.getName(), castDoubleToInt(defender.getPosition()), defender.getWeight(), defender.getAgility(), defender.getStamina(),
+			//		defender.getToughness(), false);
+			//defenderClone.putUnitInCenter(defenderClone.getPosition());
+			
+			this.isAttacking = true;
+		}
 		
 	}
 	
@@ -841,7 +862,6 @@ public class Unit {
 		this.isAttacking = true;
 		defender.isDefending = true;
 		//System.out.println(defender.getPosition()[0] + " " + this.getPosition()[0]);
-		updateOrientation(defender);
 		//enkel units aanvallen die aan adjecent liggen
 		//duurt 1 sec
 		defender.defending(defender);
@@ -858,6 +878,19 @@ public class Unit {
 		} else {
 			takeDamage(defender);
 		}
+	}
+	
+	public boolean targetOnValidPosition(Unit defender) {
+		System.out.println("doe de test");
+		
+		double dx = this.getPosition()[0] - defender.getPosition()[0];
+		double dy = this.getPosition()[1] - defender.getPosition()[1];
+		
+		System.out.println((Math.abs(dx) <= 1 && Math.abs(dy) <= 1));
+		
+		if (Math.abs(dx) <= 1 && Math.abs(dy) <= 1)
+				return true;
+		return false;
 	}
 	
 	public void updateOrientation(Unit defender) {
