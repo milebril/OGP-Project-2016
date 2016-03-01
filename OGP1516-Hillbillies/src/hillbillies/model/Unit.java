@@ -2,10 +2,6 @@ package hillbillies.model;
 
 import be.kuleuven.cs.som.annotate.*;
 import static java.lang.Math.PI;
-
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.Random;
 
 public class Unit {
@@ -663,7 +659,7 @@ public class Unit {
 		double distance = Math.sqrt(dx * dx + dy * dy + dz * dz);
 		
 		double vx = speed * (dx / distance);
-		double vy = speed * (dy/ distance);
+		double vy = speed * (dy / distance);
 		double vz = speed * (dz / distance);
 		
 		if (!isValidPosition(walkingTo)){
@@ -684,7 +680,10 @@ public class Unit {
 		
 	private void canMove(double dx, double dy, double dz, double vx, double vy, double vz, double dt){
 		if(Math.abs(dx) <= Math.abs(vx) * dt && Math.abs(dy) <= Math.abs(vy) * dt && Math.abs(dz) <= Math.abs(vz) * dt){
+			//System.out.print(" " + this.walkingTo[0] + " " + this.walkingTo[1] + " " + this.walkingTo[2] + "\n");
 			setUnitPosition(this.walkingTo.clone());
+			//this.isPathfinding = false;
+			System.out.println("ben hier");
 			this.isWalking = false;
 		}
 	}
@@ -726,15 +725,18 @@ public class Unit {
 		this.pathfindingTo = cube.clone();
 	}
 	
-	private void pathfinding (double dt){
-		if (this.isWalking == true){
+	private void pathfinding (double dt) {
+		if (this.isWalking == true) {
 			return;
-		}
-		else{
-			double[] moveTo = castIntToDouble(pathfindingTo.clone());
+		} else {
+			double[] moveTo = castIntToDouble(pathfindingTo);
 			putUnitInCenter(moveTo);
 			int dx = 0, dy = 0, dz = 0;
-			if (getPosition() == moveTo ){
+			System.out.print(" " + moveTo[0] + " " + moveTo[1] + " " + moveTo[2] + "\n");
+			System.out.print(" " + getPosition()[0] + " " +  getPosition()[1] + " " +  getPosition()[2] + "\n");
+			
+			if (getPosition()[0] == moveTo[0] && getPosition()[1] == moveTo[1] && getPosition()[2] == moveTo[2]){
+				System.out.println("kaka");
 				this.isPathfinding = false;
 				return;
 			}
@@ -764,9 +766,6 @@ public class Unit {
 			}
 			
 			startWalking(dx, dy, dz);
-			System.out.print(this.unitPosition[0]);
-			System.out.print(this.unitPosition[1]);
-			System.out.print(this.unitPosition[2]);
 			}
 	}
 /////////////////////////////////////////////actions/////////////////////////////////////////////
