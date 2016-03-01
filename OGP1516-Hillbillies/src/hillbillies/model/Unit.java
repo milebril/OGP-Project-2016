@@ -632,6 +632,8 @@ public class Unit {
 			this.walking(dt);
 		if (this.isPathfinding == true)
 			this.pathfinding(dt);
+		if (this.isAttacking == true) {
+			}
 		//TODO advance time
 	}
 	
@@ -827,21 +829,34 @@ public class Unit {
 //////////////////////////////////////////////////////////////////////////////////////////////////
 	
 /////////////////////////////////////////////Attacking////////////////////////////////////////////
+	public void startAttacking(Unit defender) {
+		stopWorking();
+		stopResting();
+		this.isWalking = false;
+		this.isPathfinding = false;
+		
+	}
+	
 	public void attacking(Unit defender) {
-		System.out.println(defender.getPosition()[0] + " " + this.getPosition()[0]);
+		this.isAttacking = true;
+		defender.isDefending = true;
+		//System.out.println(defender.getPosition()[0] + " " + this.getPosition()[0]);
 		updateOrientation(defender);
 		//enkel units aanvallen die aan adjecent liggen
 		//duurt 1 sec
+		defender.defending(defender);
+		stopAttacking();
 	}
 	
 	public void defending(Unit defender) {
 		//dodging
+		System.out.println("ik beign" + defender.getPosition()[0]);
 		if (succesfullDodge(defender)) {
 			dodgethis(defender);
 		} else if (succesfullBlock(defender)) {
 			blockthis(defender);
 		} else {
-			//TODO decrease hitpoints
+			takeDamage(defender);
 		}
 	}
 	
@@ -851,15 +866,23 @@ public class Unit {
 		defender.orientation = (float) Math.atan2(this.getPosition()[1] - defender.getPosition()[1],
 				this.getPosition()[0] - defender.getPosition()[0]);
 	}
-
+	
+	public boolean isAttacking() {
+		return this.isAttacking;
+	}
+	
+	public void stopAttacking() {
+		this.isAttacking = false;
+	}
 /////////////////////////////////////////////dodging/////////////////////////////////////////////
 	public double dodgeChance(Unit defender) {
 		return 0.2 * ((double) defender.getAgility()/(double) this.getAgility());
 	}
 	
-	public boolean succesfullDodge(Unit this, Unit defender) {
+	public boolean succesfullDodge(Unit defender) {
 		Random random = new Random();
 		int chance = random.nextInt(99);
+		System.out.println(chance);
 		if (chance < 100 * dodgeChance(defender)) 
 			return true;
 		else
@@ -871,11 +894,14 @@ public class Unit {
 		double newX = rand.nextInt(2) - 1;
 		double newY = rand.nextInt(2) - 1;
 		
-		double[] newPos = getPosition();
+		System.out.println(newX + " " + newY );
+		
+		double[] newPos = getPosition().clone();
 		newPos[0] += newX;
 		newPos[1] += newY;
 		
-		if(isValidPosition(newPos) && (newPos != getPosition())) {
+		if(isValidPosition(newPos) && (newPos[0] != getPosition()[0] && newPos[1] != getPosition()[1])) {
+			System.out.println("in de check");
 			this.setUnitPosition(newPos);
 		} else {
 			moveToRandomAdjecant();
@@ -883,32 +909,35 @@ public class Unit {
 		
 	}
 	
-	public void dodgethis(Unit this, Unit defender) {
+	public void dodgethis(Unit defender) {
+			System.out.println("dodge!");
 			moveToRandomAdjecant();
 	}
 	
 /////////////////////////////////////////////blocking/////////////////////////////////////////////
-	public double blockChance(Unit this, Unit defender) {
+	public double blockChance(Unit defender) {
 		return 0.25 * ((defender.getStrength() + defender.getStamina()) / (this.getStrength() + this.getStamina()));
 	}
 	
 	public boolean succesfullBlock(Unit defender) {
 		Random random = new Random();
 		int chance = random.nextInt(99);
-		if (chance < blockChance(defender)) 
+		System.out.println(chance);
+		if (chance < 100 * blockChance(defender)) 
 			return true;
 		else
 			return false;
 	}
 	
 	public void blockthis(Unit defender){
+		System.out.println("block");
 		if (succesfullBlock(defender)) {
-			//incaseer geen dmg
+			stopAttacking();
 		}
 	}
 /////////////////////////////////////////////taking damage/////////////////////////////////////////////
-	public void takeDamage(Unit this, Unit defender) {
-		this.decreaseHitpoints((int) Math.round((double) this.stamina / 10));
+	public void takeDamage(Unit defender) {
+		defender.decreaseHitpoints((int) Math.round((double) this.stamina / 10));
 	}
 /////////////////////////////////////////////updating orientation/////////////////////////////////////////////
 	
