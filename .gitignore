@@ -216,6 +216,4 @@ pip-log.txt
 .mr.developer.cfg
 
 #Java
-.class
-*.class
 *.class
