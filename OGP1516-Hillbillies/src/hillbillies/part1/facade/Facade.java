@@ -466,7 +466,8 @@ public class Facade implements IFacade{
 	 */
 	@Override
 	public void fight(Unit attacker, Unit defender) throws ModelException {
-		// TODO Auto-generated method stub
+		System.out.println("hier");
+		attacker.attacking(defender);
 		
 	}
 
@@ -482,8 +483,9 @@ public class Facade implements IFacade{
 	 */
 	@Override
 	public boolean isAttacking(Unit unit) throws ModelException {
+		System.out.println("niet hier");
 		// TODO Auto-generated method stub
-		return false;
+		return true;
 	}
 
 	/* Resting */

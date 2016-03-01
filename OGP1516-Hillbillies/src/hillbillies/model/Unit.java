@@ -826,29 +826,41 @@ public class Unit {
 /////////////////////////////////////////////Fighting/////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////
 	
-/////////////////////////////////////////////Attacking/////////////////////////////////////////////
-	public void attacking() {
+/////////////////////////////////////////////Attacking////////////////////////////////////////////
+	public void attacking(Unit defender) {
+		System.out.println(defender.getPosition()[0] + " " + this.getPosition()[0]);
+		updateOrientation(defender);
 		//enkel units aanvallen die aan adjecent liggen
 		//duurt 1 sec
 	}
 	
-	public void defending() {
+	public void defending(Unit defender) {
 		//dodging
-		
-		//dan blocking
-		
-		//anders take dmg
+		if (succesfullDodge(defender)) {
+			dodgethis(defender);
+		} else if (succesfullBlock(defender)) {
+			blockthis(defender);
+		} else {
+			//TODO decrease hitpoints
+		}
+	}
+	
+	public void updateOrientation(Unit defender) {
+		this.orientation = (float) Math.atan2(defender.getPosition()[1] - this.getPosition()[1],
+				defender.getPosition()[0] - this.getPosition()[0]);
+		defender.orientation = (float) Math.atan2(this.getPosition()[1] - defender.getPosition()[1],
+				this.getPosition()[0] - defender.getPosition()[0]);
 	}
 
 /////////////////////////////////////////////dodging/////////////////////////////////////////////
-	public double dodgeChance(Unit attacker, Unit defender) {
-		return 0.2 * (defender.getAgility()/attacker.getAgility());
+	public double dodgeChance(Unit defender) {
+		return 0.2 * ((double) defender.getAgility()/(double) this.getAgility());
 	}
 	
-	public boolean succesfullDodge(Unit attacker, Unit defender) {
+	public boolean succesfullDodge(Unit this, Unit defender) {
 		Random random = new Random();
-		int chance = random.nextInt((int) (dodgeChance(attacker, defender) * 100) - 1);
-		if (chance == 0) 
+		int chance = random.nextInt(99);
+		if (chance < 100 * dodgeChance(defender)) 
 			return true;
 		else
 			return false;
@@ -871,33 +883,33 @@ public class Unit {
 		
 	}
 	
-	public void dodgeAttacker(Unit attacker, Unit defender) {
-		if (succesfullDodge(attacker, defender)) {
+	public void dodgethis(Unit this, Unit defender) {
 			moveToRandomAdjecant();
-		} 
 	}
 	
 /////////////////////////////////////////////blocking/////////////////////////////////////////////
-	public double blockChance(Unit attacker, Unit defender) {
-		return 0.25 * ((defender.getStrength() + defender.getStamina()) / (attacker.getStrength() + attacker.getStamina()));
+	public double blockChance(Unit this, Unit defender) {
+		return 0.25 * ((defender.getStrength() + defender.getStamina()) / (this.getStrength() + this.getStamina()));
 	}
 	
-	public boolean succesfullBlock(Unit attacker, Unit defender) {
+	public boolean succesfullBlock(Unit defender) {
 		Random random = new Random();
-		int chance = random.nextInt((int) (blockChance(attacker, defender) * 100) - 1);
-		if (chance == 0) 
+		int chance = random.nextInt(99);
+		if (chance < blockChance(defender)) 
 			return true;
 		else
 			return false;
 	}
 	
-	public void blockAttacker(Unit attacker, Unit defender){
-		if (succesfullBlock(attacker, defender)) {
+	public void blockthis(Unit defender){
+		if (succesfullBlock(defender)) {
 			//incaseer geen dmg
 		}
 	}
 /////////////////////////////////////////////taking damage/////////////////////////////////////////////
-	
+	public void takeDamage(Unit this, Unit defender) {
+		this.decreaseHitpoints((int) Math.round((double) this.stamina / 10));
+	}
 /////////////////////////////////////////////updating orientation/////////////////////////////////////////////
 	
 //////////////////////////////////////////////////////////////////////////////////////////////////
