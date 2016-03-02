@@ -41,6 +41,7 @@ public class Unit {
 	private double baseForWalkingSpeed;
 	private double counterForHitpoints = 0;
 	private double counterForStamina = 0;
+	private double counterForRunning = 0;
 	private boolean isPathfinding = false;
 	private int[] pathfindingTo = {0,0,0};
 	private Unit defenderClone;
@@ -629,20 +630,23 @@ public class Unit {
 			this.resting(dt);
 		//TODO minstens 1 hp restoren
 		//TODO om de zoveeltijd resten
-		if (this.isWorking == true)
+		else if (this.isWorking == true)
 			this.working(dt);
-		if (this.isWalking == true)
+		else if (this.isWalking == true)
 			this.walking(dt);
-		if (this.isPathfinding == true)
+		else if (this.isPathfinding == true)
 			this.pathfinding(dt);
-		if (this.isAttacking == true) {
+		else if (this.isAttacking == true) {
 			attTime += dt;
 			updateOrientation(defenderClone);
 			if (attTime >= 1) {
 				attacking(defenderClone);
+				attTime = 0;
 			}
 		}
-		//TODO advance time
+		else if(defaultBehaviour == true){
+			this.defaultBehaviour(dt);
+		}
 	}
 	
 /////////////////////////////////////////////movement/////////////////////////////////////////////
@@ -675,6 +679,14 @@ public class Unit {
 		if (!isValidPosition(walkingTo)){
 			this.isWalking = false;
 			return;
+		}
+		if (this.isSprinting == true){
+			counterForRunning += dt;
+			if (counterForRunning >= 0.1){
+				int value = (int) (counterForRunning / 0.1);
+				this.decreaseStamina(value);
+				counterForRunning = counterForRunning - (0.1 *value);
+			}
 		}
 		
 		this.unitPosition[0] += vx * dt;
@@ -866,6 +878,7 @@ public class Unit {
 		//duurt 1 sec
 		defender.defending(defender);
 		stopAttacking();
+		defender.isDefending = false;
 	}
 	
 	public void defending(Unit defender) {
@@ -1019,8 +1032,9 @@ public class Unit {
 		double hitpointsToRestore = 5 * ((double) getToughness() / 200) * dt;
 		counterForHitpoints += hitpointsToRestore;
 		if(counterForHitpoints >= 1) {
-			counterForHitpoints--;
-			increaseHitpoints(1);
+			int value = (int)counterForHitpoints;
+			counterForHitpoints -= value;
+			increaseHitpoints(value);
 		}
 	}
 	
@@ -1028,8 +1042,9 @@ public class Unit {
 		double staminaToRestore = 5 * ((double) this.toughness / 100) * dt;
 		counterForStamina += staminaToRestore;
 		if(counterForStamina >= 1) {
-			counterForStamina--;
-			increaseStamina(1);
+			int value = (int)counterForStamina;
+			counterForStamina -= value;
+			increaseStamina(value);
 		}
 	}
 
@@ -1045,6 +1060,34 @@ public class Unit {
 	
 /////////////////////////////////////////////default behavior/////////////////////////////////////////////
 
+	public boolean isDefaultBehaviourOn(){
+		return this.defaultBehaviour;
+	}
+	
+	public void setDefaultBehaviour(boolean value){
+		this.defaultBehaviour = value;
+	}
+	
+	private void defaultBehaviour(double dt){
+		Random random = new Random();
+		int ActionChance = random.nextInt(3);
+		if(ActionChance == 1){
+			int[] cube = {0,0,0};
+			cube[0] = random.nextInt(50);
+			cube[1] = random.nextInt(50);
+			cube[2] = random.nextInt(50);
+			int SprintChance = random.nextInt(2);
+			if (SprintChance == 1)
+				this.startSprinting();
+			this.startPathfinding(cube);
+		}
+		else if(ActionChance == 2){
+			this.startWorking();
+		}
+		else if(ActionChance == 3){
+			this.startResting();
+		}
+	}
 //////////////////////////////////////////////////////////////////////////////////////////////////
 }
 
