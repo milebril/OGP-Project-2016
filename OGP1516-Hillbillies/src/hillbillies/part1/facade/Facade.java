@@ -156,7 +156,7 @@ public class Facade implements IFacade{
 	 */
 	@Override
 	public void setStrength(Unit unit, int newValue) throws ModelException {
-		unit.setStrenght(newValue);
+		unit.setStrength(newValue);
 	}
 
 	/**

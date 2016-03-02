@@ -51,7 +51,7 @@ public class Unit {
 	public Unit (String name, int[] initialPosition, int weight, int agility, int strength, int toughness,
 			boolean enableDefaultBehavior) {
 		this.setWeight(weight);
-		this.setStrenght(strength);
+		this.setStrength(strength);
 		this.setToughness(toughness);
 		this.setAgility(agility);
 		this.setName(name);
@@ -162,7 +162,7 @@ public class Unit {
 	 *       |   then new.getStrength() == strength
 	 */
 	@Raw
-	public void setStrenght(int strenght) {
+	public void setStrength(int strenght) {
 		if (isValidStrength(strenght))
 			this.strength = strenght;
 	}
@@ -304,7 +304,9 @@ public class Unit {
 	 *		| if (!(Character.isLetter(c) || Character.isSpaceChar(c) || c == 34 || c == 44 )) Then return false
 	 *		|		else return true
 	 */
-	public static boolean StringDoesContainOnlyValidCharacters(String name){
+	private static boolean StringDoesContainOnlyValidCharacters(String name){
+		if (Character.isLowerCase(name.charAt(0)))
+			return false;
 		for (int i = 0; i < name.length(); i++) {
 			char c = name.charAt(i);
 			if (!(Character.isLetter(c) || Character.isSpaceChar(c) || c == '\"' || c == '\'' )) {
@@ -515,10 +517,10 @@ public class Unit {
 	 */
 	public void increaseHitpoints(int hitpoints) {
 		assert isValidHitpoints(hitpoints);
-		if (this.hitpoints + hitpoints > getMaxHitpoints())
-			this.hitpoints = getMaxHitpoints();
+		if (getHitpoints() + hitpoints > getMaxHitpoints())
+			setHitpoints(getMaxHitpoints());
 		else 
-			this.hitpoints = this.hitpoints + hitpoints;
+			setHitpoints(getHitpoints() + hitpoints);
 	}
 	
 	/**
@@ -536,9 +538,9 @@ public class Unit {
 	public void decreaseHitpoints(int hitpoints) {
 		assert isValidHitpoints(hitpoints);
 		if (hitpoints > getHitpoints()) 
-			this.hitpoints = 0;
+			setHitpoints(0);
 		else
-			this.hitpoints = this.hitpoints - hitpoints;
+			setHitpoints(getHitpoints() - hitpoints);
 		
 	}
 	
@@ -566,6 +568,10 @@ public class Unit {
 	 */
 	public int getMaxStamina() {
 		return (int) (200 * ((double) this.weight/100) * ((double) this.toughness/100));
+	}
+	
+	public void setStamina(int stamina) {
+		this.stamina = stamina;
 	}
 
 	/**
@@ -595,7 +601,7 @@ public class Unit {
 	 */
 	public void increaseStamina(int stamina) {
 		assert isValidStamina(stamina);
-		if (stamina > getMaxStamina())
+		if (getStamina() + stamina >= getMaxStamina())
 			this.stamina = getMaxStamina();
 		else 
 			this.stamina = this.stamina + stamina;
@@ -615,7 +621,7 @@ public class Unit {
 	 */
 	public void decreaseStamina(int amount) {
 		assert amount > 0;
-		if (amount > getMaxStamina()) 
+		if (amount > getStamina()) 
 			this.stamina = 0;
 		else
 			this.stamina = this.stamina - amount;
