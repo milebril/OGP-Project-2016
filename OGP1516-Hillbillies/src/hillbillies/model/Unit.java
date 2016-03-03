@@ -3,7 +3,15 @@ package hillbillies.model;
 import be.kuleuven.cs.som.annotate.*;
 import static java.lang.Math.PI;
 import java.util.Random;
-
+/**
+ * A class that deals with a unit and all the actions that they can complete 
+ * in the given game world.
+ * 
+ * @version 2.0
+ * @author Emil Peeters
+ * @author Sjaan Vandebeek
+ *
+ */
 public class Unit {
 	
 	public final static int MIN_VALUE_STRENGTH = 1;
@@ -47,8 +55,86 @@ public class Unit {
 	private Unit defenderClone;
 	
 	
-/////////////////////////////////////////////Constructor/////////////////////////////////////////////	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
+	/**
+	 * initialize this new unit with the given name, position, weight, agility,
+	 * strength, toughness and default behavior.
+	 * 
+	 * @param name
+	 * 		  The Name for this new unit.
+	 * @param initialPosition
+	 * 		  The position for this new unit.
+	 * @param weight
+	 * 		  The weight for this new unit.
+	 * @param agility
+	 * 		  The agility for this new unit.
+	 * @param strength
+	 * 		  The strength for this new unit.
+	 * @param toughness
+	 * 	      The toughness for this new unit.
+	 * @param enableDefaultBehavior
+	 * 		  The default behavior for this new unit.
+	 * @throws illegalNameException
+	 * 
+	 * @throws illegalPositionException
+	 * 
+	 * 
+	 * @post The lowest possible value for weight is MIN_VALUE_WEIGHT
+	 * 		|new.getMinWeigth() >= 
+	 * @post The highest possible value for weight is MAX_VALUE_WEIGHT
+	 *      |new.getMaxWeigth() <=
+	 * @post If the given weight is in range getMinWeight() ... getMaxWeight()
+	 * 		 the weight of the new unit is equal to the given weight.
+	 * 		 If the given weight is smaller as getMinWeight() then the new
+	 * 		 weight is equal to getMinWeight(). If the given weight is larger as
+	 * 		 getMaxWeight() the weight of the new unit is equal to getMaxWeight().
+	 * 		|
+	 * 
+	 * @post The lowest possible value for agility is MIN_VALUE_AGILITY
+	 * 		|new.getMinAgility() >=
+	 * @post The highest possible value for agility is MAX_VALUE_AGILITY
+	 * 		|new.getMaxAgility() <= 
+	 * @post If the given agility is in range getMinAgility() ... getMaxAgility()
+	 * 		 the agility of the new unit is equal to the given agility.
+	 * 		 If the given agility is smaller as getMinAgility() then the new
+	 * 		 agility is equal to getMinAgility(). If the given agility is larger as
+	 * 		 getMaxAgility() the agility of the new unit is equal to getMaxAgility().
+	 * 		|
+	 * 
+	 * @post The lowest possible value for strength is MIN_VALUE_STRENGHT
+	 * 		|new.getMinStrength() >=
+	 * @post The highest possible value for strength is MAX_VALUE_STRENGTH
+	 * 		|new.getMaxStrength() <=
+	 * @post If the given strength is in range getMinStrength() ... getMaxStrength()
+	 * 		 the Strength of the new unit is equal to the given Strength.
+	 * 		 If the given Strength is smaller as getMinStrength() then the new
+	 * 		 strength is equal to getMinStrength(). If the given strength is larger as
+	 * 		 getMaxStrength() the weight of the new unit is equal to getMaxStrength().
+	 * 		 |
+	 * 
+	 * @post If the given weight is in range getMinWeight() ... getMaxWeight()
+	 * 		 the weight of the new unit is equal to the given weight.
+	 * 		 If the given weight is smaller as getMinWeight() then the new
+	 * 		 weight is equal to getMinWeight(). If the given weight is larger as
+	 * 		 getMaxWeight() the weight of the new unit is equal to getMaxWeight().
+	 * @post The lowest possible value for toughness is MIN_VALUE_TOUGHNESS
+	 * 		|new.getMinToughness() >= 
+	 * @post The highest possible value for toughness is MAX_VALUE_TOUGHNESS
+	 * 		|new.getMaxStrength() <= 
+	 * @post The value for getMaxHitpoints() is 
+	 * 		|new.getMaxHitpoints() =
+	 * @post The hitpoints of the new unit must be equal to getMaxHitpoints()
+	 * 		|new.hitpoints = getMaxHitpoints
+	 * @post The value for getMaxStamina() is
+	 * 		|new.getMaxStamina() =
+	 * @post the stamina of the new unit must be equal to getMaxStamina()
+	 * 		|new.Stamina = getMaxStamina()
+	 * @throws illegalStateException
+	 * 
+	 */
 	public Unit (String name, int[] initialPosition, int weight, int agility, int strength, int toughness,
 			boolean enableDefaultBehavior) {
 		this.setWeight(weight);
@@ -59,6 +145,7 @@ public class Unit {
 		this.setUnitPosition(putUnitInCenter(castIntToDouble(initialPosition)));
 		this.increaseHitpoints(getMaxHitpoints());
 		this.increaseStamina(getMaxStamina());
+		this.setDefaultBehaviour(enableDefaultBehavior);
 		return ;
 	}
 	
