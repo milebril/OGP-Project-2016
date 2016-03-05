@@ -1,12 +1,13 @@
 package hillbillies.model;
 
 import be.kuleuven.cs.som.annotate.*;
+import ogp.framework.util.ModelException;
 
 /**
  * A class for signaling illegal names for units 
  *
  */
-public class IllegalNameException extends RuntimeException{
+public class IllegalNameException extends ModelException{
 	/**
 	 * Var registering the string involved in this illegal name exception
 	 */
