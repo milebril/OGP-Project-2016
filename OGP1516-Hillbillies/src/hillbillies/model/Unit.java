@@ -2,9 +2,8 @@ package hillbillies.model;
 
 import be.kuleuven.cs.som.annotate.*;
 import static java.lang.Math.PI;
-
-import java.util.Arrays;
 import java.util.Random;
+
 /**
  * A class that deals with a unit and all the actions that they can complete 
  * in the given game world.
@@ -27,9 +26,6 @@ public class Unit {
 	public final static int MIN_VALUE_COORDINATE_GAMEWORLD = 0;
 	public final static int MAX_VALUE_COORDINATE_GAMEWORLD = 49;
 	
-	/*
-	 * Variable registering the property_name_Eng of this object_name.
-	 */
 	private int weight;
 	private int strength;
 	private int agility;
@@ -57,6 +53,14 @@ public class Unit {
 	private Unit defenderClone;
 	private double unitLifetimeInSeconds = 0;
 	
+	// TODO class invarianten???? wat moet daar mee gebeuren. nu staan ze bij ieder onderdeel, moeten die in de comentaar van de constructor?
+	// TODO ik zou de globale variabel bij ieder deel zetten en daar comentaar bij voorzien. wat denkt gij??????
+	/*
+	 * Variable registering the property_name_Eng of this object_name.
+	 */
+	//TODO moet deze comentaar bij ieder variabele 
+	
+	//TODO wat moet er met die @tags gebeuren????????????????/
 	/*constructor*/
 	
 	/**
@@ -169,8 +173,7 @@ public class Unit {
 	 * 
 	 */
 	public Unit (String name, int[] initialPosition, int weight, int agility, int strength, int toughness,
-<<<<<<< HEAD
-			boolean enableDefaultBehavior) {
+			boolean enableDefaultBehavior) throws IllegalNameException, IllegalArgumentException {
 		/* Weight */
 		// TODO dit kan veel efficienter.
 		if (weight > 100)
@@ -185,35 +188,46 @@ public class Unit {
 			}
 		/* Strength */
 		//TODO elif structuur is 2 vergelijkingen minder
-		if (strength < 25){
+		if (strength < 25)
 			this.setStrength(25);
-		}
-		if (strength > 100);{
+		if (strength > 100);
 			this.setStrength(100);
-		}
-		if (strength <= 100 && strength >= 25){
+		if (strength <= 100 && strength >= 25)
 			this.setStrength(strength);
-			}
+			
 		/* Toughness */
-=======
-			boolean enableDefaultBehavior) throws IllegalNameException {
-		this.setWeight(weight);
-		this.setStrength(strength);
->>>>>>> origin/master
-		this.setToughness(toughness);
+		if (toughness < 25)
+			this.setToughness(25);
+		if (toughness > 100);
+			this.setToughness(100);
+		if (toughness <= 100 && toughness >= 25)
+			this.setToughness(toughness);
+		
 		/* Agility */
-		this.setAgility(agility);
+		if (agility < 25)
+			this.setAgility(25);
+		if (agility > 100);
+			this.setAgility(100);
+		if (agility <= 100 && agility >= 25)
+			this.setAgility(agility);
+		
 		/* Name */
-		this.setName(name);
+		if (! isValidName(name)) 
+			throw new IllegalNameException(name);
+		else this.setName(name);
+		
 		/* Position */
-		this.setUnitPosition(putUnitInCenter(castIntToDouble(initialPosition)));
+		//TODO exceptions nakijken.
+		double[] position = putUnitInCenter(castIntToDouble(initialPosition));
+		if (! isValidPosition(position)) throw new IllegalArgumentException();
+		this.setUnitPosition(position);
 		/* Hitpoints */
 		this.increaseHitpoints(getMaxHitpoints());
 		/* Stamina */
 		this.increaseStamina(getMaxStamina());
 		/* Default Behavior */
-		this.setDefaultBehaviour(enableDefaultBehavior);
-		//TODO behavior
+		this.setDefaultBehavior(enableDefaultBehavior);
+
 		return ;
 	}
 		
@@ -229,14 +243,12 @@ public class Unit {
 		}
 		return initialPosistion;
 	}
-	
-	
-/////////////////////////////////////////////weight/////////////////////////////////////////////
+		
 	/* weight*/
 	/**
 	 * @invar  The weight of each unit must be a valid weight for any
 	 *         unit.
-	 *       | isValidWeigth(weight())
+	 *       | isValidWeigth(getWeight())
 	 */
 	
 	/**
@@ -258,8 +270,8 @@ public class Unit {
 	 *       |if weight <= 1 || weight => 200 Then return == true
 	 *       |		Else return == false
 	*/
-	public static boolean isValidWeight(int weight) {
-		if( getMinWeight() <= weight && weight <= getMaxWeight())
+	public boolean isValidWeight(int weight) {
+		if( this.getMinWeight() <= weight && weight <= getMaxWeight())
 			return true;
 		return false;
 	}
@@ -271,22 +283,24 @@ public class Unit {
 	 *         The new weight for this Unit.
 	 * @post   If the given weight is a valid weight for this Unit,
 	 *         the weight of this new Unit is equal to the given
-	 *         weight.
+	 *         weight. If the given weight is not a valid weight then 
+	 *         set the weight for the unit equal to the minimum weight.
 	 *       | if (isValidWeight(weight))
 	 *       |   Then new.getWeight() == weight
+	 *       | else new.getWeight == new.getMinWeight()
 	 */
 	@Raw
 	public void setWeight(int weight) {
-		//TODO niet totaal geprogrameerd
 		if (isValidWeight(weight))
 			this.weight = weight;
+		else this.weight = getMinWeight();
 	}
 	
 	/**
 	 * Return the lowest weight for all units
 	 */
-	private static int getMinWeight(){
-		return 25;
+	private int getMinWeight(){
+		return (int)((double) this.strength * (double) this.agility / 2);
 	}
 	
 	/**
@@ -301,7 +315,7 @@ public class Unit {
 	/**
 	 * @invar  The strength of each unit must be a valid strength for any
 	 *         unit.
-	 *       | isValidStrength(strength())
+	 *       | isValidStrength(getStrength())
 	 */
 	 
 	/**
@@ -336,37 +350,38 @@ public class Unit {
 	 *         The new strength for this unit.
 	 * @post   If the given strength is a valid strength for any unit,
 	 *         the strength of this new unit is equal to the given
-	 *         strength.
+	 *         strength. if the given strength is not a valid strength set 
+	 *         the strength to the minimum strength.
 	 *       | if (isValidStrength(strength))
 	 *       |   then new.getStrength() == strength
+	 *       | else new.getstrength() == getMinStrength()
 	 */
 	@Raw
 	public void setStrength(int strenght) {
 		if (isValidStrength(strenght))
 			this.strength = strenght;
-		//TODO niet totaal geprogrameerd
+		else this.strength = getMinStrength();
 	}
 	
 	/**
 	 * Return the lowest strength for all units
 	 */
 	private static int getMinStrength(){
-		return 25;
+		return 1;
 	}
 	
 	/**
 	 * Return the highest strength for all units
 	 */
 	private static int getMaxStrength(){
-		return 100;
+		return 200;
 	}
 		
-/////////////////////////////////////////////agility/////////////////////////////////////////////
-	
+	/* Agility */
 	/**
 	 * @invar The agility of each unit must be a valid agility for any
 	 *         unit.
-	 *       | isValidStrength(strength())
+	 *       | isValidAgility(getAgility())
 	 */
 	
 	/**
@@ -388,7 +403,7 @@ public class Unit {
 	 *       |		Else return == false
 	*/
 	public static boolean isValidAgility(int agility) {
-		if( agility <= MAX_VALUE_AGILITY && agility >= MIN_VALUE_AGILITY)
+		if( agility >= getMinAgility() && agility <= getMaxAgility())
 			return true;
 		return false;
 	}
@@ -400,7 +415,8 @@ public class Unit {
 	 *         The new agility for this unit.
 	 * @post   If the given agility is a valid agility for any unit,
 	 *         the agility of this new unit is equal to the given
-	 *         agility.
+	 *         agility. if the given agility is not a valid agility set 
+	 *         the agility to the minimum agility.
 	 *       | if (isValidAgility(agility))
 	 *       |   then new.getagility() == agility
 	 */
@@ -408,15 +424,28 @@ public class Unit {
 	public void setAgility(int agility) {
 		if (isValidAgility(agility))
 			this.agility = agility;
-		// else
+		else this.agility = getMinAgility();
 	}
 	
-/////////////////////////////////////////////toughness/////////////////////////////////////////////	
+	/**
+	 * Return the lowest agility for all units
+	 */
+	private static int getMinAgility(){
+		return 1;
+	}
 	
+	/**
+	 * Return the highest agility for all units
+	 */
+	private static int getMaxAgility(){
+		return 200;
+	}
+	
+	/* Toughness */
 	/**
 	 * @invar  The toughness of each unit must be a valid toughness for any
 	 *         unit.
-	 *       | isValidToughness(toughness())
+	 *       | isValidToughness(getToughness())
 	 */
 	
 	/**
@@ -438,7 +467,7 @@ public class Unit {
 	 *       |		Else return == false
 	*/
 	public static boolean isValidToughness(int toughness) {
-		if( toughness <= MAX_VALUE_TOUGHNESS && toughness >= MIN_VALUE_TOUGHNESS)
+		if( toughness <= getMaxToughness() && toughness >= getMinToughness())
 			return true;
 		return false;
 	}
@@ -450,7 +479,8 @@ public class Unit {
 	 *         The new toughness for this unit.
 	 * @post   If the given toughness is a valid toughness for any unit,
 	 *         the toughness of this new unit is equal to the given
-	 *         toughness.
+	 *         toughness.  if the given toughness is not a valid toughness set 
+	 *         the toughness to the minimum toughness.
 	 *       | if (isValidToughness(toughness))
 	 *       |   then new.getToughness() == toughness
 	 */
@@ -458,11 +488,29 @@ public class Unit {
 	public void setToughness(int toughness) {
 		if (isValidToughness(toughness))
 			this.toughness = toughness;
-		// else
+		else this.toughness = getMinToughness();
 	}
 	
-/////////////////////////////////////////////name/////////////////////////////////////////////
-
+	/**
+	 * Return the lowest toughness for all units
+	 */
+	private static int getMinToughness(){
+		return 1;
+	}
+	
+	/**
+	 * Return the highest toughness for all units
+	 */
+	private static int getMaxToughness(){
+		return 200;
+	}
+	
+	/* Name */
+	/**
+	 * @invar  The name of each unit must be a valid name for any
+	 *         unit.
+	 *       | isValidName(getName())
+	 */
 	
 	/**
 	 * Return the name of this unit.
@@ -482,7 +530,7 @@ public class Unit {
 	 *       |if is validName is true then return true
 	 *       |else return false
 	*/
-	public static boolean isValidName(String name) {
+	private static boolean isValidName(String name) {
 		if (name.length() < 2 || StringDoesContainOnlyValidCharacters(name) == false)
 			return false;
 		return true;
@@ -527,12 +575,17 @@ public class Unit {
 	public void setName(String name) throws IllegalNameException {
 		if (!isValidName(name))
 			throw new IllegalNameException(name);
-		
 		this.name = name;
 	}
 	
-/////////////////////////////////////////////position in doubles/////////////////////////////////////////////
-		
+/////////////////////////////////////////////position/////////////////////////////////////////////
+
+	/**
+	 * @invar  The position of each unit must be a valid position for any
+	 *         unit.
+	 *       | isValidPosition(getPosition())
+	 */
+	
 	/**
 	 * Return the Position of this Unit.
 	 */
@@ -849,7 +902,7 @@ public class Unit {
 			}
 		}
 		else if(defaultBehaviour == true){
-			this.defaultBehaviour(dt);
+			this.defaultBehavior(dt);
 		} else if ((Math.round(unitLifetimeInSeconds) % 20) == 0 && unitLifetimeInSeconds > 1 && canRest()) {
 			System.out.println("resting");
 			startResting();
@@ -1267,15 +1320,15 @@ public class Unit {
 	
 /////////////////////////////////////////////default behavior/////////////////////////////////////////////
 
-	public boolean isDefaultBehaviourOn(){
+	public boolean isDefaultBehaviorOn(){
 		return this.defaultBehaviour;
 	}
 	
-	public void setDefaultBehaviour(boolean value){
+	public void setDefaultBehavior(boolean value){
 		this.defaultBehaviour = value;
 	}
 	
-	private void defaultBehaviour(double dt){
+	private void defaultBehavior(double dt){
 		Random random = new Random();
 		int ActionChance = random.nextInt(3);
 		if(ActionChance == 1){
