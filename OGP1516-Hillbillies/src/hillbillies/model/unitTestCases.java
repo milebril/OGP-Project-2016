@@ -10,7 +10,7 @@ public class unitTestCases {
 	public Unit testunit, testunit2;
 	
 	@Before
-	public void setUp() {
+	public void setUp() throws IllegalNameException {
 		int[] pos = {0,0,0};
 		testunit = new Unit("Emil", pos, 50, 50, 50, 50, false);
 		testunit.putUnitInCenter(testunit.castIntToDouble(pos));
@@ -34,7 +34,7 @@ public class unitTestCases {
 	}
 	
 	@Test
-	public void setName_LegalCase() {
+	public void setName_LegalCase() throws IllegalNameException {
 		testunit.setName("Emil O'trol");
 		assertEquals("Emil O'trol", testunit.getName());
 	}

@@ -77,7 +77,7 @@ public class Unit {
 	 * 	      The toughness for this new unit.
 	 * @param enableDefaultBehavior
 	 * 		  The default behavior for this new unit.
-	 * @throws illegalNameException
+	 * @throws IllegalNameException 
 	 * 
 	 * @throws illegalPositionException
 	 * 
@@ -136,7 +136,7 @@ public class Unit {
 	 * 
 	 */
 	public Unit (String name, int[] initialPosition, int weight, int agility, int strength, int toughness,
-			boolean enableDefaultBehavior) {
+			boolean enableDefaultBehavior) throws IllegalNameException {
 		this.setWeight(weight);
 		this.setStrength(strength);
 		this.setToughness(toughness);
@@ -149,6 +149,12 @@ public class Unit {
 		return ;
 	}
 	
+	/**
+	 * @param initialPosistion
+	 * 		The cubes position, where we need to put the unit in the center
+	 * @return
+	 * 		The new units position, in the center of a cube
+	 */
 	public double[] putUnitInCenter(double[] initialPosistion) {
 		for (int i = 0; i < initialPosistion.length; i++) {
 			initialPosistion[i] += 0.5;
@@ -897,27 +903,27 @@ public class Unit {
 	}
 	
 	/**
-	 * Check if the unit is able to work.
-	 *  
-	 *
-	 * @return if the unit can work return true
-	 *       | result == 
-	*/
-	public boolean canWork( ) {
-		if (this.isAttacking == true || this.isDefending == true || this.timeLeftWorking == 0)
+	 * Checks if the unit can work. This is possible when it's not in combat or not working
+	 */
+	private boolean canWork( ) {
+		if (isAttacking() == true || this.isDefending == true || this.timeLeftWorking == 0)
 			// TODO movement implementeren ???????????????????????????????????????
 			// no loopt hij en werkt hij tegelijkertijd
 			return false;
 		return true;
 	}
 	
-	public void working(double dt){
+	/**
+	 * The actual working method. Where we keep working while working is True and the time to work is greater then timeLeftWorking
+	 * @param dt
+	 */
+	private void working(double dt){
 		if(this.canWork() == true){ 
 			if (this.timeLeftWorking == 0){
 				//TODO work is done?????????????????????????????????????????????????????????????????????????
-				this.stopResting();
+				this.stopWorking();
 			}else{
-				this.timeLeftWorking = this.timeLeftWorking - (1 * dt);
+				this.timeLeftWorking = this.timeLeftWorking -  dt;
 				if(this.timeLeftWorking <= 0){
 					this.timeLeftWorking = 0;
 				}
@@ -928,15 +934,26 @@ public class Unit {
 		}
 	}
 	
+	/**
+	 * The unit stops working
+	 */
 	private void stopWorking(){
 		this.isWorking = false;
 	}
 	
+	/**
+	 * The unit start working
+	 * @return The unit stops walking and resting, and start working for a certain amount of seconds
+	 * 		new.isWorking == true
+	 * 		new.isResting == false
+	 * 		new.isWalking == false
+	 * 		new.timeLeftWorking = (500 / getStrenght())
+	 */
 	public void startWorking(){
 		this.isWorking = true;
 		this.isResting = false;
 		this.isWalking = false;
-		this.timeLeftWorking = (500 / this.strength);
+		this.timeLeftWorking = (500 / getStrength());
 	}
 /////////////////////////////////////////////Fighting/////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -949,21 +966,13 @@ public class Unit {
 			stopResting();
 			this.isWalking = false;
 			this.isPathfinding = false;
-			
 			defenderClone = defender;
-			
-			System.out.println(defenderClone.getPosition()[0]);
-			
-			//defenderClone = new Unit(defender.getName(), castDoubleToInt(defender.getPosition()), defender.getWeight(), defender.getAgility(), defender.getStamina(),
-			//		defender.getToughness(), false);
-			//defenderClone.putUnitInCenter(defenderClone.getPosition());
-			
 			this.isAttacking = true;
 		}
 		
 	}
 	
-	public void attacking(Unit defender) {
+	private void attacking(Unit defender) {
 		this.isAttacking = true;
 		defender.isDefending = true;
 		//System.out.println(defender.getPosition()[0] + " " + this.getPosition()[0]);
@@ -974,7 +983,7 @@ public class Unit {
 		defender.isDefending = false;
 	}
 	
-	public void defending(Unit defender) {
+	private void defending(Unit defender) {
 		//dodging
 		System.out.println("ik beign" + defender.getPosition()[0]);
 		if (succesfullDodge(defender)) {
@@ -986,7 +995,7 @@ public class Unit {
 		}
 	}
 	
-	public boolean targetOnValidPosition(Unit defender) {
+	private boolean targetOnValidPosition(Unit defender) {
 		System.out.println("doe de test");
 		
 		double dx = this.getPosition()[0] - defender.getPosition()[0];
@@ -999,7 +1008,7 @@ public class Unit {
 		return false;
 	}
 	
-	public void updateOrientation(Unit defender) {
+	private void updateOrientation(Unit defender) {
 		this.orientation = (float) Math.atan2(defender.getPosition()[1] - this.getPosition()[1],
 				defender.getPosition()[0] - this.getPosition()[0]);
 		defender.orientation = (float) Math.atan2(this.getPosition()[1] - defender.getPosition()[1],
@@ -1010,15 +1019,15 @@ public class Unit {
 		return this.isAttacking;
 	}
 	
-	public void stopAttacking() {
+	private void stopAttacking() {
 		this.isAttacking = false;
 	}
 /////////////////////////////////////////////dodging/////////////////////////////////////////////
-	public double dodgeChance(Unit defender) {
+	private double dodgeChance(Unit defender) {
 		return 0.2 * ((double) defender.getAgility()/(double) this.getAgility());
 	}
 	
-	public boolean succesfullDodge(Unit defender) {
+	private boolean succesfullDodge(Unit defender) {
 		Random random = new Random();
 		int chance = random.nextInt(99);
 		System.out.println(chance);
@@ -1028,7 +1037,7 @@ public class Unit {
 			return false;
 	}
 	
-	public void moveToRandomAdjecant() {
+	private void moveToRandomAdjecant() {
 		Random rand = new Random();
 		double newX = rand.nextInt(2) - 1;
 		double newY = rand.nextInt(2) - 1;
@@ -1048,17 +1057,17 @@ public class Unit {
 		
 	}
 	
-	public void dodgethis(Unit defender) {
+	private void dodgethis(Unit defender) {
 			System.out.println("dodge!");
 			moveToRandomAdjecant();
 	}
 	
 /////////////////////////////////////////////blocking/////////////////////////////////////////////
-	public double blockChance(Unit defender) {
+	private double blockChance(Unit defender) {
 		return 0.25 * ((defender.getStrength() + defender.getStamina()) / (this.getStrength() + this.getStamina()));
 	}
 	
-	public boolean succesfullBlock(Unit defender) {
+	private boolean succesfullBlock(Unit defender) {
 		Random random = new Random();
 		int chance = random.nextInt(99);
 		System.out.println(chance);
@@ -1068,14 +1077,14 @@ public class Unit {
 			return false;
 	}
 	
-	public void blockthis(Unit defender){
+	private void blockthis(Unit defender){
 		System.out.println("block");
 		if (succesfullBlock(defender)) {
 			stopAttacking();
 		}
 	}
 /////////////////////////////////////////////taking damage/////////////////////////////////////////////
-	public void takeDamage(Unit defender) {
+	private void takeDamage(Unit defender) {
 		defender.decreaseHitpoints((int) Math.round((double) this.stamina / 10));
 	}
 /////////////////////////////////////////////updating orientation/////////////////////////////////////////////
@@ -1099,14 +1108,14 @@ public class Unit {
 	 * @return if the unit can rest return true
 	 *       | result == 
 	*/
-	public boolean canRest( ) {
+	private boolean canRest( ) {
 		if (this.isAttacking == true || this.isDefending == true 
 				|| (getHitpoints() >= getMaxHitpoints() && getStamina() >= getMaxStamina() ))
 			return false;
 		return true;
 	}
 	
-	public void resting (double dt) {
+	private void resting (double dt) {
 		this.isResting = true;
 		stopWorking();
 		
@@ -1147,7 +1156,7 @@ public class Unit {
 		this.isResting = true;
 	}
 	
-	public void stopResting (){
+	private void stopResting (){
 		this.isResting = false;
 	}
 	
