@@ -159,20 +159,52 @@ public class Unit {
 	 * @post the stamina of the new unit must be equal to getMaxStamina()
 	 * 		|new.Stamina = getMaxStamina()
 	 * 
+	 * @post The default behavior of the unit is equal to enableDefaultBehavior
+	 * 		|new.defaultBehavior = enableDefaultBehavior
+	 * 
 	 * @throws illegalStateException
 	 * 
 	 */
 	public Unit (String name, int[] initialPosition, int weight, int agility, int strength, int toughness,
 			boolean enableDefaultBehavior) {
-		this.setWeight(weight);
-		this.setStrength(strength);
+		/* Weight */
+		// TODO dit kan veel efficienter.
+		if (weight > 100)
+			this.setWeight(100);
+		else if (weight < 25 || weight <(int)((double) this.strength * (double) this.agility / 2)){
+			if (weight < (int)((double) this.strength * (double) this.agility / 2))
+				this.setWeight((int)((double) this.strength * (double) this.agility / 2));
+			else this.setWeight(25);
+		}
+		else{ 
+			this.setWeight(weight);
+			}
+		/* Strength */
+		//TODO elif structuur is 2 vergelijkingen minder
+		if (strength < 25){
+			this.setStrength(25);
+		}
+		if (strength > 100);{
+			this.setStrength(100);
+		}
+		if (strength <= 100 && strength >= 25){
+			this.setStrength(strength);
+			}
+		/* Toughness */
 		this.setToughness(toughness);
+		/* Agility */
 		this.setAgility(agility);
+		/* Name */
 		this.setName(name);
+		/* Position */
 		this.setUnitPosition(putUnitInCenter(castIntToDouble(initialPosition)));
+		/* Hitpoints */
 		this.increaseHitpoints(getMaxHitpoints());
+		/* Stamina */
 		this.increaseStamina(getMaxStamina());
+		/* Default Behavior */
 		this.setDefaultBehaviour(enableDefaultBehavior);
+		//TODO behavior
 		return ;
 	}
 		
@@ -223,6 +255,7 @@ public class Unit {
 	 */
 	@Raw
 	public void setWeight(int weight) {
+		//TODO niet totaal geprogrameerd
 		if (isValidWeight(weight))
 			this.weight = weight;
 	}
@@ -240,7 +273,8 @@ public class Unit {
 	private static int getMaxWeight(){
 		return 100;
 	}
-/////////////////////////////////////////////strength/////////////////////////////////////////////
+
+	/* Strength */
 	
 	/**
 	 * @invar  The strength of each unit must be a valid strength for any
@@ -263,11 +297,12 @@ public class Unit {
 	 * @param  strength
 	 *         The strength to check.
 	 * @return if a valid strength return true, else return false
-	 *       |if (MIN_VALUE_STRENGTH <= strength <= MAX_VALUE_STRENGTH) Then return == true
-	 *       |		Else return == false
+	 *       |if (getMinStrenght() <= strength <= getMaxStrength()) 
+	 *       |	Then return == true
+	 *       |Else return == false
 	*/
 	public static boolean isValidStrength(int strength) {
-		if( strength <= MAX_VALUE_STRENGTH && strength >= MIN_VALUE_STRENGTH)
+		if( strength <= getMinStrength() && strength >= getMaxStrength())
 			return true;
 		return false;
 	}
@@ -287,6 +322,21 @@ public class Unit {
 	public void setStrength(int strenght) {
 		if (isValidStrength(strenght))
 			this.strength = strenght;
+		//TODO niet totaal geprogrameerd
+	}
+	
+	/**
+	 * Return the lowest strength for all units
+	 */
+	private static int getMinStrength(){
+		return 25;
+	}
+	
+	/**
+	 * Return the highest strength for all units
+	 */
+	private static int getMaxStrength(){
+		return 100;
 	}
 		
 /////////////////////////////////////////////agility/////////////////////////////////////////////
