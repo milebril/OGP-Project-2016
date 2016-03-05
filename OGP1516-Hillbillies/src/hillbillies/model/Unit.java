@@ -54,10 +54,7 @@ public class Unit {
 	private int[] pathfindingTo = {0,0,0};
 	private Unit defenderClone;
 	
-	
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	/*constructor*/
 	
 	/**
 	 * initialize this new unit with the given name, position, weight, agility,
@@ -82,56 +79,86 @@ public class Unit {
 	 * @throws illegalPositionException
 	 * 
 	 * 
-	 * @post The lowest possible value for weight is MIN_VALUE_WEIGHT
-	 * 		|new.getMinWeigth() >= 
-	 * @post The highest possible value for weight is MAX_VALUE_WEIGHT
-	 *      |new.getMaxWeigth() <=
-	 * @post If the given weight is in range getMinWeight() ... getMaxWeight()
-	 * 		 the weight of the new unit is equal to the given weight.
-	 * 		 If the given weight is smaller as getMinWeight() then the new
-	 * 		 weight is equal to getMinWeight(). If the given weight is larger as
-	 * 		 getMaxWeight() the weight of the new unit is equal to getMaxWeight().
-	 * 		|
+	 * @post The lowest possible value for weight is the agility of the new unit multiplied
+	 * 		 with the strength of the new unit divided by 2.
+	 * 		|new.weight >= new.strenght * new.agility / 2 
+	 * @post The lowest possible value for weight is 25
+	 * 		|new.weight >= 25
+	 * @post The highest possible value for weight is 100
+	 *      |new.weight() <= 100
+	 * @post If the given weight is in range 25 ... 100 and in range new.strength * new.agilty / 2
+	 * 		 ... 100 the weight of the new unit is equal to the given weight. If the given weight is 
+	 * 		 smaller as 25 or smaller as  new.strength * new.agilty / 2 then the new weight is the 
+	 * 		 largest value chosen between 25 new.strength * new.agilty / 2. If the given weight is 
+	 * 		larger as 100 the weight of the new unit is equal to 100.
+	 * 		|if ( new.weight >= 25 && new.weight >= new.strenght * new.agility / 2 && new.getweight <= 100)
+	 * 		|	then new.Weigth == weight
+	 * 		|if (new.weight >= 100)
+	 * 		|	then new.weight == 100
+	 * 		|if (new.weight <= 25 || new.weight <= new.strength * new.agilty / 2)
+	 * 		|	then if (25 <= new.strength * new.agilty / 2)
+	 * 		|			then new.weight = 25
+	 * 		| 		 if (25 > new.strength * new.agilty / 2)
+	 * 		|			then new.weight = new.strength * new.agilty / 2
 	 * 
-	 * @post The lowest possible value for agility is MIN_VALUE_AGILITY
-	 * 		|new.getMinAgility() >=
-	 * @post The highest possible value for agility is MAX_VALUE_AGILITY
-	 * 		|new.getMaxAgility() <= 
+	 * @post The lowest possible value for agility is 25
+	 * 		|new.getMinAgility() = 25
+	 * @post The highest possible value for agility is 100
+	 * 		|new.getMaxAgility() = 100
 	 * @post If the given agility is in range getMinAgility() ... getMaxAgility()
 	 * 		 the agility of the new unit is equal to the given agility.
 	 * 		 If the given agility is smaller as getMinAgility() then the new
 	 * 		 agility is equal to getMinAgility(). If the given agility is larger as
 	 * 		 getMaxAgility() the agility of the new unit is equal to getMaxAgility().
-	 * 		|
+	 * 		|if ( new.getMinAgility() >= 25 && new.getMaxAgility() <= 100)
+	 * 		|	then new.agilty == agility
+	 * 		|if (new.getMaxAgility() >= 100)
+	 * 		|	then new.agility == getMaxAgility()
+	 * 		|if (new.getMinAgility <= 25)
+	 * 		|	then new.agility == getMinAgility()
 	 * 
-	 * @post The lowest possible value for strength is MIN_VALUE_STRENGHT
-	 * 		|new.getMinStrength() >=
-	 * @post The highest possible value for strength is MAX_VALUE_STRENGTH
-	 * 		|new.getMaxStrength() <=
+	 * @post The lowest possible value for strength is 25
+	 * 		|new.getMinStrength() = 25
+	 * @post The highest possible value for strength is 100
+	 * 		|new.getMaxStrength() = 100
 	 * @post If the given strength is in range getMinStrength() ... getMaxStrength()
 	 * 		 the Strength of the new unit is equal to the given Strength.
 	 * 		 If the given Strength is smaller as getMinStrength() then the new
 	 * 		 strength is equal to getMinStrength(). If the given strength is larger as
 	 * 		 getMaxStrength() the weight of the new unit is equal to getMaxStrength().
-	 * 		 |
+	 * 		|if ( new.getMinStrength() >= 25 && new.getMaxStrength() <= 100)
+	 * 		|	then new.strength == strength
+	 * 		|if (new.getMaxStrength() >= 100)
+	 * 		|	then new.strength == getMaxStrength()
+	 * 		|if (new.getMinStrength <= 25)
+	 * 		|	then new.strength == getMinStrength()
 	 * 
-	 * @post If the given weight is in range getMinWeight() ... getMaxWeight()
-	 * 		 the weight of the new unit is equal to the given weight.
-	 * 		 If the given weight is smaller as getMinWeight() then the new
-	 * 		 weight is equal to getMinWeight(). If the given weight is larger as
-	 * 		 getMaxWeight() the weight of the new unit is equal to getMaxWeight().
-	 * @post The lowest possible value for toughness is MIN_VALUE_TOUGHNESS
-	 * 		|new.getMinToughness() >= 
-	 * @post The highest possible value for toughness is MAX_VALUE_TOUGHNESS
-	 * 		|new.getMaxStrength() <= 
-	 * @post The value for getMaxHitpoints() is 
-	 * 		|new.getMaxHitpoints() =
+	 * @post The lowest possible value for toughness is 25
+	 * 		|new.getMinToughness() = 25 
+	 * @post The highest possible value for toughness is 100
+	 * 		|new.getMaxToughness() = 100 
+	 * @post If the given toughness is in range getMinToughness() ... getMaxToughness()
+	 * 		 the toughness of the new unit is equal to the given toughness.
+	 * 		 If the given toughness is smaller as getMinToughness() then the new
+	 * 		 toughness is equal to getMinToughness(). If the given toughness is larger as
+	 * 		 getMaxToughness() the toughness of the new unit is equal to getMaxToughness().
+	 * 		|if ( new.getMinToughness() >= 25 && new.getMaxToughness() <= 100)
+	 * 		|	then new.toughness == toughness
+	 * 		|if (new.getMaxToughness() >= 100)
+	 * 		|	then new.toughness == getMaxToughness()
+	 * 		|if (new.getMinToughness <= 25)
+	 * 		|	then new.toughness == getMinToughness()
+	 * 
+	 * @post The value for getMaxHitpoints() is ...
+	 * 		|new.getMaxHitpoints() = 200 * (new.weight/100) * (new.toughness/100)
 	 * @post The hitpoints of the new unit must be equal to getMaxHitpoints()
 	 * 		|new.hitpoints = getMaxHitpoints
-	 * @post The value for getMaxStamina() is
-	 * 		|new.getMaxStamina() =
+	 * 
+	 * @post The value for getMaxStamina() is ...
+	 * 		|new.getMaxStamina() = 200 * (new.weight/100) * (new.toughness/100)
 	 * @post the stamina of the new unit must be equal to getMaxStamina()
 	 * 		|new.Stamina = getMaxStamina()
+	 * 
 	 * @throws illegalStateException
 	 * 
 	 */
@@ -148,7 +175,9 @@ public class Unit {
 		this.setDefaultBehaviour(enableDefaultBehavior);
 		return ;
 	}
+		
 	
+<<<<<<< HEAD
 	/**
 	 * @param initialPosistion
 	 * 		The cubes position, where we need to put the unit in the center
@@ -164,6 +193,9 @@ public class Unit {
 	
 	
 /////////////////////////////////////////////weight/////////////////////////////////////////////
+=======
+	/* weight*/
+>>>>>>> origin/master
 	
 	/**
 	 * @invar  The weight of each unit must be a valid weight for any
@@ -179,6 +211,7 @@ public class Unit {
 		return this.weight;
 	}
 	
+	
 	/**
 	 * Check whether the given weight is a valid amount for
 	 * any unit.
@@ -190,7 +223,7 @@ public class Unit {
 	 *       |		Else return == false
 	*/
 	public static boolean isValidWeight(int weight) {
-		if( MIN_VALUE_WEIGTH <= weight && weight <= MAX_VALUE_WEIGTH)
+		if( getMinWeight() <= weight && weight <= getMaxWeight())
 			return true;
 		return false;
 	}
@@ -212,6 +245,19 @@ public class Unit {
 			this.weight = weight;
 	}
 	
+	/**
+	 * Return the lowest weight for all units
+	 */
+	private static int getMinWeight(){
+		return 25;
+	}
+	
+	/**
+	 * Return the highest weight for all units
+	 */
+	private static int getMaxWeight(){
+		return 100;
+	}
 /////////////////////////////////////////////strength/////////////////////////////////////////////
 	
 	/**
@@ -525,6 +571,14 @@ public class Unit {
 		if( orientation <= 2*PI && orientation >= 0)
 			return true;
 		return false;
+	}
+	
+	
+	public double[] putUnitInCenter(double[] initialPosistion) {
+		for (int i = 0; i < initialPosistion.length; i++) {
+			initialPosistion[i] += 0.5;
+		}
+		return initialPosistion;
 	}
 	
 	/**
