@@ -14,6 +14,10 @@ import java.util.Random;
  *
  */
 public class Unit {
+	
+	/**
+	 * The variables used in this unit class.
+	 */
 
 	private int weight;
 	private int strength;
@@ -41,10 +45,6 @@ public class Unit {
 	private int[] pathfindingTo = {0,0,0};
 	private Unit defenderClone;
 	private double unitLifetimeInSeconds = 0;
-	
-	/*
-	 * Variable registering the property_name_Eng of this object_name.
-	 */
 	
 	/*constructor*/
 	
@@ -320,7 +320,7 @@ public class Unit {
 	 *       |Else return == false
 	*/
 	public static boolean isValidStrength(int strength) {
-		if( strength <= getMinStrength() && strength >= getMaxStrength())
+		if( strength >= getMinStrength() && strength <= getMaxStrength())
 			return true;
 		return false;
 	}
@@ -675,7 +675,6 @@ public class Unit {
 		return false;
 	}
 	
-	//TODO set orientation
 	/**
 	 * Set the orientation of this unit to the given orientation.
 	 * 
