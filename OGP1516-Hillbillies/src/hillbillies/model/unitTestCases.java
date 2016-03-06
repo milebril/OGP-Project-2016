@@ -43,7 +43,7 @@ public class unitTestCases {
 	
 	/*
 	 * Weight
-	 */
+	 *
 	@Test
 	public void isValidWeight_TrueCase() {
 		assertTrue(Unit.isValidWeight(75));
@@ -60,6 +60,7 @@ public class unitTestCases {
 		testunit.setWeight(89);
 		assertEquals(89, testunit.getWeight());
 	}
+	*/
 	
 	/*
 	 * Strenght

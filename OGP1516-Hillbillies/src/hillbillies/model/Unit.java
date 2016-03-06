@@ -14,18 +14,7 @@ import java.util.Random;
  *
  */
 public class Unit {
-	
-	public final static int MIN_VALUE_STRENGTH = 1;
-	public final static int MAX_VALUE_STRENGTH = 200;
-	public final static int MIN_VALUE_AGILITY = 1;
-	public final static int MAX_VALUE_AGILITY = 200;
-	public int MIN_VALUE_WEIGTH = (getStrength() + getAgility()) / 2;
-	public final static int MAX_VALUE_WEIGTH = 200;
-	public final static int MIN_VALUE_TOUGHNESS = 1;
-	public final static int MAX_VALUE_TOUGHNESS = 200;
-	public final static int MIN_VALUE_COORDINATE_GAMEWORLD = 0;
-	public final static int MAX_VALUE_COORDINATE_GAMEWORLD = 49;
-	
+
 	private int weight;
 	private int strength;
 	private int agility;
@@ -53,14 +42,10 @@ public class Unit {
 	private Unit defenderClone;
 	private double unitLifetimeInSeconds = 0;
 	
-	// TODO class invarianten???? wat moet daar mee gebeuren. nu staan ze bij ieder onderdeel, moeten die in de comentaar van de constructor?
-	// TODO ik zou de globale variabel bij ieder deel zetten en daar comentaar bij voorzien. wat denkt gij??????
 	/*
 	 * Variable registering the property_name_Eng of this object_name.
 	 */
-	//TODO moet deze comentaar bij ieder variabele 
 	
-	//TODO wat moet er met die @tags gebeuren????????????????/
 	/*constructor*/
 	
 	/**
@@ -175,7 +160,6 @@ public class Unit {
 	public Unit (String name, int[] initialPosition, int weight, int agility, int strength, int toughness,
 			boolean enableDefaultBehavior) throws IllegalNameException, IllegalArgumentException {
 		/* Weight */
-		// TODO dit kan veel efficienter.
 		if (weight > 100)
 			this.setWeight(100);
 		else if (weight < 25 || weight <(int)((double) this.strength * (double) this.agility / 2)){
@@ -187,28 +171,27 @@ public class Unit {
 			this.setWeight(weight);
 			}
 		/* Strength */
-		//TODO elif structuur is 2 vergelijkingen minder
 		if (strength < 25)
 			this.setStrength(25);
-		if (strength > 100);
+		else if (strength > 100)
 			this.setStrength(100);
-		if (strength <= 100 && strength >= 25)
+		else
 			this.setStrength(strength);
 			
 		/* Toughness */
 		if (toughness < 25)
 			this.setToughness(25);
-		if (toughness > 100);
+		else if (toughness > 100)
 			this.setToughness(100);
-		if (toughness <= 100 && toughness >= 25)
+		else
 			this.setToughness(toughness);
 		
 		/* Agility */
 		if (agility < 25)
 			this.setAgility(25);
-		if (agility > 100);
+		else if (agility > 100)
 			this.setAgility(100);
-		if (agility <= 100 && agility >= 25)
+		else
 			this.setAgility(agility);
 		
 		/* Name */
@@ -217,7 +200,6 @@ public class Unit {
 		else this.setName(name);
 		
 		/* Position */
-		//TODO exceptions nakijken.
 		double[] position = putUnitInCenter(castIntToDouble(initialPosition));
 		if (! isValidPosition(position)) throw new IllegalArgumentException();
 		this.setUnitPosition(position);
@@ -530,7 +512,7 @@ public class Unit {
 	 *       |if is validName is true then return true
 	 *       |else return false
 	*/
-	private static boolean isValidName(String name) {
+	public static boolean isValidName(String name) {
 		if (name.length() < 2 || StringDoesContainOnlyValidCharacters(name) == false)
 			return false;
 		return true;
@@ -578,8 +560,7 @@ public class Unit {
 		this.name = name;
 	}
 	
-/////////////////////////////////////////////position/////////////////////////////////////////////
-
+	/* Position */
 	/**
 	 * @invar  The position of each unit must be a valid position for any
 	 *         unit.
@@ -603,6 +584,7 @@ public class Unit {
 		double[] arrayInDouble = {(double) arrayInInt[0],(double) arrayInInt[1],(double) arrayInInt[2]};
 		return arrayInDouble;
 	}
+	
 	/**
 	 * cast an array of doubles in an array of integers
 	 * @param arrayInDouble
@@ -618,7 +600,7 @@ public class Unit {
 	 *  
 	 * @param  position
 	 *         The position to check.
-	 * @return if the unit's position is in the given world we return True, else fasle
+	 * @return if the units position is in the given world we return True, else false
 	 *       | if (unitPosition < 0 && unitPositio > 50) Then false
 	 *       |		else false
 	*/
@@ -627,7 +609,7 @@ public class Unit {
 		if (N > 3)
 			return false;
 		for (int i=0; i < unitPosition.length; i++) {
-			if (unitPosition[i] < MIN_VALUE_COORDINATE_GAMEWORLD || unitPosition[i] > MAX_VALUE_COORDINATE_GAMEWORLD)
+			if (unitPosition[i] < getMinValueCoordinate() || unitPosition[i] > getMaxValueCoordinate())
 				return false;
 		}
 		return true;
@@ -649,13 +631,26 @@ public class Unit {
 	@Raw
 	public void setUnitPosition(double[] position) throws IllegalArgumentException {
 		if (! isValidPosition(position))
-			throw new IllegalArgumentException(); //exception;
+			throw new IllegalArgumentException(); 
 		this.unitPosition = position;	
 
 	}
- 
-/////////////////////////////////////////////Orientation/////////////////////////////////////////////
 	
+	/**
+	 * Return the value of the lowest coordinate value.
+	 */
+	private static int getMinValueCoordinate(){
+		return 0;
+	}
+	
+	/**
+	 * Return the value of the lowest coordinate value.
+	 */
+	private static int getMaxValueCoordinate(){
+		return 49;
+	}
+ 
+	/* Orientation */
 	/**
 	 * Return the orientation of this unit.
 	 */
@@ -680,6 +675,7 @@ public class Unit {
 		return false;
 	}
 	
+	//TODO set orientation
 	/**
 	 * Set the orientation of this unit to the given orientation.
 	 * 
@@ -702,13 +698,10 @@ public class Unit {
 			restdeler = (float)((Math.abs(orientation) % (2*PI)));
 			deler = (float)((Math.abs(orientation) - restdeler) % (2*PI)) +1;
 			this.orientation = (float) ((float) deler * 2 * PI + orientation);
-		}
-		
-		// van <0 naar positief ??????
-		
+		}		
 	}
-/////////////////////////////////////////////Hitpoints/////////////////////////////////////////////
 	
+	/* Hitpoints */
 	/**
 	 * @invar  The hitpoints of each unit must be a valid hitpoints for any
 	 *         unit.
@@ -730,11 +723,11 @@ public class Unit {
 	 *  
 	 * @param  hitpoints
 	 *         The hitpoints to check.
-	 * @return 
-	 *       | result == 
+	 * @return if hitpoints is a valid value for all units return true 
+	 *       | if 
 	*/
-	public static boolean isValidHitpoints(int hitpoints) {
-		return hitpoints > 0;
+	public boolean isValidHitpoints(int hitpoints) {
+		return hitpoints > 0 && hitpoints <= this.getMaxHitpoints();
 	}
 	
 	/**
@@ -746,6 +739,16 @@ public class Unit {
 		return (int) (200 * ((double) this.weight/100) * ((double) this.toughness/100));
 	}
 	
+	/**
+	 * Set the hitpoints of this unit to the given hitpoints.
+	 * 
+	 * @pre The given hitpoints must be a valid value for all units.
+	 * 	   |isValidHitpoint(hitpoints) == True
+	 * @post the hitpoints of this unit is equal to the given hitpoints.
+	 * 		|this.hitpoints == hitpoints
+	 * @param hitpoints
+	 * 		  The given hitpoints.
+	 */
 	public void setHitpoints(int hitpoints) {
 		this.hitpoints = hitpoints;
 	}
@@ -791,14 +794,12 @@ public class Unit {
 		
 	}
 	
-/////////////////////////////////////////////current stamina/////////////////////////////////////////////
-	
+	/* Stamina */
 	/**
 	 * @invar  The Stamina of each unit must be a valid Stamina for any
 	 *         unit.
 	 *       | isValidStamina(getStamina())
 	 */
-
 
 	/**
 	 * Return the Stamina of this unit.
@@ -817,6 +818,16 @@ public class Unit {
 		return (int) (200 * ((double) this.weight/100) * ((double) this.toughness/100));
 	}
 	
+	/**
+	 * Set the stamina of this unit to the given stamina.
+	 * 
+	 * @pre The given stamina must be a valid value for all units.
+	 * 	   |isValidStamina(stamina) == True
+	 * @post the stamina of this unit is equal to the given stamina.
+	 * 		|this.stamina == stamina
+	 * @param stamina
+	 * 		  The given stamina.
+	 */
 	public void setStamina(int stamina) {
 		this.stamina = stamina;
 	}
@@ -874,10 +885,8 @@ public class Unit {
 			this.stamina = this.stamina - amount;
 	}
 
-/////////////////////////////////////////////advance time/////////////////////////////////////////////
-	private double attTime = 0;
-	private double unitLifetime = 0;
-	
+	/* Default Behavior */
+		
 	public void advanceTimeInUnit(double dt){
 		unitLifetime += dt;
 		if (unitLifetime >= 1) {
@@ -909,7 +918,26 @@ public class Unit {
 		}
 	}
 	
-/////////////////////////////////////////////movement/////////////////////////////////////////////
+	/**
+	 *Variable registering the attacking time of this unit.
+	 */
+	private double attTime = 0;
+	/**
+	 *Variable registering the life time of this unit.
+	 */
+	private double unitLifetime = 0;
+	
+	/* Movement */
+	/**
+	 * Start walking to the given coordinates.
+	 * 
+	 * @param dx
+	 * 		 |The x coordinate 
+	 * @param dy
+	 * 		 |The y coordinate
+	 * @param dz
+	 * 		 |The z coordinate
+	 */
 	public void startWalking(int dx, int dy, int dz) {
 		if (this.isWalking == true)
 			return;
@@ -925,6 +953,57 @@ public class Unit {
 		this.baseForWalkingSpeed = 1.5 * (((double) getStrength() + (double) getAgility()) / (200 * ((double) getWeight() / 100)));
 	}
 	
+	/**
+	 * check if the unit is walking.
+	 * 
+	 * @return the true if the unit is moving, return false
+	 * 			false if the unit isn't moving.
+	 */
+	public boolean isTheUnitMoving(){
+		return this.isWalking;
+	}
+	
+	/**
+	 * return the current speed of the unit.
+	 * 
+	 * @return the current speed of the unit
+	 */
+	public double getSpeed(){
+		double speed = this.baseForWalkingSpeed;
+		if(this.isSprinting() == true)
+			speed = speed * 2;
+		if (this.walkingTo[2]>this.unitPosition[2])
+			speed = speed * 0.5;
+		if (this.walkingTo[2]<this.unitPosition[2])
+			speed = speed * 1.2;
+		return speed;
+	}
+	
+	/**
+	 * return if the unit is sprinting or not.
+	 * 
+	 * @return the state of sprinting of the unit
+	 */
+	public boolean isSprinting() {
+		return this.isSprinting;
+	}
+	
+	/**
+	 * start sprinting
+	 */
+	public void startSprinting(){
+		this.isSprinting = true;
+	}
+	 /**
+	  * Stop sprinting
+	  */
+	public void stopSprinting() {
+		this.isSprinting = false;
+	}
+	
+	/**
+	 * move the unit in the direction of the destination.
+	 */
 	private void walking(double dt){
 		double dx = (this.walkingTo[0] - this.unitPosition[0]);
 		double dy = (this.walkingTo[1] - this.unitPosition[1]);
@@ -961,10 +1040,9 @@ public class Unit {
 		canMove(dx, dy, dz, vx, vy, vz, dt);
 	}
 	
-	public boolean isTheUnitMoving(){
-		return this.isWalking;
-	}
-		
+	/**
+	 * check if the unit can move.
+	 */
 	private void canMove(double dx, double dy, double dz, double vx, double vy, double vz, double dt){
 		if(Math.abs(dx) <= Math.abs(vx) * dt && Math.abs(dy) <= Math.abs(vy) * dt && Math.abs(dz) <= Math.abs(vz) * dt){
 			setUnitPosition(this.walkingTo.clone());
@@ -972,35 +1050,24 @@ public class Unit {
 		}
 	}
 	
+	/**
+	 * update the orientation of the unit.
+	 * @param vx
+	 * 		  the x coordinate for the orientation
+	 * @param vy
+	 * 		  the y coordinate for the orientation
+	 */
 	private void updateOrientation(double vx, double vy){
 		this.orientation = ((float) Math.atan2(vy, vx)); 
 		}
 	
-	public double getSpeed(){
-		double speed = this.baseForWalkingSpeed;
-		if(this.isSprinting() == true)
-			speed = speed * 2;
-		if (this.walkingTo[2]>this.unitPosition[2])
-			speed = speed * 0.5;
-		if (this.walkingTo[2]<this.unitPosition[2])
-			speed = speed * 1.2;
-		return speed;
-	}
-	
-	public boolean isSprinting() {
-		return this.isSprinting;
-	}
-	
-	public void startSprinting(){
-		this.isSprinting = true;
-	}
-	
-	public void stopSprinting() {
-		this.isSprinting = false;
-	}
-	
-/////////////////////////////////////////////path finding/////////////////////////////////////////////
-	
+	/* Pathfinding */
+	/**
+	 * start walking to the given position
+	 * @param cube
+	 * 		  a list of integers that consist the x, y and z 
+	 * 		  Coordinate of the final destination.
+	 */
 	public void startPathfinding(int[] cube){
 		if (this.isPathfinding == true) {
 			this.isPathfinding = false;
@@ -1012,6 +1079,12 @@ public class Unit {
 		this.pathfindingTo = cube.clone();
 	}
 	
+	/**
+	 * move the cube in the direction of the final destination 
+	 * over a time interval dt.
+	 * @param dt
+	 * 		  the given time interval
+	 */
 	private void pathfinding (double dt) {
 		if (this.isWalking == true) {
 			return;
@@ -1056,11 +1129,8 @@ public class Unit {
 			startWalking(dx, dy, dz);
 			}
 	}
-/////////////////////////////////////////////actions/////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////////////////////////
 	
-/////////////////////////////////////////////work/////////////////////////////////////////////
-	
+	/* Work */
 	/**
 	 * Return the state of working of this unit.
 	 */
@@ -1076,6 +1146,21 @@ public class Unit {
 		if (isAttacking() == true || this.isDefending == true || this.timeLeftWorking == 0)
 			return false;
 		return true;
+	}
+	
+	/**
+	 * Let the unit start working
+	 * @return The unit stops walking and resting, and start working for a certain amount of seconds
+	 * 		new.isWorking == true
+	 * 		new.isResting == false
+	 * 		new.isWalking == false
+	 * 		new.timeLeftWorking = (500 / getStrenght())
+	 */
+	public void startWorking(){
+		this.isWorking = true;
+		stopResting();
+		this.isPathfinding = false;
+		this.timeLeftWorking = (500 / getStrength());
 	}
 	
 	/**
@@ -1103,26 +1188,11 @@ public class Unit {
 	private void stopWorking(){
 		this.isWorking = false;
 	}
-	
+
+	/* Fighting */
 	/**
-	 * The unit start working
-	 * @return The unit stops walking and resting, and start working for a certain amount of seconds
-	 * 		new.isWorking == true
-	 * 		new.isResting == false
-	 * 		new.isWalking == false
-	 * 		new.timeLeftWorking = (500 / getStrenght())
+	 * Let the unit start attacking.
 	 */
-	public void startWorking(){
-		this.isWorking = true;
-		stopResting();
-		this.isPathfinding = false;
-		this.timeLeftWorking = (500 / getStrength());
-	}
-/////////////////////////////////////////////Fighting/////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////////////////////////
-	
-/////////////////////////////////////////////Attacking////////////////////////////////////////////
-	
 	public void startAttacking(Unit defender) {
 		if (targetOnValidPosition(defender)) {
 			stopWorking();
@@ -1134,6 +1204,11 @@ public class Unit {
 		
 	}
 	
+	/**
+	 * let the attacker attack the defender
+	 * @param defender
+	 * 		  the defending unit
+	 */
 	private void attacking(Unit defender) {
 		this.isAttacking = true;
 		defender.isDefending = true;
@@ -1142,6 +1217,11 @@ public class Unit {
 		defender.isDefending = false;
 	}
 	
+	/**
+	 * let the defending unit defend himself
+	 * @param defender
+	 * 		  the defending unit
+	 */
 	private void defending(Unit defender) {
 		if (succesfullDodge(defender)) {
 			dodgethis(defender);
@@ -1152,6 +1232,11 @@ public class Unit {
 		}
 	}
 	
+	/**
+	 * check whether the defending unit is in range of the attacker.
+	 * @param defender
+	 * 		 the defending unit
+	 */
 	private boolean targetOnValidPosition(Unit defender) {
 		double dx = this.getPosition()[0] - defender.getPosition()[0];
 		double dy = this.getPosition()[1] - defender.getPosition()[1];
@@ -1161,6 +1246,11 @@ public class Unit {
 		return false;
 	}
 	
+	/**
+	 * update the orientation of the defender and the attacker
+	 * @param defender
+	 * 		  the defending unit
+	 */
 	private void updateOrientation(Unit defender) {
 		this.orientation = (float) Math.atan2(defender.getPosition()[1] - this.getPosition()[1],
 				defender.getPosition()[0] - this.getPosition()[0]);
@@ -1168,18 +1258,35 @@ public class Unit {
 				this.getPosition()[0] - defender.getPosition()[0]);
 	}
 	
+	/**
+	 * check if a unit is attacking.
+	 * @return if the unit is attacking return true.
+	 */
 	public boolean isAttacking() {
 		return this.isAttacking;
 	}
 	
+	/**
+	 * make a unit stop attacking
+	 */
 	private void stopAttacking() {
 		this.isAttacking = false;
 	}
-/////////////////////////////////////////////dodging/////////////////////////////////////////////
+	
+	/* Dodging */
+	/**
+	 * return the chance that a defending unit can dodge the attack.
+	 * @param defender
+	 * 		  the defending unit
+	 * @return return the chance of dodging an attack.
+	 */
 	private double dodgeChance(Unit defender) {
 		return 0.2 * ((double) defender.getAgility()/(double) this.getAgility());
 	}
 	
+	/**
+	 * return if the defending unit will dodge the attack.
+	 */
 	private boolean succesfullDodge(Unit defender) {
 		Random random = new Random();
 		int chance = random.nextInt(99);
@@ -1190,19 +1297,18 @@ public class Unit {
 			return false;
 	}
 	
+	/**
+	 * move the unit to a random adjacent location.
+	 */
 	private void moveToRandomAdjecant() {
 		Random rand = new Random();
 		double newX = rand.nextInt(2) - 1;
-		double newY = rand.nextInt(2) - 1;
-		
-		System.out.println(newX + " " + newY );
-		
+		double newY = rand.nextInt(2) - 1;		
 		double[] newPos = getPosition().clone();
 		newPos[0] += newX;
 		newPos[1] += newY;
 		
 		if(isValidPosition(newPos) && (newPos[0] != getPosition()[0] && newPos[1] != getPosition()[1])) {
-			System.out.println("in de check");
 			this.setUnitPosition(newPos);
 		} else {
 			moveToRandomAdjecant();
@@ -1210,16 +1316,27 @@ public class Unit {
 		
 	}
 	
+	/**
+	 * execute the dodge.
+	 */
 	private void dodgethis(Unit defender) {
-			System.out.println("dodge!");
 			moveToRandomAdjecant();
 	}
 	
-/////////////////////////////////////////////blocking/////////////////////////////////////////////
+	/* Blocking */
+	/**
+	 * return the chance that a defending unit can dodge the attack.
+	 * @param defender
+	 * 		  the defending unit
+	 * @return return the chance of dodging an attack.
+	 */
 	private double blockChance(Unit defender) {
 		return 0.25 * ((defender.getStrength() + defender.getStamina()) / (this.getStrength() + this.getStamina()));
 	}
 	
+	/**
+	 * return if the defending unit will dodge the attack.
+	 */
 	private boolean succesfullBlock(Unit defender) {
 		Random random = new Random();
 		int chance = random.nextInt(99);
@@ -1230,22 +1347,29 @@ public class Unit {
 			return false;
 	}
 	
+	/**
+	 * make the defending unit block the attack
+	 * @param defender
+	 * 		  the unit that will block the attack
+	 */
 	private void blockthis(Unit defender){
-		System.out.println("block");
 		if (succesfullBlock(defender)) {
 			stopAttacking();
 		}
 	}
-/////////////////////////////////////////////taking damage/////////////////////////////////////////////
+	
+	/* Taking Damage */
+	/**
+	 * decrease the hitpoints of the defending unit.
+	 * @param defender
+	 * 		  the defending unit.
+	 */
 	private void takeDamage(Unit defender) {
 		defender.decreaseHitpoints((int) Math.round((double) this.stamina / 10));
 	}
 	
 	
-/////////////////////////////////////////////resting/////////////////////////////////////////////
-	
-	private int totalHPRestored = 0;
-	
+	/* Resting */
 	/**
 	 * Return the state of resting of this unit.
 	 */
@@ -1255,11 +1379,21 @@ public class Unit {
 	}
 	
 	/**
+	 * make the unit start resting
+	 */
+	public void startResting (){
+		if (getHitpoints() == getMaxHitpoints()) {
+			totalHPRestored = -5;
+		}
+		this.isPathfinding = false;
+		this.isWorking = false;
+		this.isResting = true;
+	}
+	
+	/**
 	 * Check if the unit is able to rest.
-	 *  
 	 *
 	 * @return if the unit can rest return true
-	 *       | result == 
 	*/
 	private boolean canRest( ) {
 		if (this.isAttacking == true || this.isDefending == true 
@@ -1268,6 +1402,11 @@ public class Unit {
 		return true;
 	}
 	
+	/**
+	 * make the unit rest over a time interval dt.
+	 * @param dt
+	 * 		  the time interval dt
+	 */
 	private void resting (double dt) {
 		this.isResting = true;
 		stopWorking();
@@ -1283,6 +1422,9 @@ public class Unit {
 		return;
 	}
 	
+	/**
+	 *  restore the hitpoints of a resting unit.
+	 */
 	private void restoreHitpoints (double dt){	
 		double hitpointsToRestore = 5 * ((double) getToughness() / 200) * dt;
 		counterForHitpoints += hitpointsToRestore;
@@ -1294,6 +1436,9 @@ public class Unit {
 		}
 	}
 	
+	/**
+	 *  restore the stamina of a resting unit.
+	 */
 	private void restoreStamina (double dt){
 		double staminaToRestore = 5 * ((double) this.toughness / 100) * dt;
 		counterForStamina += staminaToRestore;
@@ -1303,31 +1448,41 @@ public class Unit {
 			increaseStamina(value);
 		}
 	}
-
-	public void startResting (){
-		if (getHitpoints() == getMaxHitpoints()) {
-			totalHPRestored = -5;
-		}
-		this.isPathfinding = false;
-		this.isWorking = false;
-		this.isResting = true;
-	}
 	
+	/**
+	 * make this unit stop resting
+	 */
 	private void stopResting (){
 		if (totalHPRestored >= 0 || totalHPRestored == -5)
 			this.isResting = false;
 	}
 	
-/////////////////////////////////////////////default behavior/////////////////////////////////////////////
-
+	/**
+	 * Variable registering the total hitpoints that are restored of this unit.
+	 */
+	private int totalHPRestored = 0;
+	
+	/* Default Behavior */
+	/**
+	 * check if the default behavior of this unit is on.
+	 * @return unit.defaultBehavior
+	 */
 	public boolean isDefaultBehaviorOn(){
 		return this.defaultBehaviour;
 	}
 	
+	/**
+	 * set the default behavior to the given Boolean value
+	 * @param value
+	 * 		  the given boolean value
+	 */
 	public void setDefaultBehavior(boolean value){
 		this.defaultBehaviour = value;
 	}
 	
+	/**
+	 * if default behavior is enabled start doing an action.
+	 */
 	private void defaultBehavior(double dt){
 		Random random = new Random();
 		int ActionChance = random.nextInt(3);
@@ -1348,6 +1503,4 @@ public class Unit {
 			this.startResting();
 		}
 	}
-//////////////////////////////////////////////////////////////////////////////////////////////////
 }
-
