@@ -1,10 +1,5 @@
 package hillbillies.model;
 
-import static org.junit.Assert.*;
-
-import org.junit.Before;
-import org.junit.Test;
-
 import ogp.framework.util.Util;
 
 public class unitTestCases {
