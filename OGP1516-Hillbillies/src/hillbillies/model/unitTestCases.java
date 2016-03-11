@@ -1,9 +1,6 @@
 package hillbillies.model;
 
-import static org.junit.Assert.*;
-
-import org.junit.Before;
-import org.junit.Test;
+import ogp.framework.util.Util;
 
 public class unitTestCases {
 	
@@ -41,7 +38,7 @@ public class unitTestCases {
 	
 	/*
 	 * Weight
-	 */
+	 *
 	@Test
 	public void isValidWeight_TrueCase() {
 		assertTrue(Unit.isValidWeight(75));
@@ -58,6 +55,7 @@ public class unitTestCases {
 		testunit.setWeight(89);
 		assertEquals(89, testunit.getWeight());
 	}
+	*/
 	
 	/*
 	 * Strenght
@@ -204,4 +202,28 @@ public class unitTestCases {
 		testunit2.decreaseStamina(5);
 		assertEquals(20, testunit2.getStamina());
 	}
+	
+	/*
+	 * Position
+	 */
+	
+	@Test
+	public void isValidPosition_LegalCase() {
+		assertTrue(Unit.isValidPosition(new double[] {2.5, 3.5, 5.5}));
+	}
+	
+	@Test
+	public void isValidPosition_IllegalCase() {
+		assertFalse(Unit.isValidPosition(new double[] {-2.5, 3.5, 5.5}));
+		assertFalse(Unit.isValidPosition(new double[] {2.5, 3.5, 50.5}));
+	}
+	
+	@Test
+	public void setUnitPosition_LegalCase(){
+		testunit.setUnitPosition(new double[] {35.5, 10.5, 0.5});
+		assertEquals(35.5, testunit.getPosition()[0], Util.DEFAULT_EPSILON);
+		assertEquals(10.5, testunit.getPosition()[1], Util.DEFAULT_EPSILON);
+		assertEquals(0.5, testunit.getPosition()[2], Util.DEFAULT_EPSILON);
+	}
+	
 }

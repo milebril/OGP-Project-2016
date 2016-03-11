@@ -529,7 +529,7 @@ public class Facade implements IFacade{
 	 */
 	@Override
 	public void setDefaultBehaviorEnabled(Unit unit, boolean value) throws ModelException {
-		unit.setDefaultBehaviour(value);
+		unit.setDefaultBehavior(value);
 	}
 
 	/**
@@ -543,7 +543,7 @@ public class Facade implements IFacade{
 	 */
 	@Override
 	public boolean isDefaultBehaviorEnabled(Unit unit) throws ModelException {
-		return unit.isDefaultBehaviourOn();
+		return unit.isDefaultBehaviorOn();
 	}
 
 }
