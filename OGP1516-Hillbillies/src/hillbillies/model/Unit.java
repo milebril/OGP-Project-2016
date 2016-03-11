@@ -177,7 +177,6 @@ public class Unit {
 	}
 		
 	
-<<<<<<< HEAD
 	/**
 	 * @param initialPosistion
 	 * 		The cubes position, where we need to put the unit in the center
@@ -193,9 +192,7 @@ public class Unit {
 	
 	
 /////////////////////////////////////////////weight/////////////////////////////////////////////
-=======
 	/* weight*/
->>>>>>> origin/master
 	
 	/**
 	 * @invar  The weight of each unit must be a valid weight for any
@@ -571,14 +568,6 @@ public class Unit {
 		if( orientation <= 2*PI && orientation >= 0)
 			return true;
 		return false;
-	}
-	
-	
-	public double[] putUnitInCenter(double[] initialPosistion) {
-		for (int i = 0; i < initialPosistion.length; i++) {
-			initialPosistion[i] += 0.5;
-		}
-		return initialPosistion;
 	}
 	
 	/**
