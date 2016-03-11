@@ -213,10 +213,6 @@ public class Unit {
 		return ;
 	}
 		
-<<<<<<< HEAD
-	
-=======
->>>>>>> origin/master
 	/**
 	 * @param initialPosistion
 	 * 		The cubes position, where we need to put the unit in the center
@@ -229,16 +225,13 @@ public class Unit {
 		}
 		return initialPosistion;
 	}
-<<<<<<< HEAD
 	
 	
 /////////////////////////////////////////////weight/////////////////////////////////////////////
 	/* weight*/
 	
-=======
 		
 	/* weight*/
->>>>>>> origin/master
 	/**
 	 * @invar  The weight of each unit must be a valid weight for any
 	 *         unit.
