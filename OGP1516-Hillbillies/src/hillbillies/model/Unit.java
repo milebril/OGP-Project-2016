@@ -917,7 +917,6 @@ public class Unit {
 		else if(defaultBehaviour == true){
 			this.defaultBehavior(dt);
 		} else if ((Math.round(unitLifetimeInSeconds) % 20) == 0 && unitLifetimeInSeconds > 1 && canRest()) {
-			System.out.println("resting");
 			startResting();
 		}
 	}
@@ -1096,11 +1095,8 @@ public class Unit {
 			double[] moveTo = castIntToDouble(pathfindingTo);
 			putUnitInCenter(moveTo);
 			int dx = 0, dy = 0, dz = 0;
-			System.out.print(" " + moveTo[0] + " " + moveTo[1] + " " + moveTo[2] + "\n");
-			System.out.print(" " + getPosition()[0] + " " +  getPosition()[1] + " " +  getPosition()[2] + "\n");
 			
 			if (getPosition()[0] == moveTo[0] && getPosition()[1] == moveTo[1] && getPosition()[2] == moveTo[2]){
-				System.out.println("kaka");
 				this.isPathfinding = false;
 				stopSprinting();
 				return;
@@ -1294,7 +1290,6 @@ public class Unit {
 	private boolean succesfullDodge(Unit defender) {
 		Random random = new Random();
 		int chance = random.nextInt(99);
-		System.out.println(chance);
 		if (chance < 100 * dodgeChance(defender)) 
 			return true;
 		else
@@ -1344,7 +1339,6 @@ public class Unit {
 	private boolean succesfullBlock(Unit defender) {
 		Random random = new Random();
 		int chance = random.nextInt(99);
-		System.out.println(chance);
 		if (chance < 100 * blockChance(defender)) 
 			return true;
 		else
