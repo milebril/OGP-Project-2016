@@ -7,6 +7,9 @@ import ogp.framework.util.Util;
 
 public class unitTestCases {
 	
+	//TODO tests atacking op timing and attackers
+	//TODO movement tests
+	
 	public Unit testunit, testunit2;
 	
 	@Before
