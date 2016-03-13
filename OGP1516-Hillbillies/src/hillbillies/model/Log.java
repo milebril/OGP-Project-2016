@@ -45,6 +45,7 @@ public class Log {
 			throw new IllegalArgumentException();
 		this.weight =  weight;
 		//TODO placed on passable cube?
+		//TODO add to array list
 	}
  
 ////////////////////////////////////////////Weight////////////////////////////////////////////
