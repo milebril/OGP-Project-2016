@@ -15,6 +15,8 @@ import java.util.Random;
  */
 public class Unit {
 	
+	//TODO 10 expiernce voor elke opdracht die ze uitvoeren
+	
 	/**
 	 * The variables used in this unit class.
 	 */
@@ -211,6 +213,9 @@ public class Unit {
 		this.setDefaultBehavior(enableDefaultBehavior);
 
 		return ;
+		
+		//TODO Standaard is een unit Alive (var maken)
+		//TODO PLaats waar we unit creeeren moet een passeble plaats zijn
 	}
 		
 	/**
@@ -1065,6 +1070,8 @@ public class Unit {
 		}
 	
 	/* Pathfinding */
+	//TODO Nieuwe pathfinding
+	
 	/**
 	 * start walking to the given position
 	 * @param cube
@@ -1131,6 +1138,8 @@ public class Unit {
 	}
 	
 	/* Work */
+	//TODO Nieuwe work implementeren
+	
 	/**
 	 * Return the state of working of this unit.
 	 */
@@ -1190,6 +1199,9 @@ public class Unit {
 	}
 
 	/* Fighting */
+	//TODO Attacker en Defender moeten tot andere faction behoren
+	//TODO succesfull att, dodge of block +20 exp
+	
 	/**
 	 * Let the unit start attacking.
 	 */
@@ -1274,6 +1286,8 @@ public class Unit {
 	}
 	
 	/* Dodging */
+	//TODO kan enkel dodgen naar passable terain
+	
 	/**
 	 * return the chance that a defending unit can dodge the attack.
 	 * @param defender
@@ -1503,6 +1517,8 @@ public class Unit {
 		//TODO fight potential enemys
 	}
 	
-	/* Death */
+///////////////////////////Death///////////////////////////////
+	//TODO death: hitpoints <= 0 -> isAlive is False
 	
+////////////////////////Falling//////////////////////////////
 }
