@@ -1499,6 +1499,10 @@ public class Unit {
 		}
 		else if(ActionChance == 3){
 			this.startResting();
-		}
+		} 
+		//TODO fight potential enemys
 	}
+	
+	/* Death */
+	
 }

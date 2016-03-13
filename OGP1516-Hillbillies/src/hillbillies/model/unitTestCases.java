@@ -3,6 +3,8 @@ package hillbillies.model;
 import static org.junit.Assert.*;
 import org.junit.*;
 
+import hillbillies.part1.facade.Facade;
+import ogp.framework.util.ModelException;
 import ogp.framework.util.Util;
 
 public class unitTestCases {
@@ -188,9 +190,6 @@ public class unitTestCases {
 		testunit2.setStamina(25);
 		testunit2.increaseStamina(30);
 		
-		System.out.println(testunit2.getMaxStamina());
-		System.out.println(testunit2.getStamina());
-		
 		assertEquals(50, testunit2.getStamina());
 		
 		testunit2.setStamina(25);
@@ -230,6 +229,33 @@ public class unitTestCases {
 		assertEquals(35.5, testunit.getPosition()[0], Util.DEFAULT_EPSILON);
 		assertEquals(10.5, testunit.getPosition()[1], Util.DEFAULT_EPSILON);
 		assertEquals(0.5, testunit.getPosition()[2], Util.DEFAULT_EPSILON);
+	}
+	
+	/*
+	 * Movement
+	 */
+	
+	@Test
+	public void correctPathfindeing() throws ModelException{
+		testunit.setUnitPosition(new double[] {0.0, 0.0, 0.0});
+		Facade ea = new Facade();
+		//testunit.startWalking(1, 1, 1);
+		ea.moveToAdjacent(testunit, 0, 1, 0);
+		//testunit.startPathfinding(new int[] {1, 1, 1});
+		System.out.println(testunit.getPosition()[0]);
+		assertEquals(1.0, testunit.getPosition()[0], Util.DEFAULT_EPSILON);
+		assertEquals(1.0, testunit.getPosition()[1], Util.DEFAULT_EPSILON);
+		assertEquals(1.0, testunit.getPosition()[2], Util.DEFAULT_EPSILON);
+	}
+	
+	/*
+	 * Fighting
+	 */
+	
+	@Test
+	public void fighting() {
+		testunit.startAttacking(testunit2);
+		System.out.println(testunit2.getHitpoints());
 	}
 	
 }

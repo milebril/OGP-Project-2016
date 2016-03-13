@@ -1,12 +1,17 @@
 package hillbillies.model;
 
 import be.kuleuven.cs.som.annotate.*;
+import ogp.framework.util.ModelException;
 
 /**
  * A class that deals with a world and all the properties of that world.
  * 
  * @author Emil Peters
  * @author Sjaan Vandebeek
+ *
+ * @invar  The amount of units of each world must be a valid amount of units for any
+ *         world.
+ *       | isValidAmountOfUnits(getAmountOfUnits())
  */
 public class World {
 	
@@ -24,27 +29,28 @@ public class World {
 	 *       | new.getAmountOfUnits() == amountOfUnits
 	 *       
 	 * Initialize this new world with given amount of factions.
-	 * 
+	 *
 	 * @param  amountOfFactions
 	 *         The amount of factions for this new world.
-	 * @pre    The given amount of factions must be a valid amount of factions for any world.
-	 *       | isValidAmountOfFactions(amount of factions)
+	 * @throws ModelException
+	 * 		   The given amount of factions is not a valid amount of factions for any
+	 *         world.
+	 *       | ! isValidFactionAmount(getFactionAmount())
 	 * @post   The amount of factions of this new world is equal to the given
 	 *         amount of factions.
 	 *       | new.getAmountOfFactions() == amountOfFactions
+	 * @effect The amount of factions of this new world is set to
+	 *         the given amount of factions.
+	 *       | this.setFactionAmount(amountOfFactions)
+	 *
 	 */
-	public World(int amountOfUnits,int amountOfFactions){
+	public World(int amountOfUnits,int amountOfFactions) throws ModelException{
 		//TODO constructor
 		this.setAmountOfUnits(amountOfUnits);
-		this.setAmountOfFactions(amountOfFactions);
+		this.setFactionAmount(amountOfFactions);
 	}
 
 ////////////////////////////////////////////Amount of units////////////////////////////////////////////
-	/**
-	 * @invar  The amount of units of each world must be a valid amount of units for any
-	 *         world.
-	 *       | isValidAmountOfUnits(getAmountOfUnits())
-	 */
 	
 	/**
 	 * Return the amount of units of this world.
@@ -107,17 +113,18 @@ public class World {
 	private int amountOfUnits;
 	
 ////////////////////////////////////////////Amount of factions////////////////////////////////////////////
-	/**
+
+	/** TO BE ADDED TO CLASS HEADING
 	 * @invar  The amount of factions of each world must be a valid amount of factions for any
 	 *         world.
-	 *       | isValidAmountOfFactions(getAmountOfFactions())
+	 *       | isValidFactionAmount(getFactionAmount())
 	 */
 	
 	/**
 	 * Return the amount of factions of this world.
 	 */
 	@Basic @Raw
-	public int getAmountOfFactions() {
+	public int getFactionAmount() {
 		return this.amountOfFactions;
 	}
 	
@@ -127,10 +134,10 @@ public class World {
 	 *  
 	 * @param  amount of factions
 	 *         The amount of factions to check.
-	 * @return return true if the amount of factions lays between the maximum 
-	 * 		   number of factions and the minimum number of factions.
+	 * @return 
+	 *       | result == 
 	*/
-	public static boolean isValidAmountOfFactions(int amountOfFactions) {
+	public static boolean isValidFactionAmount(int amountOfFactions) {
 		if (amountOfFactions <= getMaxAmountOfFactions() && amountOfFactions >= getMinAmountOfFactions())
 			return true;
 		return false;
@@ -141,16 +148,18 @@ public class World {
 	 * 
 	 * @param  amountOfFactions
 	 *         The new amount of factions for this world.
-	 * @pre    The given amount of factions must be a valid amount of factions for any
+	 * @post   The amount of factions of this new world is equal to
+	 *         the given amount of factions.
+	 *       | new.getFactionAmount() == amountOfFactions
+	 * @throws ModelException
+	 *         The given amount of factions is not a valid amount of factions for any
 	 *         world.
-	 *       | isValidAmountOfFactions(amountOfFactions)
-	 * @post   The amount of factions of this world is equal to the given
-	 *         amount of factions.
-	 *       | new.getAmountOfFactions() == amountOfFactions
+	 *       | ! isValidFactionAmount(getFactionAmount())
 	 */
 	@Raw
-	public void setAmountOfFactions(int amountOfFactions) {
-		assert isValidAmountOfFactions(amountOfFactions);
+	public void setFactionAmount(int amountOfFactions) throws ModelException {
+		if (! isValidFactionAmount(amountOfFactions))
+			throw new ModelException();
 		this.amountOfFactions = amountOfFactions;
 	}
 	
@@ -158,7 +167,7 @@ public class World {
 	 * return the maximum number of factions for each world.
 	 */
 	private static int getMaxAmountOfFactions(){
-		return 100;
+		return 5;
 	}
 	
 	/**
@@ -171,6 +180,17 @@ public class World {
 	/**
 	 * Variable registering the amount of factions of this world.
 	 */
-	private int amountOfFactions;	
-////////////////////////////////////////////next////////////////////////////////////////////	
+	private int amountOfFactions;		
+	
+////////////////////////////////////////////Units in a faction////////////////////////////////////////////
+	
+////////////////////////////////////////////Random Unit spawnen////////////////////////////////////////////
+	
+////////////////////////////////////////////Game over////////////////////////////////////////////
+	
+////////////////////////////////////////////inspect each individual cube////////////////////////////////////////////
+	
+////////////////////////////////////////////list all Units, facs, boulders and logs////////////////////////////////////////////
+	
+////////////////////////////////////////////Advancetime////////////////////////////////////////////
 }
