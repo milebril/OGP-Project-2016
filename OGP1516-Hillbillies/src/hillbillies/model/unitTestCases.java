@@ -258,4 +258,24 @@ public class unitTestCases {
 		System.out.println(testunit2.getHitpoints());
 	}
 	
+	/*
+	 * Death
+	 */
+	
+	@Test
+	public void unitDies_ValidCase() {
+		int hp = testunit2.getHitpoints();
+		testunit2.decreaseHitpoints(hp);
+		assertFalse(testunit2.isUnitAlive());
+	}
+	
+	@Test
+	public void newUnitLives_TrueCase() throws IllegalNameException, IllegalArgumentException {
+		int[] pos = {0,0,0};
+		Unit alive = new Unit("Emil", pos, 50, 50, 50, 50, false);
+		testunit2.putUnitInCenter(testunit.castIntToDouble(pos));
+		
+		assertTrue(alive.isUnitAlive());
+	}
+	
 }

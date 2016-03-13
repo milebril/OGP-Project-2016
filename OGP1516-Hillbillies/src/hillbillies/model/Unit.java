@@ -790,15 +790,16 @@ public class Unit {
 	 * @pre    The given hitpoints must be a valid hitpoints for any unit.
 	 *       | isValidHitpoints(hitpoints)
 	 * @post   The hitpoints of this unit is equal to the old hitpoints minus the given one.
-	 *       |if (amount > getHitpoints()) Then new.hitpoints == 0
+	 *       |if (amount >= getHitpoints()) Then new.hitpoints == 0
 	 * 		 |		Else new.hitpoints == this.getHitpoints - amount
 	 * 
 	 */
 	public void decreaseHitpoints(int hitpoints) {
 		assert isValidHitpoints(hitpoints);
-		if (hitpoints > getHitpoints()) 
+		if (hitpoints >= getHitpoints()) {
 			setHitpoints(0);
-		else
+			die();
+		} else
 			setHitpoints(getHitpoints() - hitpoints);
 		
 	}
@@ -1517,8 +1518,39 @@ public class Unit {
 		//TODO fight potential enemys
 	}
 	
-///////////////////////////Death///////////////////////////////
-	//TODO death: hitpoints <= 0 -> isAlive is False
+	/* Death */
+	
+	/**
+	 * Variable registering the vivacity of this unit.
+	 * From the moment a Unit is created this is true.
+	 */
+	private boolean isAlive = true;
+	
+	//TODO is dit nodig??
+	/**
+	 * @invar  The unit is alive
+	 *       |	this.isAlive == true
+	 */
+
+
+	/**
+	 * Return the vivacity of this unit.
+	 */
+	@Basic @Raw
+	public boolean isUnitAlive() {
+		return this.isAlive;
+	}
+	
+	/**
+	 * The given unit dies.
+	 * 
+	 * @post The given unit's hitpoints are 0, and the unit dies
+	 *       | new.isAlive == false
+	 */
+	@Raw
+	public void die() {
+		this.isAlive = false;
+	}
 	
 ////////////////////////Falling//////////////////////////////
 }
