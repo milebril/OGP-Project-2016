@@ -45,8 +45,7 @@ public class Facade implements IFacade{
 	 */
 	@Override
 	public World createWorld(int[][][] terrainTypes, TerrainChangeListener modelListener) throws ModelException {
-		// TODO Auto-generated method stub
-		return null;
+		return new World(terrainTypes, modelListener);
 	}
 
 	/**

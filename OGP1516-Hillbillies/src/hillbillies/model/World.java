@@ -1,6 +1,7 @@
 package hillbillies.model;
 
 import be.kuleuven.cs.som.annotate.*;
+import hillbillies.part2.listener.TerrainChangeListener;
 import ogp.framework.util.ModelException;
 
 /**
@@ -12,6 +13,10 @@ import ogp.framework.util.ModelException;
  * @invar  The amount of units of each world must be a valid amount of units for any
  *         world.
  *       | isValidAmountOfUnits(getAmountOfUnits())
+ *       
+ * @invar  The terrainType of each world must be a valid terrainType for any
+ *         world.
+ *       | isValidTerrainType(getTerrainType())
  */
 public class World {
 	
@@ -43,11 +48,16 @@ public class World {
 	 *         the given amount of factions.
 	 *       | this.setFactionAmount(amountOfFactions)
 	 *
+	 * Initialize this new world with given terrainType.
+	 *
+	 * @param  terrainTypes
+	 *         The terrainType for this new world.
+	 * @effect The terrainType of this new world is set to
+	 *         the given terrainType.
+	 *       | this.setTerrainType(terrainTypes)
 	 */
-	public World(int amountOfUnits,int amountOfFactions) throws ModelException{
-		//TODO constructor
-		this.setAmountOfUnits(amountOfUnits);
-		this.setFactionAmount(amountOfFactions);
+	public World(int[][][] terrainTypes, TerrainChangeListener modelListener) throws ModelException{
+		setTerrainType(terrainTypes.clone());
 	}
 
 ////////////////////////////////////////////Amount of units////////////////////////////////////////////
@@ -91,6 +101,7 @@ public class World {
 	public void setAmountOfUnits(int amountOfUnits) {
 		assert isValidAmountOfUnits(amountOfUnits);
 		this.amountOfUnits = amountOfUnits;
+		//TODO deze functie moet verandert worden in een method die een list bij houdt van de units
 	}
 	
 	/**
@@ -111,6 +122,9 @@ public class World {
 	 * Variable registering the amount of units of this world.
 	 */
 	private int amountOfUnits;
+	
+////////////////////////////////////////////list all Units////////////////////////////////////////////
+
 	
 ////////////////////////////////////////////Amount of factions////////////////////////////////////////////
 
@@ -161,6 +175,7 @@ public class World {
 		if (! isValidFactionAmount(amountOfFactions))
 			throw new ModelException();
 		this.amountOfFactions = amountOfFactions;
+		//TODO deze functie moet verandert worden in een method die een list bij houdt van de factions
 	}
 	
 	/**
@@ -181,6 +196,8 @@ public class World {
 	 * Variable registering the amount of factions of this world.
 	 */
 	private int amountOfFactions;		
+
+////////////////////////////////////////////list all factions////////////////////////////////////////////	
 	
 ////////////////////////////////////////////Units in a faction////////////////////////////////////////////
 	
@@ -189,14 +206,84 @@ public class World {
 ////////////////////////////////////////////Game over////////////////////////////////////////////
 	
 ////////////////////////////////////////////inspect each individual cube////////////////////////////////////////////
-	
-////////////////////////////////////////////list all Units////////////////////////////////////////////
-
-////////////////////////////////////////////list all factions////////////////////////////////////////////
-	
+		
 ////////////////////////////////////////////list all boulders////////////////////////////////////////////
 	
 ////////////////////////////////////////////list all logs////////////////////////////////////////////
 	
 ////////////////////////////////////////////Advance time////////////////////////////////////////////
+	
+////////////////////////////////////////////World dimensions////////////////////////////////////////////
+		
+	/**
+	 * Return the terrainType of this world.
+	 */
+	@Basic @Raw
+	public int[][][] getTerrainType() {
+		return this.terrainTypes;
+	}
+	
+	/**
+	 * Check whether the given terrainType is a valid terrainType for
+	 * any world.
+	 *  
+	 * @param  terrainType
+	 *         The terrainType to check.
+	 * @return 
+	 *       | result == 
+	*/
+	public static boolean isValidTerrainType(int[][][] terrainType) {
+		//TODO check if valid terrain type
+		return true;
+	}
+	
+	/**
+	 * Set the terrainType of this world to the given terrainType.
+	 * 
+	 * @param  terrainType
+	 *         The new terrainType for this world.
+	 * @post   The terrainType of this new world is equal to
+	 *         the given terrainType.
+	 *       | new.getTerrainType() == terrainType
+	 * @throws IllegalArgumentException
+	 *         The given terrainType is not a valid terrainType for any
+	 *         world.
+	 *       | ! isValidTerrainType(getTerrainType())
+	 */
+	@Raw
+	public void setTerrainType(int[][][] terrainTypes) 
+			throws IllegalArgumentException {
+		if (! isValidTerrainType(terrainTypes))
+			throw new IllegalArgumentException();
+		this.terrainTypes = terrainTypes;
+	}
+	
+	/**
+	 * Variable registering the terrainType of this world.
+	 */
+	private int[][][] terrainTypes;
+	
+	/**
+	 * return the length of the world on the x-axis.
+	 */
+	public int getXLength(){
+		//TODO return x length
+		return 0;
+	}
+	
+	/**
+	 * return the length of the world on the y-axis.
+	 */
+	public int getYLength(){
+		//TODO return y length
+		return 0;
+	}
+	
+	/**
+	 * return the length of the world on the z-axis.
+	 */
+	public int getZLength(){
+		//TODO return z length
+		return 0;
+	}
 }
