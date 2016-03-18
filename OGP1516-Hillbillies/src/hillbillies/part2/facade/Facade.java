@@ -59,7 +59,7 @@ public class Facade implements IFacade{
 	@Override
 	public int getNbCubesX(World world) throws ModelException {
 		// TODO Auto-generated method stub
-		return 0;
+		return world.getXLength();
 	}
 
 	/**
@@ -73,7 +73,7 @@ public class Facade implements IFacade{
 	@Override
 	public int getNbCubesY(World world) throws ModelException {
 		// TODO Auto-generated method stub
-		return 0;
+		return world.getYLength();
 	}
 
 	/**
@@ -87,7 +87,7 @@ public class Facade implements IFacade{
 	@Override
 	public int getNbCubesZ(World world) throws ModelException {
 		// TODO Auto-generated method stub
-		return 0;
+		return world.getZLength();
 	}
 
 	/**
@@ -130,7 +130,7 @@ public class Facade implements IFacade{
 	@Override
 	public int getCubeType(World world, int x, int y, int z) throws ModelException {
 		// TODO Auto-generated method stub
-		return 0;
+		return world.getCubeType(x, y, z);
 	}
 
 	/**

@@ -57,7 +57,7 @@ public class World {
 	 *       | this.setTerrainType(terrainTypes)
 	 */
 	public World(int[][][] terrainTypes, TerrainChangeListener modelListener) throws ModelException{
-		setTerrainType(terrainTypes.clone());
+		this.setTerrainType(terrainTypes);
 	}
 
 ////////////////////////////////////////////Amount of units////////////////////////////////////////////
@@ -251,11 +251,11 @@ public class World {
 	 *       | ! isValidTerrainType(getTerrainType())
 	 */
 	@Raw
-	public void setTerrainType(int[][][] terrainTypes) 
-			throws IllegalArgumentException {
+	public void setTerrainType(int[][][] terrainTypes) throws IllegalArgumentException {
 		if (! isValidTerrainType(terrainTypes))
 			throw new IllegalArgumentException();
 		this.terrainTypes = terrainTypes;
+		System.out.println(getTerrainType()[0][0][0]);
 	}
 	
 	/**
@@ -267,23 +267,24 @@ public class World {
 	 * return the length of the world on the x-axis.
 	 */
 	public int getXLength(){
-		//TODO return x length
-		return 0;
+		return terrainTypes.length;
 	}
 	
 	/**
 	 * return the length of the world on the y-axis.
 	 */
 	public int getYLength(){
-		//TODO return y length
-		return 0;
+		return terrainTypes[0].length;
 	}
 	
 	/**
 	 * return the length of the world on the z-axis.
 	 */
 	public int getZLength(){
-		//TODO return z length
-		return 0;
+		return terrainTypes[0][0].length;
+	}
+	
+	public int getCubeType(int x, int y, int z) {
+		return getTerrainType()[x][y][z];
 	}
 }
