@@ -58,7 +58,6 @@ public class Facade implements IFacade{
 	 */
 	@Override
 	public int getNbCubesX(World world) throws ModelException {
-		// TODO Auto-generated method stub
 		return world.getXLength();
 	}
 
@@ -72,7 +71,6 @@ public class Facade implements IFacade{
 	 */
 	@Override
 	public int getNbCubesY(World world) throws ModelException {
-		// TODO Auto-generated method stub
 		return world.getYLength();
 	}
 
@@ -86,7 +84,6 @@ public class Facade implements IFacade{
 	 */
 	@Override
 	public int getNbCubesZ(World world) throws ModelException {
-		// TODO Auto-generated method stub
 		return world.getZLength();
 	}
 
@@ -106,8 +103,7 @@ public class Facade implements IFacade{
 	 */
 	@Override
 	public void advanceTime(World world, double dt) throws ModelException {
-		// TODO Auto-generated method stub
-		
+		world.advanceTime(dt);
 	}
 
 	/**
@@ -129,7 +125,6 @@ public class Facade implements IFacade{
 	 */
 	@Override
 	public int getCubeType(World world, int x, int y, int z) throws ModelException {
-		// TODO Auto-generated method stub
 		return world.getCubeType(x, y, z);
 	}
 
@@ -154,7 +149,7 @@ public class Facade implements IFacade{
 	 */
 	@Override
 	public void setCubeType(World world, int x, int y, int z, int value) throws ModelException {
-		// TODO Auto-generated method stub
+		world.setCubeType(x, y, z, value);
 		
 	}
 	
@@ -178,8 +173,7 @@ public class Facade implements IFacade{
 	 */
 	@Override
 	public boolean isSolidConnectedToBorder(World world, int x, int y, int z) throws ModelException {
-		// TODO Auto-generated method stub
-		return false;
+		return world.isSolidConnectedToBorder(x, y, z);
 	}
 
 	/* UNITS */
@@ -202,8 +196,7 @@ public class Facade implements IFacade{
 	 */
 	@Override
 	public Unit spawnUnit(World world, boolean enableDefaultBehavior) throws ModelException {
-		// TODO Auto-generated method stub
-		return null;
+		return world.spawnUnit(enableDefaultBehavior);
 	}
 
 	/**
@@ -276,8 +269,7 @@ public class Facade implements IFacade{
 	 */
 	@Override
 	public boolean isAlive(Unit unit) throws ModelException {
-		// TODO Auto-generated method stub
-		return false;
+		return unit.isUnitAlive();
 	}
 
 	/**
@@ -290,8 +282,7 @@ public class Facade implements IFacade{
 	 */
 	@Override
 	public int getExperiencePoints(Unit unit) throws ModelException {
-		// TODO Auto-generated method stub
-		return 0;
+		return unit.getExperience();
 	}
 
 	/**

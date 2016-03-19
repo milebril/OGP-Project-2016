@@ -1,6 +1,8 @@
 package hillbillies.model;
 
 import be.kuleuven.cs.som.annotate.*;
+import ogp.framework.util.ModelException;
+
 import static java.lang.Math.PI;
 import java.util.Random;
 
@@ -68,8 +70,7 @@ public class Unit {
 	 * 	      The toughness for this new unit.
 	 * @param enableDefaultBehavior
 	 * 		  The default behavior for this new unit.
-	 * @throws IllegalNameException 
-	 * 
+	 * @throws ModelException 
 	 * @throws illegalPositionException
 	 * 
 	 * 
@@ -160,7 +161,7 @@ public class Unit {
 	 * 
 	 */
 	public Unit (String name, int[] initialPosition, int weight, int agility, int strength, int toughness,
-			boolean enableDefaultBehavior) throws IllegalNameException, IllegalArgumentException {
+			boolean enableDefaultBehavior) throws IllegalArgumentException, ModelException {
 		/* Weight */
 		if (weight > 100)
 			this.setWeight(100);
@@ -211,10 +212,12 @@ public class Unit {
 		this.increaseStamina(getMaxStamina());
 		/* Default Behavior */
 		this.setDefaultBehavior(enableDefaultBehavior);
-
+		
+		/* Experience */
+		this.setExperience(0);
+		
 		return ;
 		
-		//TODO Standaard is een unit Alive (var maken)
 		//TODO PLaats waar we unit creeeren moet een passeble plaats zijn
 	}
 		
@@ -621,7 +624,7 @@ public class Unit {
 		for (int i=0; i < unitPosition.length; i++) {
 			if (unitPosition[i] < getMinValueCoordinate() || unitPosition[i] > getMaxValueCoordinate())
 				return false;
-		}
+		} 
 		return true;
 	}
 	
@@ -1606,4 +1609,95 @@ public class Unit {
 	private boolean isFalling = false;
 	private int numberOfZlevelsFallen = 0;
 	
+	/*
+	 * Experience
+	 */
+	
+	/** TO BE ADDED TO CLASS HEADING
+	 * @invar  The experience of each Unit must be a valid experience for any
+	 *         Unit.
+	 *       | isValidExperience(getExperience())
+	 */
+
+	
+	//TODO hier iets mee doen! Comentaar voor de constructor? initieel 0 exp?
+	/**
+	 * Initialize this new Unit with given experience.
+	 *
+	 * @param  experience
+	 *         The experience for this new Unit.
+	 * @effect The experience of this new Unit is set to
+	 *         the given experience.
+	 *       | this.setExperience(experience)
+	 */
+	
+	
+	/**
+	 * Return the experience of this Unit.
+	 */
+	@Basic @Raw
+	public int getExperience() {
+		return this.experience;
+	}
+	
+	/**
+	 * Check whether the given experience is a valid experience for
+	 * any Unit.
+	 *  
+	 * @param  experience
+	 *         The experience to check.
+	 * @return 
+	 *       | result == experience >= 0
+	*/
+	public static boolean isValidExperience(int experience) {
+		return experience >= 0;
+	}
+	
+	/**
+	 * Increases the experience of this Unit to the given experience.
+	 * 
+	 * @param  experience
+	 *         The new experience for this Unit.
+	 * @post   The experience of this new Unit is equal to
+	 *         the given experience.
+	 *       | new.getExperience() == old.experience + experience
+	 * @throws ModelException
+	 *         The given experience is not a valid experience for any
+	 *         Unit.
+	 *       | ! isValidExperience(getExperience())
+	 */
+	@Raw
+	public void setExperience(int experience) throws ModelException {
+		if (! isValidExperience(experience))
+			throw new ModelException();
+		this.expTillNextLevel += experience;
+		this.experience += experience;
+		
+		if (expTillNextLevel >= 10) {
+			increaceRandomStat();
+			expTillNextLevel -= 10;
+		}
+	}
+	
+	/**
+	 * Every time 10 xp is reached a unit get's a random attribute get's increased by 1.
+	 */
+	private void increaceRandomStat() {
+		Random rand = new Random();
+		int r = rand.nextInt(2);
+		switch (r) {
+		case 0:
+			setStrength(getStrength() + 1);
+		case 1:
+			setAgility(getAgility() + 1); 
+		case 2:
+			setToughness(getToughness() + 1); 
+		}
+	}
+	
+	/**
+	 * Variable registering the experience of this Unit.
+	 */
+	private int experience;
+	private int expTillNextLevel;
 }

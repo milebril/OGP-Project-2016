@@ -1,7 +1,10 @@
 package hillbillies.model;
 
+import java.util.Random;
+
 import be.kuleuven.cs.som.annotate.*;
 import hillbillies.part2.listener.TerrainChangeListener;
+import hillbillies.util.ConnectedToBorder;
 import ogp.framework.util.ModelException;
 
 /**
@@ -202,6 +205,37 @@ public class World {
 ////////////////////////////////////////////Units in a faction////////////////////////////////////////////
 	
 ////////////////////////////////////////////Random Unit spawnen////////////////////////////////////////////
+	Random rand = new Random();
+	
+	public Unit spawnUnit(boolean enableDefaultBehavior) throws ModelException{
+		int x = rand.nextInt(getXLength());
+		int y = rand.nextInt(getYLength());
+		int z = rand.nextInt(getZLength());
+		
+		System.out.println(x + " " + y + " " + z);
+		
+		while (!isCubePassable(x, y, z) && (getTerrainType()[x][y][z-1] != 1 || z != 0)) { //TODO !
+			x = rand.nextInt(getXLength());
+			y = rand.nextInt(getYLength());
+			z = rand.nextInt(getZLength());
+		}
+		
+		int weight = rand.nextInt(100);
+		int strength = rand.nextInt(75) + 25;
+		int agility = rand.nextInt(75) + 25;
+		int toughness = rand.nextInt(75) + 25;
+		
+		if (getFactionAmount() < getMaxAmountOfFactions()) {
+			//TODO maak nieuwe faction, en steek deze unit erin
+		} else {
+			//TODO steek de unit in de faciton met het minste leden.
+		}
+		
+		
+		Unit newUnit = new Unit("New Unit", new int[] {x, y, z}, weight, agility, strength, toughness, enableDefaultBehavior);
+		
+		return newUnit;
+	}
 	
 ////////////////////////////////////////////Game over////////////////////////////////////////////
 	
@@ -213,7 +247,27 @@ public class World {
 	
 ////////////////////////////////////////////Advance time////////////////////////////////////////////
 	
+	public void advanceTime(double dt) {
+		
+	}
+	
 ////////////////////////////////////////////World dimensions////////////////////////////////////////////
+	
+	/**
+	 * Checks wheter the cube at given coords is passable
+	 * @param x
+	 * @param y
+	 * @param z
+	 * 		The (x, y, z) coords of the cube to check
+	 * @return Returns true if the terrain is air or a workbench
+	 * 		| if getTerrainType()[x][y][z] = 0 or getTerrainType()[x][y][z] = 3
+	 * 			Then return == true
+	 * 		  else return == false
+	 *  		
+	 */
+	public boolean isCubePassable(int x, int y, int z) {
+		return getTerrainType()[x][y][z] == 0 || getTerrainType()[x][y][z] == 3;
+	}
 		
 	/**
 	 * Return the terrainType of this world.
@@ -255,7 +309,6 @@ public class World {
 		if (! isValidTerrainType(terrainTypes))
 			throw new IllegalArgumentException();
 		this.terrainTypes = terrainTypes;
-		System.out.println(getTerrainType()[0][0][0]);
 	}
 	
 	/**
@@ -267,24 +320,49 @@ public class World {
 	 * return the length of the world on the x-axis.
 	 */
 	public int getXLength(){
-		return terrainTypes.length;
+		return getTerrainType().length;
 	}
 	
 	/**
 	 * return the length of the world on the y-axis.
 	 */
 	public int getYLength(){
-		return terrainTypes[0].length;
+		return getTerrainType()[0].length;
 	}
 	
 	/**
 	 * return the length of the world on the z-axis.
 	 */
 	public int getZLength(){
-		return terrainTypes[0][0].length;
+		return getTerrainType()[0][0].length;
 	}
 	
 	public int getCubeType(int x, int y, int z) {
 		return getTerrainType()[x][y][z];
+	}
+	
+	/**
+	 * set the given cube to the given type
+	 */
+	public void setCubeType(int x, int y, int z, int value) {
+		this.terrainTypes[x][y][z] = value;
+	}
+	
+	public ConnectedToBorder connect;
+	
+	/**
+	 * Check whether the given cube is solid connected to a border of the world.
+	 *
+	 * @param x
+	 * @param y
+	 * @param z
+	 * 		The (x,y,z) coordinates of the cube to check.
+	 * @return returns true when the cube is solid connected to a border.
+	 * 		| result == isSolidConnectedToBorder(x, y, z)
+	 * 
+	 */
+	public boolean isSolidConnectedToBorder(int x, int y, int z) {
+		connect = new ConnectedToBorder(getXLength(), getYLength(), getZLength());
+		return connect.isSolidConnectedToBorder(x, y, z);
 	}
 }

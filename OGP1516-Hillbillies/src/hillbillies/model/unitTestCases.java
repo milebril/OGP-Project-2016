@@ -15,7 +15,7 @@ public class unitTestCases {
 	public Unit testunit, testunit2;
 	
 	@Before
-	public void setUp() throws IllegalNameException {
+	public void setUp() throws IllegalArgumentException, ModelException {
 		int[] pos = {0,0,0};
 		testunit = new Unit("Emil", pos, 50, 50, 50, 50, false);
 		testunit.putUnitInCenter(testunit.castIntToDouble(pos));
@@ -270,7 +270,7 @@ public class unitTestCases {
 	}
 	
 	@Test
-	public void newUnitLives_TrueCase() throws IllegalNameException, IllegalArgumentException {
+	public void newUnitLives_TrueCase() throws IllegalArgumentException, ModelException {
 		int[] pos = {0,0,0};
 		Unit alive = new Unit("Emil", pos, 50, 50, 50, 50, false);
 		testunit2.putUnitInCenter(testunit.castIntToDouble(pos));
