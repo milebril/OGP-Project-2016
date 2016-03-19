@@ -1553,4 +1553,57 @@ public class Unit {
 	}
 	
 ////////////////////////Falling//////////////////////////////
+	
+	/** TO BE ADDED TO CLASS HEADING
+	 * @invar  The property_name_Eng of each object_name_Eng must be a valid property_name_Eng for any
+	 *         object_name_Eng.
+	 *       | isValidPropertyName_Java(getPropertyName_Java())
+	 */
+	
+
+/**
+ * Initialize this new object_name_Eng with given property_name_Eng.
+ *
+ * @param  propertyName_Java
+ *         The property_name_Eng for this new object_name_Eng.
+ * @effect The property_name_Eng of this new object_name_Eng is set to
+ *         the given property_name_Eng.
+ *       | this.setPropertyName_Java(propertyName_Java)
+ */
+
+
+	/**
+	 * Return the this unit is falling or not.
+	 */
+	@Basic @Raw
+	public boolean isFalling() {
+		return this.isFalling;
+	}
+	
+	/**
+	 * this unit stops resting
+	 */
+	private void stopFalling() {
+		this.isFalling = false;
+	}
+	
+	private void startFalling() {
+		this.isFalling = true;
+		//TODO fall aanroepen in de advanceTime
+	}
+	
+	public void fall(double dt) {
+		
+		if ( (int) getPosition()[3] == 0) /*|| World.getTerainType == solid*/ //TODO) {
+				stopFalling();
+		
+		decreaseHitpoints(numberOfZlevelsFallen * 10);
+	}
+	
+	/**
+	 * Variable registering the property_name_Eng of this object_name_Eng.
+	 */
+	private boolean isFalling = false;
+	private int numberOfZlevelsFallen = 0;
+	
 }
