@@ -1,11 +1,10 @@
 package hillbillies.model;
 
-import static org.junit.Assert.*;
-import org.junit.*;
-
 import hillbillies.part1.facade.Facade;
 import ogp.framework.util.ModelException;
 import ogp.framework.util.Util;
+import static org.junit.Assert.*;
+import org.junit.*;
 
 public class unitTestCases {
 	
