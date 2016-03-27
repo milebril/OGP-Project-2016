@@ -10,6 +10,43 @@ import java.util.Random;
  * A class that deals with a unit and all the actions that they can complete 
  * in the given game world.
  * 
+ * @invar  The weight of each unit must be a valid weight for any
+ *         unit.
+ *       | isValidWeigth(getWeight())
+ * @invar  The strength of each unit must be a valid strength for any
+ *         unit.
+ *       | isValidStrength(getStrength())
+ * @invar The agility of each unit must be a valid agility for any
+ *         unit.
+ *       | isValidAgility(getAgility())
+ * @invar  The toughness of each unit must be a valid toughness for any
+ *         unit.
+ *       | isValidToughness(getToughness())
+ * @invar  The name of each unit must be a valid name for any
+ *         unit.
+ *       | isValidName(getName())
+ * @invar  The position of each unit must be a valid position for any
+ *         unit.
+ *       | isValidPosition(getPosition())
+ * @invar  The orientation of each unit must be a valid orientation for any
+ *         unit.
+ *       | isValidOrientation(getOrientation())
+ * @invar  The hitpoints of each unit must be a valid hitpoints for any
+ *         unit.
+ *       | isValidHitpoints(getHitpoints())     
+ * @invar  The Stamina of each unit must be a valid Stamina for any
+ *         unit.
+ *       | isValidStamina(getStamina())
+ 	 
+ * @invar  The unit is alive
+ *       |	this.isAlive == true 
+ * @invar  The property_name_Eng of each object_name_Eng must be a valid property_name_Eng for any
+ *         object_name_Eng.
+ *       | isValidPropertyName_Java(getPropertyName_Java())
+ * @invar  The experience of each Unit must be a valid experience for any
+ *         Unit.
+ *       | isValidExperience(getExperience())
+ *       
  * @version 2.0
  * @author Emil Peters
  * @author Sjaan Vandebeek
@@ -19,39 +56,7 @@ public class Unit {
 	
 	//TODO 10 expiernce voor elke opdracht die ze uitvoeren
 	
-	/**
-	 * The variables used in this unit class.
-	 */
-
-	private int weight;
-	private int strength;
-	private int agility;
-	private int toughness;
-	private String name;
-	private float orientation = (float) (PI / 2);
-	private double[] unitPosition;
-	private int hitpoints;
-	private int stamina;
-	private boolean isSprinting = false;
-	private boolean isWorking = false;
-	private boolean isResting = false;
-	private boolean isAttacking = false;
-	private boolean isDefending = false;
-	private boolean defaultBehaviour = false;
-	private boolean isWalking = false;
-	private double timeLeftWorking;
-	private double[] walkingTo = {0,0,0};
-	private double baseForWalkingSpeed;
-	private double counterForHitpoints = 0;
-	private double counterForStamina = 0;
-	private double counterForRunning = 0;
-	private boolean isPathfinding = false;
-	private int[] pathfindingTo = {0,0,0};
-	private Unit defenderClone;
-	private double unitLifetimeInSeconds = 0;
-	
 	/*constructor*/
-	
 	/**
 	 * initialize this new unit with the given name, position, weight, agility,
 	 * strength, toughness and default behavior.
@@ -157,6 +162,22 @@ public class Unit {
 	 * @post The default behavior of the unit is equal to enableDefaultBehavior
 	 * 		|new.defaultBehavior = enableDefaultBehavior
 	 * 
+	 * Initialize this new object_name_Eng with given property_name_Eng.
+	 *
+	 * @param  propertyName_Java
+	 *         The property_name_Eng for this new object_name_Eng.
+	 * @effect The property_name_Eng of this new object_name_Eng is set to
+	 *         the given property_name_Eng.
+	 *       | this.setPropertyName_Java(propertyName_Java)
+	 *       
+	 * Initialize this new Unit with given experience.
+	 *
+	 * @param  experience
+	 *         The experience for this new Unit.
+	 * @effect The experience of this new Unit is set to
+	 *         the given experience.
+	 *       | this.setExperience(experience)
+	 *       
 	 * @throws illegalStateException
 	 * 
 	 */
@@ -206,6 +227,8 @@ public class Unit {
 		double[] position = putUnitInCenter(castIntToDouble(initialPosition));
 		if (! isValidPosition(position)) throw new IllegalArgumentException();
 		this.setUnitPosition(position);
+		//TODO PLaats waar we unit creeeren moet een passeble plaats zijn
+		
 		/* Hitpoints */
 		this.increaseHitpoints(getMaxHitpoints());
 		/* Stamina */
@@ -218,34 +241,13 @@ public class Unit {
 		
 		return ;
 		
-		//TODO PLaats waar we unit creeeren moet een passeble plaats zijn
+		/* Faction */
+		//TODO faction
+	
 	}
-		
-	/**
-	 * @param initialPosistion
-	 * 		The cubes position, where we need to put the unit in the center
-	 * @return
-	 * 		The new units position, in the center of a cube
-	 */
-	public double[] putUnitInCenter(double[] initialPosistion) {
-		for (int i = 0; i < initialPosistion.length; i++) {
-			initialPosistion[i] += 0.5;
-		}
-		return initialPosistion;
-	}
-	
-	
-/////////////////////////////////////////////weight/////////////////////////////////////////////
+			
+/////////////////////////////////////////////weight/////////////////////////////////////////////	
 	/* weight*/
-	
-		
-	/* weight*/
-	/**
-	 * @invar  The weight of each unit must be a valid weight for any
-	 *         unit.
-	 *       | isValidWeigth(getWeight())
-	 */
-	
 	/**
 	 * Return the weight of this unit.
 	 */
@@ -253,16 +255,15 @@ public class Unit {
 	public int getWeight() {
 		return this.weight;
 	}
-	
-	
+		
 	/**
 	 * Check whether the given weight is a valid amount for
 	 * any unit.
 	 *  
 	 * @param  weight
 	 *         The weight to check.
-	 * @return 
-	 *       |if weight <= 1 || weight => 200 Then return == true
+	 * @return return true when the weight is a valid weight else return false.
+	 *       |if weight <= getMinWeight() || weight => getMaxWeight() Then return == true
 	 *       |		Else return == false
 	*/
 	public boolean isValidWeight(int weight) {
@@ -305,14 +306,12 @@ public class Unit {
 		return 100;
 	}
 
-	/* Strength */
-	
 	/**
-	 * @invar  The strength of each unit must be a valid strength for any
-	 *         unit.
-	 *       | isValidStrength(getStrength())
+	 * variables registering the weight of a unit.
 	 */
-	 
+	private int weight;
+	
+	/* Strength */
 	/**
 	 * Return the strength of this unit.
 	 */
@@ -371,7 +370,12 @@ public class Unit {
 	private static int getMaxStrength(){
 		return 200;
 	}
-		
+	
+	/**
+	 * variables registering the strength of this unit.
+	 */
+	private int strength;
+	
 	/* Agility */
 	/**
 	 * @invar The agility of each unit must be a valid agility for any
@@ -394,7 +398,7 @@ public class Unit {
 	 * @param  agility
 	 *         The agility to check.
 	 * @return if a valid agility return true, else return false
-	 *       |if (MIN_VALUE_AGILITY <= agility <= MAX_VALUE_AGILITY) Then return == true
+	 *       |if (getMinAgility() <= agility <= getMaxAgility()) Then return == true
 	 *       |		Else return == false
 	*/
 	public static boolean isValidAgility(int agility) {
@@ -436,15 +440,14 @@ public class Unit {
 		return 200;
 	}
 	
+	/**
+	 * variables registering the agility of this unit.
+	 */
+	private int agility;
+	
 	/* Toughness */
 	/**
-	 * @invar  The toughness of each unit must be a valid toughness for any
-	 *         unit.
-	 *       | isValidToughness(getToughness())
-	 */
-	
-	/**
-	 * Return the agility of this unit.
+	 * Return the toughness of this unit.
 	 */
 	@Basic @Raw
 	public int getToughness() {
@@ -458,7 +461,7 @@ public class Unit {
 	 * @param  toughness
 	 *         The toughness to check.
 	 * @return if a valid toughness return true, else return false
-	 *       |if (MIN_VALUE_TOUGHNESS <= toughness <= MAX_VALUE_TOUGHNESS) Then return == true
+	 *       |if (getMinToughness() <= toughness <= getMaxToughness) Then return == true
 	 *       |		Else return == false
 	*/
 	public static boolean isValidToughness(int toughness) {
@@ -500,12 +503,12 @@ public class Unit {
 		return 200;
 	}
 	
-	/* Name */
 	/**
-	 * @invar  The name of each unit must be a valid name for any
-	 *         unit.
-	 *       | isValidName(getName())
+	 * variables registering the toughness of this unit.
 	 */
+	private int toughness;
+	
+	/* Name */
 	
 	/**
 	 * Return the name of this unit.
@@ -521,7 +524,7 @@ public class Unit {
 	 *  
 	 * @param  name
 	 *         The name to check.
-	 * @return 
+	 * @return if the name is a valid name return true.
 	 *       |if is validName is true then return true
 	 *       |else return false
 	*/
@@ -573,13 +576,12 @@ public class Unit {
 		this.name = name;
 	}
 	
-	/* Position */
 	/**
-	 * @invar  The position of each unit must be a valid position for any
-	 *         unit.
-	 *       | isValidPosition(getPosition())
+	 * a string registering the name of this unit.
 	 */
+	private String name;	
 	
+	/* Position */
 	/**
 	 * Return the Position of this Unit.
 	 */
@@ -607,6 +609,7 @@ public class Unit {
 		int[] arrayInInt = {(int) arrayInDoubles[0],(int) arrayInDoubles[1],(int) arrayInDoubles[2]};
 		return arrayInInt;
 	}
+	
 	/**
 	 * Check whether the given position is a valid position for
 	 * any Unit.
@@ -660,9 +663,15 @@ public class Unit {
 	 * Return the value of the lowest coordinate value.
 	 */
 	private static int getMaxValueCoordinate(){
-		return 49;
+		return World.getXLength();
+		//TODO de maximum waarde moet de lengte van de wereld zijn, deze moet uit de world class gehaald worden.
 	}
  
+	/**
+	 * array registering the position of a unit in doubles. 
+	 */
+	private double[] unitPosition;
+	
 	/* Orientation */
 	/**
 	 * Return the orientation of this unit.
@@ -712,6 +721,11 @@ public class Unit {
 			this.orientation = (float) ((float) deler * 2 * PI + orientation);
 		}		
 	}
+	
+	/**
+	 * variable registering the orientation of a unit.
+	 */
+	private float orientation = (float) (PI / 2);
 	
 	/* Hitpoints */
 	/**
@@ -765,6 +779,7 @@ public class Unit {
 		this.hitpoints = hitpoints;
 	}
 	
+	//TODO kan dit niet door de setter vervangen worden.
 	/**
 	 * Increase the hitpoints of this unit with the given hitpoints.
 	 * 
@@ -785,6 +800,8 @@ public class Unit {
 			setHitpoints(getHitpoints() + hitpoints);
 	}
 	
+	
+	//TODO kan dit niet door de setter vervangen worden.
 	/**
 	 * Decrease the hitpoints of this unit with the given hitpoints.
 	 * 
@@ -807,13 +824,12 @@ public class Unit {
 		
 	}
 	
-	/* Stamina */
 	/**
-	 * @invar  The Stamina of each unit must be a valid Stamina for any
-	 *         unit.
-	 *       | isValidStamina(getStamina())
+	 * variable registering the hitpoints of a unit.
 	 */
-
+	private int hitpoints;
+	
+	/* Stamina */
 	/**
 	 * Return the Stamina of this unit.
 	 */
@@ -851,13 +867,14 @@ public class Unit {
 	 *  
 	 * @param  Stamina
 	 *         The Stamina to check.
-	 * @return 
+	 * @return return true if the stamina is bigger then zero.
 	 *       | result == amount > 0
 	*/
 	public static boolean isValidStamina(int stamina) {
 		return stamina > 0;
 	}
-			
+		
+	//TODO kan dit niet door de setter vervangen worden.
 	/**
 	 * Increase the Stamina of this unit to the given Stamina.
 	 * 
@@ -878,6 +895,7 @@ public class Unit {
 			this.stamina = this.stamina + stamina;
 	}
 	
+	//TODO kan dit niet door de setter vervangen worden.
 	/**
 	 * Decreases the Stamina of this unit to the given Stamina.
 	 * 
@@ -898,8 +916,17 @@ public class Unit {
 			this.stamina = this.stamina - amount;
 	}
 
-	/* Default Behavior */
-		
+	/**
+	 * variable registering the stamina of a unit.
+	 */
+	private int stamina;
+	
+	/* Default Behavior */	
+	/**
+	 * a method that moves the unit through the time over a period dt.
+	 * @param dt
+	 * 		  the period dt.
+	 */
 	public void advanceTimeInUnit(double dt){
 		unitLifetime += dt;
 		if (unitLifetime >= 1) {
@@ -931,9 +958,50 @@ public class Unit {
 	}
 	
 	/**
+	 * variable registering the lifetime of a unit in doubles.
+	 */
+	private double unitLifetimeInSeconds = 0;
+	
+	/**
+	 * boolean registering if a unit is sprinting or not.
+	 */
+	private boolean isSprinting = false;
+	
+	/**
+	 * boolean registering if a unit is working or not.
+	 */
+	private boolean isWorking = false;
+	
+	/**
+	 * boolean registering if a unit is resting or not.
+	 */
+	private boolean isResting = false;
+	
+	/**
+	 * boolean registering if a unit is attacking or not.
+	 */
+	private boolean isAttacking = false;
+	
+	/**
+	 * boolean registering if a unit is defending or not.
+	 */
+	private boolean isDefending = false;
+	
+	/**
+	 * boolean registering if the default behavior of a unit is on or not.
+	 */
+	private boolean defaultBehaviour = false;
+	
+	/**
+	 * boolean registering if a unit is walking or not.
+	 */
+	private boolean isWalking = false;
+	
+	/**
 	 *Variable registering the attacking time of this unit.
 	 */
 	private double attTime = 0;
+	
 	/**
 	 *Variable registering the life time of this unit.
 	 */
@@ -1006,6 +1074,7 @@ public class Unit {
 	public void startSprinting(){
 		this.isSprinting = true;
 	}
+	
 	 /**
 	  * Stop sprinting
 	  */
@@ -1014,7 +1083,10 @@ public class Unit {
 	}
 	
 	/**
-	 * move the unit in the direction of the destination.
+	 * move the unit in the direction of the destination over a time period dt.
+	 * 
+	 * @param dt
+	 * 		  the given time period dt.
 	 */
 	private void walking(double dt){
 		double dx = (this.walkingTo[0] - this.unitPosition[0]);
@@ -1073,6 +1145,21 @@ public class Unit {
 		this.orientation = ((float) Math.atan2(vy, vx)); 
 		}
 	
+	/**
+	 * array registering the destination of a unit in doubles.
+	 */
+	private double[] walkingTo = {0,0,0};
+	
+	/**
+	 * variable registering the base of the walking speed.
+	 */
+	private double baseForWalkingSpeed;
+	
+	/**
+	 * variable that is used when a unit is running.
+	 */
+	private double counterForRunning = 0;
+	
 	/* Pathfinding */
 	//TODO Nieuwe pathfinding
 	
@@ -1091,6 +1178,19 @@ public class Unit {
 		stopResting();
 		this.isWorking = false;
 		this.pathfindingTo = cube.clone();
+	}
+	
+	/**
+	 * @param initialPosistion
+	 * 		The cubes position, where we need to put the unit in the center
+	 * @return
+	 * 		The new units position, in the center of a cube
+	 */
+	public double[] putUnitInCenter(double[] initialPosistion) {
+		for (int i = 0; i < initialPosistion.length; i++) {
+			initialPosistion[i] += 0.5;
+		}
+		return initialPosistion;
 	}
 	
 	/**
@@ -1141,9 +1241,18 @@ public class Unit {
 			}
 	}
 	
+	/**
+	 * boolean registering if a unit is pathfinding or not.
+	 */
+	private boolean isPathfinding = false;
+	
+	/**
+	 * array registering the final destination of the unit in integers.
+	 */
+	private int[] pathfindingTo = {0,0,0};
+	
 	/* Work */
 	//TODO Nieuwe work implementeren
-	
 	/**
 	 * Return the state of working of this unit.
 	 */
@@ -1197,11 +1306,19 @@ public class Unit {
 	
 	/**
 	 * The unit stops working
+	 * 
+	 * @post the state of working is false
+	 * 		|this.isWorking == false
 	 */
 	private void stopWorking(){
 		this.isWorking = false;
 	}
 
+	/**
+	 * variable registering the time left that a unit hase to work.
+	 */
+	private double timeLeftWorking;
+	
 	/* Fighting */
 	//TODO Attacker en Defender moeten tot andere faction behoren
 	//TODO succesfull att, dodge of block +20 exp
@@ -1288,6 +1405,11 @@ public class Unit {
 	private void stopAttacking() {
 		this.isAttacking = false;
 	}
+	
+	/**
+	 * a unit that is a clone of the defender
+	 */
+	private Unit defenderClone;
 	
 	/* Dodging */
 	//TODO kan enkel dodgen naar passable terain
@@ -1394,8 +1516,12 @@ public class Unit {
 		return this.isResting;
 	}
 	
+	//TODO welke state moeten allemaal op false worden gezet? dit moet ook in post conditie.
 	/**
 	 * make the unit start resting
+	 * 
+	 * @post the state of resting of the unit is true
+	 * 		| this.isResting == true
 	 */
 	public void startResting (){
 		if (getHitpoints() == getMaxHitpoints()) {
@@ -1478,6 +1604,16 @@ public class Unit {
 	 */
 	private int totalHPRestored = 0;
 	
+	/**
+	 * variable registering the hitpoints that hase to be restored
+	 */
+	private double counterForHitpoints = 0;
+	
+	/**
+	 * variable registering the stamina that hase to be restored
+	 */
+	private double counterForStamina = 0;
+	
 	/* Default Behavior */
 	/**
 	 * check if the default behavior of this unit is on.
@@ -1522,20 +1658,6 @@ public class Unit {
 	}
 	
 	/* Death */
-	
-	/**
-	 * Variable registering the vivacity of this unit.
-	 * From the moment a Unit is created this is true.
-	 */
-	private boolean isAlive = true;
-	
-	//TODO is dit nodig??
-	/**
-	 * @invar  The unit is alive
-	 *       |	this.isAlive == true
-	 */
-
-
 	/**
 	 * Return the vivacity of this unit.
 	 */
@@ -1555,28 +1677,15 @@ public class Unit {
 		this.isAlive = false;
 	}
 	
-////////////////////////Falling//////////////////////////////
-	
-	/** TO BE ADDED TO CLASS HEADING
-	 * @invar  The property_name_Eng of each object_name_Eng must be a valid property_name_Eng for any
-	 *         object_name_Eng.
-	 *       | isValidPropertyName_Java(getPropertyName_Java())
-	 */
-	
-
-/**
- * Initialize this new object_name_Eng with given property_name_Eng.
- *
- * @param  propertyName_Java
- *         The property_name_Eng for this new object_name_Eng.
- * @effect The property_name_Eng of this new object_name_Eng is set to
- *         the given property_name_Eng.
- *       | this.setPropertyName_Java(propertyName_Java)
- */
-
-
 	/**
-	 * Return the this unit is falling or not.
+	 * Variable registering the vivacity of this unit.
+	 * From the moment a Unit is created this is true.
+	 */
+	private boolean isAlive = true;
+	
+	/* falling */
+	/**
+	 * Return if is unit is falling or not.
 	 */
 	@Basic @Raw
 	public boolean isFalling() {
@@ -1584,12 +1693,13 @@ public class Unit {
 	}
 	
 	/**
-	 * this unit stops resting
+	 * this unit stops falling
 	 */
 	private void stopFalling() {
 		this.isFalling = false;
 	}
 	
+	//TODO falling comentaar en functie wordt niet gebruikt.
 	private void startFalling() {
 		this.isFalling = true;
 		//TODO fall aanroepen in de advanceTime
@@ -1604,34 +1714,16 @@ public class Unit {
 	}
 	
 	/**
-	 * Variable registering the property_name_Eng of this object_name_Eng.
+	 * Variable registering if a unit is falling or not.
 	 */
 	private boolean isFalling = false;
+	
+	/**
+	 * variable registering how many levels a units has fallen.
+	 */
 	private int numberOfZlevelsFallen = 0;
 	
-	/*
-	 * Experience
-	 */
-	
-	/** TO BE ADDED TO CLASS HEADING
-	 * @invar  The experience of each Unit must be a valid experience for any
-	 *         Unit.
-	 *       | isValidExperience(getExperience())
-	 */
-
-	
-	//TODO hier iets mee doen! Comentaar voor de constructor? initieel 0 exp?
-	/**
-	 * Initialize this new Unit with given experience.
-	 *
-	 * @param  experience
-	 *         The experience for this new Unit.
-	 * @effect The experience of this new Unit is set to
-	 *         the given experience.
-	 *       | this.setExperience(experience)
-	 */
-	
-	
+	/* Experience */
 	/**
 	 * Return the experience of this Unit.
 	 */
@@ -1699,5 +1791,9 @@ public class Unit {
 	 * Variable registering the experience of this Unit.
 	 */
 	private int experience;
+	
+	/**
+	 * variable registering the experience needed for the next level.
+	 */
 	private int expTillNextLevel;
 }
