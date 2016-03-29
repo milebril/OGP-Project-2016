@@ -1765,7 +1765,7 @@ public class Unit {
 		this.expTillNextLevel += experience;
 		this.experience += experience;
 		
-		if (expTillNextLevel >= 10) {
+		if (expTillNextLevel >= 10) { //TODO stel 20xp ervij
 			increaceRandomStat();
 			expTillNextLevel -= 10;
 		}
