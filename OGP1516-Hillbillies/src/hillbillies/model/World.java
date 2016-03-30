@@ -65,6 +65,7 @@ public class World {
 	 */
 	public World(int[][][] terrainTypes, TerrainChangeListener modelListener) throws ModelException{
 		this.setTerrainType(terrainTypes);
+		setOfFactions = new LinkedHashSet<>(); //initializing setOfFactions on creating world
 	}
 
 ////////////////////////////////////////////Amount of units////////////////////////////////////////////
@@ -142,14 +143,6 @@ public class World {
 	 */
 	
 	/**
-	 * Return the amount of factions of this world.
-	 */
-	@Basic @Raw
-	public int getFactionAmount() {
-		return this.amountOfFactions;
-	}
-	
-	/**
 	 * Check whether the given amount of factions is a valid amount of factions for
 	 * any world.
 	 *  
@@ -164,6 +157,7 @@ public class World {
 		return false;
 	}
 	
+	//TODO zien of we dit nodig hebben
 	/**
 	 * Set the amount of factions of this world to the given amount of factions.
 	 * 
@@ -177,13 +171,6 @@ public class World {
 	 *         world.
 	 *       | ! isValidFactionAmount(getFactionAmount())
 	 */
-	@Raw
-	public void setFactionAmount(int amountOfFactions) throws ModelException {
-		if (! isValidFactionAmount(amountOfFactions))
-			throw new ModelException();
-		this.amountOfFactions = amountOfFactions;
-		//TODO deze functie moet verandert worden in een method die een list bij houdt van de factions
-	}
 	
 	/**
 	 * return the maximum number of factions for each world.
@@ -197,16 +184,60 @@ public class World {
 	 */
 	private static int getMinAmountOfFactions(){
 		return 0;
+	}		
+
+////////////////////////////////////////////list all factions////////////////////////////////////////////	
+	/**
+	 * Return the set of active factions of this world.
+	 */
+	@Basic @Raw
+	public Set<Faction> getActiveFactionList() {
+		return this.setOfFactions;
 	}
 	
 	/**
-	 * Variable registering the amount of factions of this world.
+	 * Return the amount of factions of this world.
 	 */
-	private int amountOfFactions;		
-
-////////////////////////////////////////////list all factions////////////////////////////////////////////	
+	@Basic @Raw
+	public int getAmountOfFaction() {
+		return getActiveFactionList().size();
+	}
+	
+	/**
+	 * Variable registering the list of factions of this world.
+	 */
+	private Set<Faction> setOfFactions;
 	
 ////////////////////////////////////////////Units in a faction////////////////////////////////////////////
+	
+////////////////////////////////////////////create new faction////////////////////////////////////////////
+	/**
+	 * Check whether there can be a faction created in the world
+	 *  
+	 * @return 
+	 *       | if (this.getAmountOfFaction < this.getMaxAmountOfFactions()) result == true
+	 *       |		else result == false
+	*/
+	public static boolean canCreateFaction() {
+		return false;
+	}
+
+	/**
+	 * Create a new faction
+	 * 
+	 * @param The faction to create.
+	 * @post   A new faction is created and added to the setOfFactions
+	 *       | this.setOfFactions.add(
+	 * @throws ModelException
+	 *         is thrown when we can not create a new faction.
+	 *       | ! canCreateFaction()
+	 */
+	@Raw
+	public void createFaction(Faction f) throws ModelException {
+		if (! canCreateFaction())
+			throw new ModelException();
+		this.setOfFactions.add(f);
+	}
 	
 ////////////////////////////////////////////Random Unit spawnen////////////////////////////////////////////
 	Random rand = new Random();
@@ -229,16 +260,33 @@ public class World {
 		int agility = rand.nextInt(75) + 25;
 		int toughness = rand.nextInt(75) + 25;
 		
-		if (getFactionAmount() < getMaxAmountOfFactions()) {
-			//TODO maak nieuwe faction, en steek deze unit erin
+		Unit newUnit = new Unit("New Unit", new int[] {x, y, z}, weight, agility, strength, toughness, enableDefaultBehavior);
+		
+		if (getAmountOfFaction() < getMaxAmountOfFactions()) {
+			Faction f = new Faction();
+			createFaction(f);
+			f.addUnitToFaction(newUnit);
+			newUnit.setFaction(f);
 		} else {
+			Faction f = lowestMemberFaction();
+			f.addUnitToFaction(newUnit);
+			newUnit.setFaction(f);
 			//TODO steek de unit in de faciton met het minste leden.
 		}
 		
-		
-		Unit newUnit = new Unit("New Unit", new int[] {x, y, z}, weight, agility, strength, toughness, enableDefaultBehavior);
-		
 		return newUnit;
+	}
+	
+	private Faction lowestMemberFaction() {
+		Faction min = null;
+		for (Faction f : setOfFactions) {
+			min = f;
+			if (f.allUnitsInFaction().size() < min.allUnitsInFaction().size()) {
+				min = f;
+			}
+		}
+		
+		return min;
 	}
 	
 ////////////////////////////////////////////Game over////////////////////////////////////////////

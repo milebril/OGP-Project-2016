@@ -277,4 +277,17 @@ public class unitTestCases {
 		assertTrue(alive.isUnitAlive());
 	}
 	
+	/*
+	 * factions
+	 */
+	
+	@Test
+	public void addUnitToFaction() throws IllegalArgumentException, ModelException {
+		int[] pos = {0,0,0};
+		Unit alive = new Unit("Emil", pos, 50, 50, 50, 50, false);
+		Faction f = new Faction();
+		
+		f.addUnitToFaction(alive);
+		assertEquals(1, f.unitsInFaction.size());
+	}
 }
