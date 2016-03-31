@@ -29,7 +29,14 @@ public class Boulder {
 	 * @throws ExceptionName_Java
 	 *         This new Boulder cannot have the given weight as its weight.
 	 *       | ! canHaveAsWeight(this.getWeight())
-	 * @throws ExceptionName_Java
+	 *       
+	 * Initialize this new log with given position.
+	 *
+	 * @param  position
+	 *         The position for this new log.
+	 * @effect The position of this new log is set to
+	 *         the given position.
+	 *       | this.setPosition(position)
 	 */
 	public Boulder(double[] position) throws IllegalArgumentException {
 		Random random = new Random();
