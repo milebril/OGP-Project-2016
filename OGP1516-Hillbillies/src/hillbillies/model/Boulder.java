@@ -171,7 +171,7 @@ public class Boulder {
 			this.position = this.unitCarryingBoulder.getPosition();
 		}
 		if ( !this.isCarried && this.canFall(terrainTypes)){
-			this.fall(dt);
+			this.fall(dt, terrainTypes);
 		}
 	}
 ////////////////////////////////////////////Carried////////////////////////////////////////////
@@ -215,11 +215,13 @@ public class Boulder {
 	private boolean isCarried = false; 
 		
 ////////////////////////////////////////////Falling////////////////////////////////////////////	
-	
-	private boolean canFall(int[][][] world){
+	/**
+	 * check if a boulder can fall.
+	 */
+	private boolean canFall(int[][][] terrainTypes){
 		int[] position = castDoubleToInt(this.getPosition());
 		if(position[2] == 0) return false;
-		if(world[position[0]][position[1]][position[2]-1] == 0) return true;
+		if(terrainTypes[position[0]][position[1]][position[2]-1] == 0) return true;
 		return false;
 	}
 	
@@ -229,10 +231,25 @@ public class Boulder {
 	private static int speedOfFalling() {
 		return 3;
 	}
-		
-	private void fall(double dt) {
-		double[] position = this.getPosition();
-		position[2] -= speedOfFalling() * dt;
-		this.setPosition(position);
+	
+	/**
+	 * move the boulder over a given time period dt.
+	 */
+	private void fall(double dt, int[][][] terrainTypes) {
+		double[] positionInInt = this.getPosition();
+		double distanceToFall = speedOfFalling() * dt;
+		if(distanceToFall < 1)
+			positionInInt[2] -= distanceToFall;
+		else {
+			int[] position = castDoubleToInt(this.getPosition());
+			int a = 0;
+			for( int i = 0; i < distanceToFall; i++){
+				if(terrainTypes[position[0]][position[1]][position[2]- i] == 0)
+					a++;
+			}
+			distanceToFall = a + distanceToFall % (int)distanceToFall;
+			positionInInt[2] -= distanceToFall;
+		}
+		this.setPosition(positionInInt);
 	}
 }
