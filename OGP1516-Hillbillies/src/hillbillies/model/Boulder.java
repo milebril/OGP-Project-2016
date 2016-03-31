@@ -131,7 +131,7 @@ public class Boulder {
 			throw new IllegalArgumentException();
 		this.position = position;
 	}
-	
+		
 	/**
 	 * cast an array of integers in an array of doubles
 	 * @param arrayInInt
@@ -173,20 +173,26 @@ public class Boulder {
 ////////////////////////////////////////////Advance Time////////////////////////////////////////////	
 	
 	/**
-	 * 
+	 * advance the time over the time period dt.
+	 * @post the position of the stone is updated.
 	 */
 	public void advanceTime(double dt){
-		//TODO advance time
+		if (this.isCarried == true){
+			this.position = this.unitCarryingBoulder.getPosition();
+		}
+		//TODO falling
 	}
 ////////////////////////////////////////////Carried////////////////////////////////////////////
 	
 	/**
 	 * Make a boulder start being carried.
 	 */
-	public void startBeingCarried() throws IllegalStateException{
-		if (this.isCarried == true)
+	public void startBeingCarried(Unit unit) throws IllegalStateException{
+		if (this.isCarried == true || this.unitCarryingBoulder != null)
 			throw new IllegalStateException();
 		this.isCarried = true;
+		this.unitCarryingBoulder = unit;
+		unit.setWeight(unit.getWeight() + this.getWeight());
 	}
 	
 	/**
@@ -194,22 +200,30 @@ public class Boulder {
 	 */
 	public void stopBeingCarried(){
 		this.isCarried = false;
+		this.unitCarryingBoulder.setWeight(this.unitCarryingBoulder.getWeight() + this.getWeight());
+		this.unitCarryingBoulder = null;
 	}
+	
+	/**
+	 * return the carrier of this boulder.
+	 * @return the carrier if the boulder is carried or null when there is no carrier.
+	 */
+	public Unit getCarrier(){
+		return this.unitCarryingBoulder;
+	}
+	
+	/**
+	 * variable registering which unit is carrying the boulder.
+	 */
+	public Unit unitCarryingBoulder = null;
 	
 	/**
 	 * Boolean registering if a boulder is carried or not.
 	 */
 	private boolean isCarried = false; 
-	
-	//TODO add weight to unit
-	//TODO move boulder witch same vector as unit
-	
+		
 ////////////////////////////////////////////Falling////////////////////////////////////////////	
 	
 	//TODO faling
-	
-////////////////////////////////////////////Dropped////////////////////////////////////////////	
-
-	//TODO being dropped
-	
+		
 }

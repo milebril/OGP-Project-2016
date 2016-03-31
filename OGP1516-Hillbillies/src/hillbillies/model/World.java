@@ -24,6 +24,9 @@ import ogp.framework.util.ModelException;
  * @invar  The list of boulders of each world must be a valid list of boulders for any
  *         world.
  *       | isValidArrayListOfBoulders(getArrayListOfBoulders())
+ * @invar  The amount of factions of each world must be a valid amount of factions for any
+ *         world.
+ *       | isValidFactionAmount(getFactionAmount())
  */
 public class World {
 	
@@ -75,7 +78,30 @@ public class World {
 	 */
 	@Basic @Raw
 	public int getAmountOfUnits() {
-		return this.amountOfUnits;
+		return this.ArrayListOfUnits.size();
+	}
+	
+	/**
+	 * Return the units of this world.
+	 */
+	public Set<Unit> getUnits() {
+		return this.ArrayListOfUnits;
+	}
+	
+	/**
+	 * add the given unit to the list of units in this world.
+	 * @param unit
+	 * 		  the given world.
+	 */
+	public void addUnit(Unit unit) {
+		if(getAmountOfUnits() < getMaxAmountOfUnits())
+			this.ArrayListOfUnits.add(unit);
+		//TODO exceptions throwen.
+	}
+	
+	public void removeUnit(Unit unit) {
+		this.ArrayListOfUnits.remove(unit);
+	//TODO exception throwen als unit niet in lijst zit????????
 	}
 	
 	/**
@@ -88,59 +114,31 @@ public class World {
 	 * 		   number of units and the minimum number of units.
 	*/
 	public static boolean isValidAmountOfUnits(int amountOfUnits) {
-		if (amountOfUnits <= getMaxUnitCapacity() && amountOfUnits >= getMinUnitCapacity())
+		if (amountOfUnits <= getMaxAmountOfUnits() && amountOfUnits >= getMinAmountOfUnits())
 			return true;
 		return false;
 	}
-	
-	/**
-	 * Set the amount of units of this world to the given amount of units.
-	 * 
-	 * @param  amountOfUnits
-	 *         The new amount of units for this world.
-	 * @pre    The given amount of units must be a valid amount of units for any
-	 *         world.
-	 *       | isValidAmountOfUnits(amountOfUnits)
-	 * @post   The amount of units of this world is equal to the given
-	 *         amount of units.
-	 *       | new.getAmountOfUnits() == amountOfUnits
-	 */
-	@Raw
-	public void setAmountOfUnits(int amountOfUnits) {
-		assert isValidAmountOfUnits(amountOfUnits);
-		this.amountOfUnits = amountOfUnits;
-		//TODO deze functie moet verandert worden in een method die een list bij houdt van de units
-	}
-	
+		
 	/**
 	 * return the maximum number of units for each world.
 	 */
-	private static int getMaxUnitCapacity(){
+	private static int getMaxAmountOfUnits(){
 		return 100;
 	}
 	
 	/**
 	 * return the minimum number of units for each world.
 	 */
-	private static int getMinUnitCapacity(){
+	private static int getMinAmountOfUnits(){
 		return 0;
 	}
 	
 	/**
 	 * Variable registering the amount of units of this world.
 	 */
-	private int amountOfUnits;
-	
-////////////////////////////////////////////list all Units////////////////////////////////////////////
-
-	
+	private Set<Unit> ArrayListOfUnits = new HashSet<Unit>();
+		
 ////////////////////////////////////////////Amount of factions////////////////////////////////////////////
-
-	/** TO BE ADDED TO CLASS HEADING
-	 * @invar  The amount of factions of each world must be a valid amount of factions for any
-	 *         world.
-	 *       | isValidFactionAmount(getFactionAmount())
-	 */
 	
 	/**
 	 * Check whether the given amount of factions is a valid amount of factions for
@@ -206,7 +204,7 @@ public class World {
 	/**
 	 * Variable registering the list of factions of this world.
 	 */
-	private Set<Faction> setOfFactions;
+	private Set<Faction> setOfFactions = new HashSet<Faction>();;
 		
 ////////////////////////////////////////////create new faction////////////////////////////////////////////
 	/**
@@ -297,7 +295,7 @@ public class World {
 	/**
 	 * arraylist that contains all boulders of a given world.
 	 */
-	public Set<Boulder> arrayListOfBoulder = (Set<Boulder>) new ArrayList();
+	public Set<Boulder> arrayListOfBoulder = new HashSet<Boulder>();
 
 	/**
 	 * Return the list of boulders of this world.
@@ -351,7 +349,7 @@ public class World {
 	/**
 	 * arraylist that contains all the logs of a given world.
 	 */
-	public Set<Log> arrayListOfLog = (Set<Log>) new ArrayList();
+	public Set<Log> arrayListOfLog = new HashSet<Log>();
 
 	/**
 	 * Return the list of logs of this world.
