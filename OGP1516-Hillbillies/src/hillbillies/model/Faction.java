@@ -2,6 +2,9 @@ package hillbillies.model;
 
 import java.util.*;
 
+import be.kuleuven.cs.som.annotate.Raw;
+import ogp.framework.util.ModelException;
+
 /**
  * A class that deals with the faction and all the properties of a faction 
  * in a given game world.
@@ -30,11 +33,26 @@ public class Faction {
 	 * add the given unit to the faction.
 	 * @param unit
 	 * 		  the given unit.
+	 * @throws ModelException 
+	 * 			is thrown when we can not create a new faction.
+	 * 		  | !canAddUnit()
+	 * 		
 	 */
-	public void addUnitToFaction(Unit unit) {
-		if (this.getAmountOfUnitsInFaction() < getMaxAmountOfUnitsInFaction())
-			unitsInFaction.add(unit);
-		//TODO else throw exception?
+	public void addUnitToFaction(Unit unit) throws ModelException {
+		if (! canAddUnit())
+			throw new ModelException();
+		this.unitsInFaction.add(unit);
+	}
+	
+	/**
+	 * Check whether there can be a unit added to the faction
+	 *  
+	 * @return if there are less units in the faction than the maximum number of units in a faction allowed, return true.
+	 *       | if (this.getAmountOfUnitsInFaction() < this.getMaxAmountOfUnitsInFaction()) result == true
+	 *       |		else result == false
+	*/
+	public boolean canAddUnit() {
+		return getAmountOfUnitsInFaction() < getMaxAmountOfUnitsInFaction();
 	}
 	
 	/**

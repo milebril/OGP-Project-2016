@@ -1,6 +1,7 @@
 package hillbillies.model;
 
 import hillbillies.part1.facade.Facade;
+import hillbillies.part2.listener.TerrainChangeListener;
 import ogp.framework.util.ModelException;
 import ogp.framework.util.Util;
 import static org.junit.Assert.*;
@@ -8,10 +9,11 @@ import org.junit.*;
 
 public class unitTestCases {
 	
-	//TODO tests atacking op timing and attackers
+	//TODO tests atacking op timing and attackers ->Zie hun tests
 	//TODO movement tests
 	
 	public Unit testunit, testunit2;
+	public World testworld;
 	
 	@Before
 	public void setUp() throws IllegalArgumentException, ModelException {
@@ -20,6 +22,16 @@ public class unitTestCases {
 		testunit.putUnitInCenter(testunit.castIntToDouble(pos));
 		testunit2 = new Unit("Emil", pos, 50, 50, 50, 50, false);
 		testunit2.putUnitInCenter(testunit.castIntToDouble(pos));
+		
+		TerrainChangeListener modelListener = new TerrainChangeListener() {
+			
+			@Override
+			public void notifyTerrainChanged(int x, int y, int z) {
+				// TODO Auto-generated method stub
+				
+			}
+		};
+		testworld = new World(new int [5][5][5], modelListener);
 	}
 	/*
 	 *  Name
@@ -282,12 +294,16 @@ public class unitTestCases {
 	 */
 	
 	@Test
-	public void addUnitToFaction() throws IllegalArgumentException, ModelException {
+	public void add_removeUnitToFaction() throws IllegalArgumentException, ModelException {
 		int[] pos = {0,0,0};
 		Unit alive = new Unit("Emil", pos, 50, 50, 50, 50, false);
 		Faction f = new Faction();
 		
 		f.addUnitToFaction(alive);
-		assertEquals(1, f.unitsInFaction.size());
+		assertEquals(1, f.getUnitsInFaction().size());
+		
+		f.removeUnitFromFaction(alive);
+		assertEquals(1, f.getUnitsInFaction().size());
 	}
+	
 }
