@@ -9,6 +9,8 @@ import java.util.Random;
  * 
  * @invar  Each Boulder can have its weight as weight.
  *       | canHaveAsWeight(this.getWeight())
+ * @invar Each boulder should be above a solid terrainType or should be falling.
+ * 	
  * @author Emil Peters
  * @author Sjaan Vandebeek
  *
@@ -35,8 +37,6 @@ public class Boulder {
 		if (! canHaveAsWeight(weight))
 			throw new IllegalArgumentException();
 		this.weight =  weight;
-		//TODO placed on passable cube?
-		//TODO add to array list.
 	}
  
 ////////////////////////////////////////////Weight////////////////////////////////////////////
@@ -131,27 +131,7 @@ public class Boulder {
 			throw new IllegalArgumentException();
 		this.position = position;
 	}
-		
-	/**
-	 * cast an array of integers in an array of doubles
-	 * @param arrayInInt
-	 * @return arrayInDouble
-	 */
-	private double[] castIntToDouble (int[] arrayInInt){
-		double[] arrayInDouble = {(double) arrayInInt[0],(double) arrayInInt[1],(double) arrayInInt[2]};
-		return arrayInDouble;
-	}
-	
-	/**
-	 * cast an array of doubles in an array of integers
-	 * @param arrayInDouble
-	 * @return arrayInInt
-	 */
-	private int[] castDoubleToInt (double[] arrayInDoubles){
-		int[] arrayInInt = {(int) arrayInDoubles[0],(int) arrayInDoubles[1],(int) arrayInDoubles[2]};
-		return arrayInInt;
-	}
-	
+			
 	/**
 	 * Return the value of the lowest coordinate value.
 	 */
@@ -167,6 +147,16 @@ public class Boulder {
 	}
 	
 	/**
+	 * cast an array of doubles in an array of integers
+	 * @param arrayInDouble
+	 * @return arrayInInt
+	 */
+	private static int[] castDoubleToInt (double[] arrayInDoubles){
+		int[] arrayInInt = {(int) arrayInDoubles[0],(int) arrayInDoubles[1],(int) arrayInDoubles[2]};
+		return arrayInInt;
+	}
+	
+	/**
 	 * Variable registering the position of this boulder.
 	 */
 	private double[] position;
@@ -176,11 +166,13 @@ public class Boulder {
 	 * advance the time over the time period dt.
 	 * @post the position of the stone is updated.
 	 */
-	public void advanceTime(double dt){
+	public void advanceTime(double dt, int[][][] terrainTypes){
 		if (this.isCarried == true){
 			this.position = this.unitCarryingBoulder.getPosition();
 		}
-		//TODO falling
+		if ( !this.isCarried && this.canFall(terrainTypes)){
+			this.fall(dt);
+		}
 	}
 ////////////////////////////////////////////Carried////////////////////////////////////////////
 	
@@ -224,6 +216,23 @@ public class Boulder {
 		
 ////////////////////////////////////////////Falling////////////////////////////////////////////	
 	
-	//TODO faling
+	private boolean canFall(int[][][] world){
+		int[] position = castDoubleToInt(this.getPosition());
+		if(position[2] == 0) return false;
+		if(world[position[0]][position[1]][position[2]-1] == 0) return true;
+		return false;
+	}
+	
+	/**
+	 * return the speed of falling in m/s.
+	 */
+	private static int speedOfFalling() {
+		return 3;
+	}
 		
+	private void fall(double dt) {
+		double[] position = this.getPosition();
+		position[2] -= speedOfFalling() * dt;
+		this.setPosition(position);
+	}
 }
