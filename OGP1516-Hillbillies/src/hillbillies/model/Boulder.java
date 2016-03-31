@@ -173,7 +173,7 @@ public class Boulder {
 	 * advance the time over the time period dt.
 	 * @post the position of the stone is updated.
 	 */
-	public void advanceTime(double dt, int[][][] terrainTypes){
+	public void advanceTimeOfBoulder(double dt, int[][][] terrainTypes){
 		if (this.isCarried == true){
 			this.position = this.unitCarryingBoulder.getPosition();
 		}

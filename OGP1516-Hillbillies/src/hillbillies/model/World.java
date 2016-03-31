@@ -1,7 +1,6 @@
 package hillbillies.model;
 
 import java.util.*;
-
 import be.kuleuven.cs.som.annotate.*;
 import hillbillies.part2.listener.TerrainChangeListener;
 import hillbillies.util.ConnectedToBorder;
@@ -401,9 +400,25 @@ public class World {
 		}
 	
 ////////////////////////////////////////////Advance time////////////////////////////////////////////
-	
+	/**
+	 * advance all objects of the game world over a given time dt.
+	 * @param dt
+	 * 		  the given time dt.
+	 */
 	public void advanceTime(double dt) {
+		Object[] listOfBoulders = arrayListOfBoulder.toArray();
+		for(int i = 0; i < listOfBoulders.length; i++) {
+			((Boulder) listOfBoulders[i]).advanceTimeOfBoulder(dt,this.terrainTypes);
+		}
 		
+		Object[] listOfLogs = arrayListOfLog.toArray();
+		for(int i = 0; i < listOfLogs.length; i++) {
+			((Log) listOfLogs[i]).advanceTimeOfLog(dt,this.terrainTypes);
+		}
+		Object[] listOfUnits = ArrayListOfUnits.toArray();
+		for(int i = 0; i < listOfUnits.length; i++) {
+			((Unit) listOfUnits[i]).advanceTimeOfUnit(dt);
+		}
 	}
 	
 ////////////////////////////////////////////World dimensions////////////////////////////////////////////

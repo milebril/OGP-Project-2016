@@ -927,7 +927,7 @@ public class Unit {
 	 * @param dt
 	 * 		  the period dt.
 	 */
-	public void advanceTimeInUnit(double dt){
+	public void advanceTimeOfUnit(double dt){
 		unitLifetime += dt;
 		if (unitLifetime >= 1) {
 			unitLifetimeInSeconds++;

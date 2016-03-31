@@ -174,7 +174,7 @@ public class Log {
 	 * advance the time over the time period dt.
 	 * @post the position of the log is updated.
 	 */
-	public void advanceTime(double dt, int[][][] terrainTypes){
+	public void advanceTimeOfLog(double dt, int[][][] terrainTypes){
 		if (this.isCarried == true){
 			this.position = this.unitCarryingLog.getPosition();
 		}
