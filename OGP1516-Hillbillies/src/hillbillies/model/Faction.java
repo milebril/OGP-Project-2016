@@ -15,7 +15,11 @@ public class Faction {
 		unitsInFaction.add(unit);
 	}
 	
-	public Set<Unit> allUnitsInFaction() {
+	public Set<Unit> getUnitsInFaction() {
 		return unitsInFaction;
+	}
+	
+	public void removeUnitFromFaction(Unit unit){
+		unitsInFaction.remove(unit);
 	}
 }

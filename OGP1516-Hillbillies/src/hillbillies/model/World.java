@@ -207,18 +207,18 @@ public class World {
 	 * Variable registering the list of factions of this world.
 	 */
 	private Set<Faction> setOfFactions;
-	
-////////////////////////////////////////////Units in a faction////////////////////////////////////////////
-	
+		
 ////////////////////////////////////////////create new faction////////////////////////////////////////////
 	/**
 	 * Check whether there can be a faction created in the world
 	 *  
-	 * @return 
-	 *       | if (this.getAmountOfFaction < this.getMaxAmountOfFactions()) result == true
+	 * @return if there are less faction than the maximum number of factions return true.
+	 *       | if (this.getAmountOfFaction < getMaxAmountOfFactions()) result == true
 	 *       |		else result == false
 	*/
-	public static boolean canCreateFaction() {
+	private boolean canCreateFaction() {
+		if (this.getAmountOfFaction() < getMaxAmountOfFactions())
+			return true;
 		return false;
 	}
 
@@ -233,12 +233,12 @@ public class World {
 	 *       | ! canCreateFaction()
 	 */
 	@Raw
-	public void createFaction(Faction f) throws ModelException {
+	private void createFaction(Faction f) throws ModelException {
 		if (! canCreateFaction())
 			throw new ModelException();
 		this.setOfFactions.add(f);
 	}
-	
+		
 ////////////////////////////////////////////Random Unit spawnen////////////////////////////////////////////
 	Random rand = new Random();
 	
@@ -281,7 +281,7 @@ public class World {
 		Faction min = null;
 		for (Faction f : setOfFactions) {
 			min = f;
-			if (f.allUnitsInFaction().size() < min.allUnitsInFaction().size()) {
+			if (f.getUnitsInFaction().size() < min.getUnitsInFaction().size()) {
 				min = f;
 			}
 		}
@@ -345,9 +345,7 @@ public class World {
 	 * 		  the boulder to remove.
 	 */
 	public void removeBoulder(Boulder boulder){
-		//TODO ik heb geen idee hoe dit te doen omdat ge enkel elementen op ene bepaalde positie moet wegdoen, maar dacht misschien
-		//TODO door de hele list te extracten in een array en dan de boulder te verwijderen en dan de array terug aan de lijst toetevoegen.
-		//TODO als de log niet in de lijst zit exception throwen?
+		arrayListOfBoulder.remove(boulder);
 	}
 ////////////////////////////////////////////list all logs////////////////////////////////////////////
 	/**
@@ -401,10 +399,9 @@ public class World {
 	 * 		  the log to remove.
 	 */
 	public void removeLog(Log log){
-		//TODO ik heb geen idee hoe dit te doen omdat ge enkel elementen op ene bepaalde positie moet wegdoen, maar dacht misschien
-		//TODO door de hele list te extracten in een array en dan de boulder te verwijderen en dan de array terug aan de lijst toetevoegen.
-		//TODO als de log niet in de lijst zit exception throwen?
-	}
+		arrayListOfBoulder.remove(log);
+		}
+	
 ////////////////////////////////////////////Advance time////////////////////////////////////////////
 	
 	public void advanceTime(double dt) {

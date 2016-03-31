@@ -319,8 +319,7 @@ public class Facade implements IFacade{
 	 */
 	@Override
 	public Faction getFaction(Unit unit) throws ModelException {
-		// TODO Auto-generated method stub
-		return null;
+		return unit.getFaction();
 	}
 
 	/**
@@ -334,8 +333,7 @@ public class Facade implements IFacade{
 	 */
 	@Override
 	public Set<Unit> getUnitsOfFaction(Faction faction) throws ModelException {
-		// TODO Auto-generated method stub
-		return null;
+		return faction.getUnitsInFaction();
 	}
 
 	/**
@@ -348,8 +346,7 @@ public class Facade implements IFacade{
 	 */
 	@Override
 	public Set<Faction> getActiveFactions(World world) throws ModelException {
-		// TODO Auto-generated method stub
-		return null;
+		return world.getActiveFactionList();
 	}
 	
 	/* Unit creation */
