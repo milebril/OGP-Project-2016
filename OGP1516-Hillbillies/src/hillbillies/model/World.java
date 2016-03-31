@@ -67,24 +67,27 @@ public class World {
 	 */
 	public World(int[][][] terrainTypes, TerrainChangeListener modelListener) throws ModelException{
 		this.setTerrainType(terrainTypes);
-		setOfFactions = new LinkedHashSet<>(); //initializing setOfFactions on creating world
+		this.setOfUnits = new LinkedHashSet<>(); //initializing setOfUnits on creating world
+		this.setOfFactions = new LinkedHashSet<>(); //initializing setOfFactions on creating world
+		this.setOfBoulders = new LinkedHashSet<>(); //initializing setOfBoulders on creating world
+		this.setOfLogs = new LinkedHashSet<>(); //initializing setOfLogs on creating world
 	}
 
-////////////////////////////////////////////Amount of units////////////////////////////////////////////
+////////////////////////////////////////////List of all units////////////////////////////////////////////
 	
 	/**
 	 * Return the amount of units of this world.
 	 */
 	@Basic @Raw
 	public int getAmountOfUnits() {
-		return this.ArrayListOfUnits.size();
+		return this.setOfUnits.size();
 	}
 	
 	/**
 	 * Return the units of this world.
 	 */
-	public Set<Unit> getUnits() {
-		return this.ArrayListOfUnits;
+	public Set<Unit> getSetOfUnits() {
+		return this.setOfUnits;
 	}
 	
 	/**
@@ -94,12 +97,12 @@ public class World {
 	 */
 	public void addUnit(Unit unit) {
 		if(getAmountOfUnits() < getMaxAmountOfUnits())
-			this.ArrayListOfUnits.add(unit);
+			this.setOfUnits.add(unit);
 		//TODO exceptions throwen.
 	}
 	
 	public void removeUnit(Unit unit) {
-		this.ArrayListOfUnits.remove(unit);
+		this.setOfUnits.remove(unit);
 	//TODO exception throwen als unit niet in lijst zit????????
 	}
 	
@@ -135,60 +138,14 @@ public class World {
 	/**
 	 * Variable registering the amount of units of this world.
 	 */
-	private Set<Unit> ArrayListOfUnits = new HashSet<Unit>();
-		
-////////////////////////////////////////////Amount of factions////////////////////////////////////////////
-	
-	/**
-	 * Check whether the given amount of factions is a valid amount of factions for
-	 * any world.
-	 *  
-	 * @param  amount of factions
-	 *         The amount of factions to check.
-	 * @return 
-	 *       | result == 
-	*/
-	public static boolean isValidFactionAmount(int amountOfFactions) {
-		if (amountOfFactions <= getMaxAmountOfFactions() && amountOfFactions >= getMinAmountOfFactions())
-			return true;
-		return false;
-	}
-	
-	//TODO zien of we dit nodig hebben
-	/**
-	 * Set the amount of factions of this world to the given amount of factions.
-	 * 
-	 * @param  amountOfFactions
-	 *         The new amount of factions for this world.
-	 * @post   The amount of factions of this new world is equal to
-	 *         the given amount of factions.
-	 *       | new.getFactionAmount() == amountOfFactions
-	 * @throws ModelException
-	 *         The given amount of factions is not a valid amount of factions for any
-	 *         world.
-	 *       | ! isValidFactionAmount(getFactionAmount())
-	 */
-	
-	/**
-	 * return the maximum number of factions for each world.
-	 */
-	private static int getMaxAmountOfFactions(){
-		return 5;
-	}
-	
-	/**
-	 * return the minimum number of factions for each world.
-	 */
-	private static int getMinAmountOfFactions(){
-		return 0;
-	}		
+	private Set<Unit> setOfUnits;
 
-////////////////////////////////////////////list all factions////////////////////////////////////////////	
+////////////////////////////////////////////list of all factions////////////////////////////////////////////	
 	/**
 	 * Return the set of active factions of this world.
 	 */
 	@Basic @Raw
-	public Set<Faction> getActiveFactionList() {
+	public Set<Faction> getSetOfFactions() {
 		return this.setOfFactions;
 	}
 	
@@ -197,15 +154,9 @@ public class World {
 	 */
 	@Basic @Raw
 	public int getAmountOfFaction() {
-		return getActiveFactionList().size();
+		return getSetOfFactions().size();
 	}
-	
-	/**
-	 * Variable registering the list of factions of this world.
-	 */
-	private Set<Faction> setOfFactions = new HashSet<Faction>();;
 		
-////////////////////////////////////////////create new faction////////////////////////////////////////////
 	/**
 	 * Check whether there can be a faction created in the world
 	 *  
@@ -235,8 +186,127 @@ public class World {
 			throw new ModelException();
 		this.setOfFactions.add(f);
 	}
+	
+	/**
+	 * return the maximum number of factions for each world.
+	 */
+	private static int getMaxAmountOfFactions(){
+		return 5;
+	}
+	
+	/**
+	 * Set that contains all the factions of a world
+	 */
+	private Set<Faction> setOfFactions = new HashSet<Faction>();
 		
+////////////////////////////////////////////list of all boulders////////////////////////////////////////////
+	/**
+	* set that contains all boulders of a given world.
+	*/
+	public Set<Boulder> setOfBoulders;
+	
+	/**
+	* Return the set of boulders of this world.
+	*/
+	@Basic @Raw
+	public Set<Boulder> getSetOfBoulders() {
+	return this.setOfBoulders;
+	}
+	
+	/**
+	* Check whether the given set of boulders is a valid set of boulders for
+	* any world.
+	* 
+	* @return return true if the length of the set is smaller than getMaxCapacityBoulders().
+	*/
+	public boolean isValidArrayListOfBoulders() {
+	if (setOfBoulders.size() <= getMaxCapacityBoulders()) return true;
+	return false;
+	}
+	
+	
+	/**
+	* return the maximum capacity of boulders in this world.
+	*/
+	private int getMaxCapacityBoulders(){
+	return 100;
+	}
+	
+	/**
+	* add the given boulder to the set of boulders.
+	* @param boulder
+	* 		  the boulder to add.
+	*/
+	public void addBoulder(Boulder boulder){
+	if (isValidArrayListOfBoulders())
+		setOfBoulders.add(boulder);
+	//TODO else exception throwen?
+	}
+	
+	/**
+	* removes the given boulder from the set of boulders.
+	* @param boulder
+	* 		  the boulder to remove.
+	*/
+	public void removeBoulder(Boulder boulder){
+		setOfBoulders.remove(boulder);
+	}
+	
+////////////////////////////////////////////list of all logs////////////////////////////////////////////
+	/**
+	* set that contains all the logs of a given world.
+	*/
+	public Set<Log> setOfLogs;
+	
+	/**
+	* Return the set of logs of this world.
+	*/
+	@Basic @Raw
+	public Set<Log> getSetOfLogs() {
+	return this.setOfLogs;
+	}
+	
+	/**
+	* Check whether the given set of logs is a valid set of logs for
+	* any world.
+	*  
+	* @return return true if the length of the set is smaller than getMaxCapacityLogs().
+	*/
+	public boolean isValidArrayListOfLogs() {
+	if (setOfLogs.size() <= getMaxCapacityLog()) return true;
+	return false;
+	}
+	
+	
+	/**
+	* return the maximum capacity of logs in this world.
+	*/
+	private int getMaxCapacityLog(){
+	return 100;
+	}
+	
+	/**
+	* add the given log to the set of logs.
+	* @param log
+	* 		 the log to add.
+	*/
+	public void addLog(Log log){
+	if (isValidArrayListOfLogs())
+		setOfLogs.add(log);
+	//TODO else exception throwen?
+	}
+	
+	/**
+	* removes the given log from the set of logs.
+	* @param log
+	* 		  the log to remove.
+	*/
+	public void removeLog(Log log){
+		setOfLogs.remove(log);
+	}
+	
 ////////////////////////////////////////////Random Unit spawnen////////////////////////////////////////////
+	//TODO comentaar bij random unit spawnen.
 	Random rand = new Random();
 	
 	public Unit spawnUnit(boolean enableDefaultBehavior) throws ModelException{
@@ -286,118 +356,9 @@ public class World {
 		return min;
 	}
 	
-////////////////////////////////////////////Game over////////////////////////////////////////////
-	
 ////////////////////////////////////////////inspect each individual cube////////////////////////////////////////////
 		
-////////////////////////////////////////////list all boulders////////////////////////////////////////////
-	/**
-	 * arraylist that contains all boulders of a given world.
-	 */
-	public Set<Boulder> arrayListOfBoulder = new HashSet<Boulder>();
 
-	/**
-	 * Return the list of boulders of this world.
-	 */
-	@Basic @Raw
-	public Set<Boulder> getArrayListOfBoulders() {
-		return this.arrayListOfBoulder;
-	}
-
-	/**
-	 * Check whether the given list of boulders is a valid list of boulders for
-	 * any world.
-	 *  
-	 * @param  list of boulders
-	 *         The list of boulders to check.
-	 * @return return true if the length of the arraylist is smaller than getMaxCapacityBoulders().
-	*/
-	public boolean isValidArrayListOfBoulders() {
-		if (arrayListOfBoulder.size() <= getMaxCapacityBoulders()) return true;
-		return false;
-	}
-	
-	
-	/**
-	 * return the maximum capacity of boulders in this world.
-	 */
-	private int getMaxCapacityBoulders(){
-		return 100;
-	}
-
-	/**
-	 * add the given boulder to the list of boulders.
-	 * @param boulder
-	 * 		  the boulder to add.
-	 */
-	public void addBoulder(Boulder boulder){
-		if (isValidArrayListOfBoulders())
-			arrayListOfBoulder.add(boulder);
-		//TODO else exception throwen?
-	}
-	
-	/**
-	 * removes the given boulder from the list of boulders.
-	 * @param boulder
-	 * 		  the boulder to remove.
-	 */
-	public void removeBoulder(Boulder boulder){
-		arrayListOfBoulder.remove(boulder);
-	}
-////////////////////////////////////////////list all logs////////////////////////////////////////////
-	/**
-	 * arraylist that contains all the logs of a given world.
-	 */
-	public Set<Log> arrayListOfLog = new HashSet<Log>();
-
-	/**
-	 * Return the list of logs of this world.
-	 */
-	@Basic @Raw
-	public Set<Log> getArrayListOfLog() {
-		return this.arrayListOfLog;
-	}
-
-	/**
-	 * Check whether the given list of logs is a valid list of logs for
-	 * any world.
-	 *  
-	 * @param  list of logs
-	 *         The list of logs to check.
-	 * @return return true if the length of the arraylist is smaller than getMaxCapacityLogs().
-	*/
-	public boolean isValidArrayListOfLogs() {
-		if (arrayListOfLog.size() <= getMaxCapacityLog()) return true;
-		return false;
-	}
-	
-	
-	/**
-	 * return the maximum capacity of logs in this world.
-	 */
-	private int getMaxCapacityLog(){
-		return 100;
-	}
-
-	/**
-	 * add the given log to the list of logs.
-	 * @param log
-	 * 		  the log to add.
-	 */
-	public void addLog(Log log){
-		if (isValidArrayListOfLogs())
-			arrayListOfLog.add(log);
-		//TODO else exception throwen?
-	}
-	
-	/**
-	 * removes the given log from the list of logs.
-	 * @param log
-	 * 		  the log to remove.
-	 */
-	public void removeLog(Log log){
-		arrayListOfBoulder.remove(log);
-		}
 	
 ////////////////////////////////////////////Advance time////////////////////////////////////////////
 	/**
@@ -405,17 +366,17 @@ public class World {
 	 * @param dt
 	 * 		  the given time dt.
 	 */
-	public void advanceTime(double dt) {
-		Object[] listOfBoulders = arrayListOfBoulder.toArray();
+	public void advanceTimeOfWorld(double dt) {
+		Object[] listOfBoulders = this.getSetOfBoulders().toArray();
 		for(int i = 0; i < listOfBoulders.length; i++) {
 			((Boulder) listOfBoulders[i]).advanceTimeOfBoulder(dt,this.terrainTypes);
 		}
 		
-		Object[] listOfLogs = arrayListOfLog.toArray();
+		Object[] listOfLogs = this.getSetOfLogs().toArray();
 		for(int i = 0; i < listOfLogs.length; i++) {
 			((Log) listOfLogs[i]).advanceTimeOfLog(dt,this.terrainTypes);
 		}
-		Object[] listOfUnits = ArrayListOfUnits.toArray();
+		Object[] listOfUnits = this.getSetOfUnits().toArray();
 		for(int i = 0; i < listOfUnits.length; i++) {
 			((Unit) listOfUnits[i]).advanceTimeOfUnit(dt);
 		}
