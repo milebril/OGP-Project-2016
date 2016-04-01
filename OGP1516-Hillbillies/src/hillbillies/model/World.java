@@ -94,16 +94,20 @@ public class World {
 	 * add the given unit to the list of units in this world.
 	 * @param unit
 	 * 		  the given world.
+	 * @throws ModelException
+	 * 		| ! getAmountOfUnits() < getMaxAmountOfUnits()
 	 */
-	public void addUnit(Unit unit) {
+	public void addUnit(Unit unit) throws ModelException{
 		if(getAmountOfUnits() < getMaxAmountOfUnits())
 			this.setOfUnits.add(unit);
-		//TODO exceptions throwen.
+		else
+			throw new ModelException();
 	}
 	
 	public void removeUnit(Unit unit) {
 		this.setOfUnits.remove(unit);
 	//TODO exception throwen als unit niet in lijst zit????????
+	//TODO Zouden we dit doen? want dit gaat toch nooit gebeuren als de unit sws al niet bestaat?
 	}
 	
 	/**
@@ -229,18 +233,21 @@ public class World {
 	* return the maximum capacity of boulders in this world.
 	*/
 	private int getMaxCapacityBoulders(){
-	return 100;
+		return 100;
 	}
 	
 	/**
 	* add the given boulder to the set of boulders.
 	* @param boulder
 	* 		  the boulder to add.
+	* @throws ModelException when invalid set
+	* 		| ! isValidArrayListOfBoulders()
 	*/
-	public void addBoulder(Boulder boulder){
-	if (isValidArrayListOfBoulders())
-		setOfBoulders.add(boulder);
-	//TODO else exception throwen?
+	public void addBoulder(Boulder boulder) throws ModelException{
+		if (isValidArrayListOfBoulders())
+			setOfBoulders.add(boulder);
+		else
+			throw new ModelException();
 	}
 	
 	/**
@@ -282,18 +289,21 @@ public class World {
 	* return the maximum capacity of logs in this world.
 	*/
 	private int getMaxCapacityLog(){
-	return 100;
+		return 100;
 	}
 	
 	/**
 	* add the given log to the set of logs.
 	* @param log
 	* 		 the log to add.
+	* @throws ModelException when invalid set
+	* 		| ! isValidArrayListOfLogs()
 	*/
-	public void addLog(Log log){
-	if (isValidArrayListOfLogs())
-		setOfLogs.add(log);
-	//TODO else exception throwen?
+	public void addLog(Log log) throws ModelException{
+		if (isValidArrayListOfLogs())
+			setOfLogs.add(log);
+		else
+			throw new ModelException();
 	}
 	
 	/**
@@ -306,9 +316,22 @@ public class World {
 	}
 	
 ////////////////////////////////////////////Random Unit spawnen////////////////////////////////////////////
-	//TODO comentaar bij random unit spawnen.
+	/**
+	 * Random used in the random unit spawning
+	 */
 	Random rand = new Random();
 	
+	/**
+	 * Creates a random unit to the world
+	 * @param enableDefaultBehavior
+	 * 		whether DefaultBegavior is enabled on creation
+	 * @return
+	 * 		Returns a new unit, which had random coords on passable terrain
+	 * 		With random values for it's weight, strenght, agility, toughness
+	 * 		And is in a faction.
+	 * 		
+	 * @throws ModelException
+	 */
 	public Unit spawnUnit(boolean enableDefaultBehavior) throws ModelException{
 		int x = rand.nextInt(getXLength());
 		int y = rand.nextInt(getYLength());
@@ -316,7 +339,7 @@ public class World {
 		
 		System.out.println(x + " " + y + " " + z);
 		
-		while (!isCubePassable(x, y, z) && (getTerrainType()[x][y][z-1] != 1 || z != 0)) { //TODO !
+		while (!isCubePassable(x, y, z) && (getTerrainType()[x][y][z-1] != 1 || z != 0)) {
 			x = rand.nextInt(getXLength());
 			y = rand.nextInt(getYLength());
 			z = rand.nextInt(getZLength());
@@ -338,12 +361,14 @@ public class World {
 			Faction f = lowestMemberFaction();
 			f.addUnitToFaction(newUnit);
 			newUnit.setFaction(f);
-			//TODO steek de unit in de faciton met het minste leden.
 		}
 		
 		return newUnit;
 	}
 	
+	/**
+	 * Return the faction with the fewest mambers.
+	 */
 	private Faction lowestMemberFaction() {
 		Faction min = null;
 		for (Faction f : setOfFactions) {
@@ -419,6 +444,7 @@ public class World {
 	*/
 	public static boolean isValidTerrainType(int[][][] terrainType) {
 		//TODO check if valid terrain type
+		//TODO is dit nodig? of wil je hier bv heel de lijst doorlopen en kijken of de value, 1,2,3 of 4 is???
 		return true;
 	}
 	
