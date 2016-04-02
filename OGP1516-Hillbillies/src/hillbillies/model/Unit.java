@@ -1838,7 +1838,7 @@ public class Unit {
 	 *       |		else result == true
 	*/
 	public static boolean isValidFaction(Faction faction) {
-		return (faction == null);
+		return (faction != null);
 	}
 
 	/**

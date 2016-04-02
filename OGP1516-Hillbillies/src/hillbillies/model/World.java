@@ -215,7 +215,7 @@ public class World {
 	*/
 	@Basic @Raw
 	public Set<Boulder> getSetOfBoulders() {
-	return this.setOfBoulders;
+		return this.setOfBoulders;
 	}
 	
 	/**
@@ -225,8 +225,9 @@ public class World {
 	* @return return true if the length of the set is smaller than getMaxCapacityBoulders().
 	*/
 	public boolean isValidArrayListOfBoulders() {
-	if (setOfBoulders.size() <= getMaxCapacityBoulders()) return true;
-	return false;
+		if (setOfBoulders.size() <= getMaxCapacityBoulders()) 
+			return true;
+		return false;
 	}
 	
 	
@@ -271,7 +272,7 @@ public class World {
 	*/
 	@Basic @Raw
 	public Set<Log> getSetOfLogs() {
-	return this.setOfLogs;
+		return this.setOfLogs;
 	}
 	
 	/**
@@ -281,8 +282,9 @@ public class World {
 	* @return return true if the length of the set is smaller than getMaxCapacityLogs().
 	*/
 	public boolean isValidArrayListOfLogs() {
-	if (setOfLogs.size() <= getMaxCapacityLog()) return true;
-	return false;
+		if (setOfLogs.size() <= getMaxCapacityLog()) 
+			return true;
+		return false;
 	}
 	
 	
@@ -340,7 +342,7 @@ public class World {
 		
 		System.out.println(x + " " + y + " " + z);
 		
-		while (!isCubePassable(x, y, z) && (getTerrainType()[x][y][z-1] != 1 || z != 0)) {
+		while (!isCubePassable(x, y, z) && (getTerrainType()[x][y][z-1] != 1 || z != 0)) { //TODO staat juisty op men desktop normaal
 			x = rand.nextInt(getXLength());
 			y = rand.nextInt(getYLength());
 			z = rand.nextInt(getZLength());
