@@ -19,7 +19,7 @@ import ogp.framework.util.ModelException;
  */
 public class Faction {
 	
-	public Set<Unit> unitsInFaction;
+	private Set<Unit> unitsInFaction;
 	
 	/* constructor */
 	/**
@@ -75,10 +75,9 @@ public class Faction {
 	/**
 	 * return the amount of units in a faction.
 	 */
-	private int getAmountOfUnitsInFaction() {
+	public int getAmountOfUnitsInFaction() {
 		return unitsInFaction.size();
 	}
-	
 	/**
 	 * return the maximum amount of units in a faction.
 	 */

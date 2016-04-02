@@ -98,9 +98,10 @@ public class World {
 	 * 		| ! getAmountOfUnits() < getMaxAmountOfUnits()
 	 */
 	public void addUnit(Unit unit) throws ModelException{
-		if(getAmountOfUnits() < getMaxAmountOfUnits())
+		if(getAmountOfUnits() < getMaxAmountOfUnits()) {
 			this.setOfUnits.add(unit);
-		else
+			
+		} else
 			throw new ModelException();
 	}
 	
@@ -185,7 +186,7 @@ public class World {
 	 *       | ! canCreateFaction()
 	 */
 	@Raw
-	private void createFaction(Faction f) throws ModelException {
+	public void createFaction(Faction f) throws ModelException {
 		if (! canCreateFaction())
 			throw new ModelException();
 		this.setOfFactions.add(f);

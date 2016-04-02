@@ -662,8 +662,9 @@ public class Unit {
 	/**
 	 * Return the value of the lowest coordinate value.
 	 */
-	private int getMaxValueCoordinate(){
-		return World.getXLength();
+	private static int getMaxValueCoordinate(){
+		//return unitsWorld.getXLength();
+		return 50;
 		//TODO de maximum waarde moet de lengte van de wereld zijn, deze moet uit de world class gehaald worden.
 	}
  
@@ -1865,4 +1866,17 @@ public class Unit {
 	 * Variable registering the faction of this unit.
 	 */
 	private Faction faction;
+	
+	
+	/*
+	 * World
+	 */
+	
+	private static World unitsWorld;
+	
+	public void setWorld(World world) {
+		//TODO validworldcheck
+		
+		this.unitsWorld = world;
+	}
 }
