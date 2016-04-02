@@ -22,16 +22,6 @@ public class unitTestCases {
 		testunit.putUnitInCenter(testunit.castIntToDouble(pos));
 		testunit2 = new Unit("Emil", pos, 50, 50, 50, 50, false);
 		testunit2.putUnitInCenter(testunit.castIntToDouble(pos));
-		
-		TerrainChangeListener modelListener = new TerrainChangeListener() {
-			
-			@Override
-			public void notifyTerrainChanged(int x, int y, int z) {
-				// TODO Auto-generated method stub
-				
-			}
-		};
-		testworld = new World(new int [5][5][5], modelListener);
 	}
 	/*
 	 *  Name
@@ -289,21 +279,6 @@ public class unitTestCases {
 		assertTrue(alive.isUnitAlive());
 	}
 	
-	/*
-	 * factions
-	 */
-	
-	@Test
-	public void add_removeUnitToFaction() throws IllegalArgumentException, ModelException {
-		int[] pos = {0,0,0};
-		Unit alive = new Unit("Emil", pos, 50, 50, 50, 50, false);
-		Faction f = new Faction();
-		
-		f.addUnitToFaction(alive);
-		assertEquals(1, f.getUnitsInFaction().size());
-		
-		f.removeUnitFromFaction(alive);
-		assertEquals(1, f.getUnitsInFaction().size());
-	}
+
 	
 }
