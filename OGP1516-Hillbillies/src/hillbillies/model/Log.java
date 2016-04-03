@@ -65,7 +65,7 @@ public class Log {
 	 * 		   weight return true.  
 	*/
 	@Raw
-	public boolean canHaveAsWeight(int weight) {
+	private boolean canHaveAsWeight(int weight) {
 		if( getMinWeight() <= weight && weight <= getMaxWeight())
 			return true;
 		return false;
