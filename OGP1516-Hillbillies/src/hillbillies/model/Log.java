@@ -110,7 +110,7 @@ public class Log {
 	 * 		   and maximum value for a coordinate return true.
 	 *       
 	*/
-	public static boolean isValidPosition(double[] position) {
+	public boolean isValidPosition(double[] position) {
 		if (position.length > 3)
 			return false;
 		for (int i=0; i < position.length; i++) {
