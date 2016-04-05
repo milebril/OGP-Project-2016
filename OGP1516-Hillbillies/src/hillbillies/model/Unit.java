@@ -663,7 +663,8 @@ public class Unit {
 	 * Return the value of the lowest coordinate value.
 	 */
 	private static int getMaxValueCoordinate(){
-		return World.getXLength();
+		//return unitsWorld.getXLength();
+		return 50;
 		//TODO de maximum waarde moet de lengte van de wereld zijn, deze moet uit de world class gehaald worden.
 	}
  
@@ -927,7 +928,7 @@ public class Unit {
 	 * @param dt
 	 * 		  the period dt.
 	 */
-	public void advanceTimeInUnit(double dt){
+	public void advanceTimeOfUnit(double dt){
 		unitLifetime += dt;
 		if (unitLifetime >= 1) {
 			unitLifetimeInSeconds++;
@@ -1765,7 +1766,7 @@ public class Unit {
 		this.expTillNextLevel += experience;
 		this.experience += experience;
 		
-		if (expTillNextLevel >= 10) {
+		if (expTillNextLevel >= 10) { //TODO stel 20xp ervij
 			increaceRandomStat();
 			expTillNextLevel -= 10;
 		}
@@ -1796,4 +1797,86 @@ public class Unit {
 	 * variable registering the experience needed for the next level.
 	 */
 	private int expTillNextLevel;
+	
+	/*
+	 * Faction
+	 */
+	
+	/** TO BE ADDED TO CLASS HEADING
+	 * @invar  The faction of each unit must be a valid faction for any
+	 *         unit.
+	 *       | isValidFaction(getFaction())
+	 */
+
+//TODO aan de constructor toevoegen
+/**
+ * Initialize this new unit with given faction.
+ *
+ * @param  faction
+ *         The faction for this new unit.
+ * @effect The faction of this new unit is set to
+ *         the given faction.
+ *       | this.setFaction(faction)
+ */
+
+	/**
+	 * Return the faction of this unit.
+	 */
+	@Basic @Raw
+	public Faction getFaction() {
+		return this.faction;
+	}
+
+	/**
+	 * Check whether the given faction is a valid faction for
+	 * any unit.
+	 *  
+	 * @param  faction
+	 *         The faction to check.
+	 * @return A unit must always belong to a faction
+	 *       | if (faction is null) result == false
+	 *       |		else result == true
+	*/
+	public static boolean isValidFaction(Faction faction) {
+		return (faction == null);
+	}
+
+	/**
+	 * Set the faction of this unit to the given faction.
+	 * 
+	 * @param  faction
+	 *         The new faction for this unit.
+	 * @post   The faction of this new unit is equal to
+	 *         the given faction.
+	 *       | new.getFaction() == faction
+	 * @throws ModelException
+	 *         The given faction is not a valid faction for any
+	 *         unit.
+	 *       | ! isValidFaction(getFaction())
+	 */
+	@Raw
+	public void setFaction(Faction faction) 
+			throws ModelException {
+		if (! isValidFaction(faction))
+			throw new ModelException();
+		this.faction = faction;
+	}
+
+	/**
+	 * Variable registering the faction of this unit.
+	 */
+	private Faction faction;
+	
+	
+	/*
+	 * World
+	 */
+	
+	private static World unitsWorld;
+	
+	public void setWorld(World world) {
+		//TODO validworldcheck
+		
+		this.unitsWorld = world;
+	}
 }

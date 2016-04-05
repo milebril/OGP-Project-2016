@@ -44,8 +44,6 @@ public class Log {
 		if (! canHaveAsWeight(weight))
 			throw new IllegalArgumentException();
 		this.weight =  weight;
-		//TODO placed on passable cube?
-		//TODO add to array list
 	}
  
 ////////////////////////////////////////////Weight////////////////////////////////////////////
@@ -67,7 +65,7 @@ public class Log {
 	 * 		   weight return true.  
 	*/
 	@Raw
-	public boolean canHaveAsWeight(int weight) {
+	private boolean canHaveAsWeight(int weight) {
 		if( getMinWeight() <= weight && weight <= getMaxWeight())
 			return true;
 		return false;
@@ -112,7 +110,7 @@ public class Log {
 	 * 		   and maximum value for a coordinate return true.
 	 *       
 	*/
-	public static boolean isValidPosition(double[] position) {
+	public boolean isValidPosition(double[] position) {
 		if (position.length > 3)
 			return false;
 		for (int i=0; i < position.length; i++) {
@@ -141,17 +139,7 @@ public class Log {
 			throw new IllegalArgumentException();
 		this.position = position;
 	}
-	
-	/**
-	 * cast an array of integers in an array of doubles
-	 * @param arrayInInt
-	 * @return arrayInDouble
-	 */
-	private double[] castIntToDouble (int[] arrayInInt){
-		double[] arrayInDouble = {(double) arrayInInt[0],(double) arrayInInt[1],(double) arrayInInt[2]};
-		return arrayInDouble;
-	}
-	
+		
 	/**
 	 * cast an array of doubles in an array of integers
 	 * @param arrayInDouble
@@ -183,21 +171,29 @@ public class Log {
 ////////////////////////////////////////////Advance Time////////////////////////////////////////////	
 	
 	/**
-	 * 
+	 * advance the time over the time period dt.
+	 * @post the position of the log is updated.
 	 */
-	public void advanceTime(double dt){
-		//TODO advance time
+	public void advanceTimeOfLog(double dt, int[][][] terrainTypes){
+		if (this.isCarried == true){
+			this.position = this.unitCarryingLog.getPosition();
+		}
+		if ( !this.isCarried && this.canFall(terrainTypes)){
+			this.fall(dt, terrainTypes);
+		}
 	}
-	
+
 ////////////////////////////////////////////Carried////////////////////////////////////////////
 	
 	/**
 	 * Make a log start being carried.
 	 */
-	public void startBeingCarried() throws IllegalStateException{
-		if (this.isCarried == true)
+	public void startBeingCarried(Unit unit) throws IllegalStateException{
+		if (this.isCarried == true || this.unitCarryingLog != null)
 			throw new IllegalStateException();
 		this.isCarried = true;
+		this.unitCarryingLog = unit;
+		unit.setWeight(unit.getWeight() + this.getWeight());
 	}
 	
 	/**
@@ -205,22 +201,65 @@ public class Log {
 	 */
 	public void stopBeingCarried(){
 		this.isCarried = false;
+		this.unitCarryingLog.setWeight(this.unitCarryingLog.getWeight() - this.getWeight());
+		this.unitCarryingLog = null;
 	}
+	
+	/**
+	 * return the carrier of this log.
+	 * @return the carrier if the log is carried or null when there is no carrier.
+	 */
+	public Unit getCarrier(){
+		return this.unitCarryingLog;
+	}
+	
+	/**
+	 * variable registering which unit is carrying the log.
+	 */
+	public Unit unitCarryingLog = null;
 	
 	/**
 	 * Boolean registering if a log is carried or not.
 	 */
 	private boolean isCarried = false; 
-	
-	//TODO add weight to unit
-	//TODO move boulder witch same vector as unit
+
 	
 ////////////////////////////////////////////Falling////////////////////////////////////////////	
+	/**
+	 * check if a log can fall.
+	 */
+	private boolean canFall(int[][][] terrainTypes){
+		int[] position = castDoubleToInt(this.getPosition());
+		if(position[2] == 0) return false;
+		if(terrainTypes[position[0]][position[1]][position[2]-1] == 0) return true;
+		return false;
+	}
 	
-	//TODO faling
+	/**
+	 * return the speed of falling in m/s.
+	 */
+	private static int speedOfFalling() {
+		return 3;
+	}
 	
-////////////////////////////////////////////Dropped////////////////////////////////////////////	
-	
-	//TODO being dropped
-	
+	/**
+	 * move the log over a given time period dt.
+	 */
+	private void fall(double dt, int[][][] terrainTypes) {
+		double[] positionInInt = this.getPosition();
+		double distanceToFall = speedOfFalling() * dt;
+		if(distanceToFall < 1)
+			positionInInt[2] -= distanceToFall;
+		else {
+			int[] position = castDoubleToInt(this.getPosition());
+			int a = 0;
+			for( int i = 0; i < distanceToFall; i++){
+				if(terrainTypes[position[0]][position[1]][position[2]- i] == 0)
+					a++;
+			}
+			distanceToFall = a + distanceToFall % (int)distanceToFall;
+			positionInInt[2] -= distanceToFall;
+		}
+		this.setPosition(positionInInt);
+	}
 }

@@ -9,6 +9,8 @@ import java.util.Random;
  * 
  * @invar  Each Boulder can have its weight as weight.
  *       | canHaveAsWeight(this.getWeight())
+ * @invar Each boulder should be above a solid terrainType or should be falling.
+ * 	
  * @author Emil Peters
  * @author Sjaan Vandebeek
  *
@@ -27,7 +29,14 @@ public class Boulder {
 	 * @throws ExceptionName_Java
 	 *         This new Boulder cannot have the given weight as its weight.
 	 *       | ! canHaveAsWeight(this.getWeight())
-	 * @throws ExceptionName_Java
+	 *       
+	 * Initialize this new log with given position.
+	 *
+	 * @param  position
+	 *         The position for this new log.
+	 * @effect The position of this new log is set to
+	 *         the given position.
+	 *       | this.setPosition(position)
 	 */
 	public Boulder(double[] position) throws IllegalArgumentException {
 		Random random = new Random();
@@ -35,8 +44,6 @@ public class Boulder {
 		if (! canHaveAsWeight(weight))
 			throw new IllegalArgumentException();
 		this.weight =  weight;
-		//TODO placed on passable cube?
-		//TODO add to array list.
 	}
  
 ////////////////////////////////////////////Weight////////////////////////////////////////////
@@ -58,7 +65,7 @@ public class Boulder {
 	 *       
 	*/
 	@Raw
-	public boolean canHaveAsWeight(int weight) {
+	private boolean canHaveAsWeight(int weight) {
 		if( getMinWeight() <= weight && weight <= getMaxWeight())
 			return true;
 		return false;
@@ -102,7 +109,7 @@ public class Boulder {
 	 * @return if all the three elements of the list lays between the minimum
 	 * 		   and maximum value for a coordinate return true. 
 	*/
-	public static boolean isValidPosition(double[] position) {
+	public boolean isValidPosition(double[] position) {
 		if (position.length > 3)
 			return false;
 		for (int i=0; i < position.length; i++) {
@@ -131,27 +138,7 @@ public class Boulder {
 			throw new IllegalArgumentException();
 		this.position = position;
 	}
-	
-	/**
-	 * cast an array of integers in an array of doubles
-	 * @param arrayInInt
-	 * @return arrayInDouble
-	 */
-	private double[] castIntToDouble (int[] arrayInInt){
-		double[] arrayInDouble = {(double) arrayInInt[0],(double) arrayInInt[1],(double) arrayInInt[2]};
-		return arrayInDouble;
-	}
-	
-	/**
-	 * cast an array of doubles in an array of integers
-	 * @param arrayInDouble
-	 * @return arrayInInt
-	 */
-	private int[] castDoubleToInt (double[] arrayInDoubles){
-		int[] arrayInInt = {(int) arrayInDoubles[0],(int) arrayInDoubles[1],(int) arrayInDoubles[2]};
-		return arrayInInt;
-	}
-	
+			
 	/**
 	 * Return the value of the lowest coordinate value.
 	 */
@@ -167,26 +154,44 @@ public class Boulder {
 	}
 	
 	/**
+	 * cast an array of doubles in an array of integers
+	 * @param arrayInDouble
+	 * @return arrayInInt
+	 */
+	private static int[] castDoubleToInt (double[] arrayInDoubles){
+		int[] arrayInInt = {(int) arrayInDoubles[0],(int) arrayInDoubles[1],(int) arrayInDoubles[2]};
+		return arrayInInt;
+	}
+	
+	/**
 	 * Variable registering the position of this boulder.
 	 */
 	private double[] position;
 ////////////////////////////////////////////Advance Time////////////////////////////////////////////	
 	
 	/**
-	 * 
+	 * advance the time over the time period dt.
+	 * @post the position of the stone is updated.
 	 */
-	public void advanceTime(double dt){
-		//TODO advance time
+	public void advanceTimeOfBoulder(double dt, int[][][] terrainTypes){
+		if (this.isCarried == true){
+			this.position = this.unitCarryingBoulder.getPosition();
+		}
+		if ( !this.isCarried && this.canFall(terrainTypes)){
+			this.fall(dt, terrainTypes);
+		}
 	}
 ////////////////////////////////////////////Carried////////////////////////////////////////////
 	
 	/**
 	 * Make a boulder start being carried.
 	 */
-	public void startBeingCarried() throws IllegalStateException{
-		if (this.isCarried == true)
+	public void startBeingCarried(Unit unit) throws IllegalStateException{
+		if (this.isCarried == true || this.unitCarryingBoulder != null)
 			throw new IllegalStateException();
 		this.isCarried = true;
+		this.unitCarryingBoulder = unit;
+		unit.setWeight(unit.getWeight() + this.getWeight());
 	}
 	
 	/**
@@ -194,22 +199,64 @@ public class Boulder {
 	 */
 	public void stopBeingCarried(){
 		this.isCarried = false;
+		this.unitCarryingBoulder.setWeight(this.unitCarryingBoulder.getWeight() + this.getWeight());
+		this.unitCarryingBoulder = null;
 	}
+	
+	/**
+	 * return the carrier of this boulder.
+	 * @return the carrier if the boulder is carried or null when there is no carrier.
+	 */
+	public Unit getCarrier(){
+		return this.unitCarryingBoulder;
+	}
+	
+	/**
+	 * variable registering which unit is carrying the boulder.
+	 */
+	public Unit unitCarryingBoulder = null;
 	
 	/**
 	 * Boolean registering if a boulder is carried or not.
 	 */
 	private boolean isCarried = false; 
-	
-	//TODO add weight to unit
-	//TODO move boulder witch same vector as unit
-	
+		
 ////////////////////////////////////////////Falling////////////////////////////////////////////	
+	/**
+	 * check if a boulder can fall.
+	 */
+	private boolean canFall(int[][][] terrainTypes){
+		int[] position = castDoubleToInt(this.getPosition());
+		if(position[2] == 0) return false;
+		if(terrainTypes[position[0]][position[1]][position[2]-1] == 0) return true;
+		return false;
+	}
 	
-	//TODO faling
+	/**
+	 * return the speed of falling in m/s.
+	 */
+	private static int speedOfFalling() {
+		return 3;
+	}
 	
-////////////////////////////////////////////Dropped////////////////////////////////////////////	
-
-	//TODO being dropped
-	
+	/**
+	 * move the boulder over a given time period dt.
+	 */
+	private void fall(double dt, int[][][] terrainTypes) {
+		double[] positionInInt = this.getPosition();
+		double distanceToFall = speedOfFalling() * dt;
+		if(distanceToFall < 1)
+			positionInInt[2] -= distanceToFall;
+		else {
+			int[] position = castDoubleToInt(this.getPosition());
+			int a = 0;
+			for( int i = 0; i < distanceToFall; i++){
+				if(terrainTypes[position[0]][position[1]][position[2]- i] == 0)
+					a++;
+			}
+			distanceToFall = a + distanceToFall % (int)distanceToFall;
+			positionInInt[2] -= distanceToFall;
+		}
+		this.setPosition(positionInInt);
+	}
 }

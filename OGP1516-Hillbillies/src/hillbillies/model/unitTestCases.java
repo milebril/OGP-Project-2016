@@ -1,6 +1,7 @@
 package hillbillies.model;
 
 import hillbillies.part1.facade.Facade;
+import hillbillies.part2.listener.TerrainChangeListener;
 import ogp.framework.util.ModelException;
 import ogp.framework.util.Util;
 import static org.junit.Assert.*;
@@ -8,10 +9,11 @@ import org.junit.*;
 
 public class unitTestCases {
 	
-	//TODO tests atacking op timing and attackers
+	//TODO tests atacking op timing and attackers ->Zie hun tests
 	//TODO movement tests
 	
 	public Unit testunit, testunit2;
+	public World testworld;
 	
 	@Before
 	public void setUp() throws IllegalArgumentException, ModelException {
@@ -276,5 +278,7 @@ public class unitTestCases {
 		
 		assertTrue(alive.isUnitAlive());
 	}
+	
+
 	
 }

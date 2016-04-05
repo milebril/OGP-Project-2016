@@ -103,7 +103,7 @@ public class Facade implements IFacade{
 	 */
 	@Override
 	public void advanceTime(World world, double dt) throws ModelException {
-		world.advanceTime(dt);
+		world.advanceTimeOfWorld(dt);
 	}
 
 	/**
@@ -210,7 +210,7 @@ public class Facade implements IFacade{
 	@Override
 	public void addUnit(Unit unit, World world) throws ModelException {
 		// TODO Auto-generated method stub
-		
+		world.addUnit(unit);
 	}
 
 	/**
@@ -224,8 +224,7 @@ public class Facade implements IFacade{
 	 */
 	@Override
 	public Set<Unit> getUnits(World world) throws ModelException {
-		// TODO Auto-generated method stub
-		return null;
+		return world.getSetOfUnits();
 	}
 
 	/**
@@ -319,8 +318,7 @@ public class Facade implements IFacade{
 	 */
 	@Override
 	public Faction getFaction(Unit unit) throws ModelException {
-		// TODO Auto-generated method stub
-		return null;
+		return unit.getFaction();
 	}
 
 	/**
@@ -334,8 +332,7 @@ public class Facade implements IFacade{
 	 */
 	@Override
 	public Set<Unit> getUnitsOfFaction(Faction faction) throws ModelException {
-		// TODO Auto-generated method stub
-		return null;
+		return faction.getUnitsInFaction();
 	}
 
 	/**
@@ -348,8 +345,7 @@ public class Facade implements IFacade{
 	 */
 	@Override
 	public Set<Faction> getActiveFactions(World world) throws ModelException {
-		// TODO Auto-generated method stub
-		return null;
+		return world.getSetOfFactions();
 	}
 	
 	/* Unit creation */
@@ -641,8 +637,7 @@ public class Facade implements IFacade{
 	 */
 	@Override
 	public void advanceTime(Unit unit, double dt) throws ModelException {
-		unit.advanceTimeInUnit(dt);		
-		//TODO replace this method with the advance world method
+		unit.advanceTimeOfUnit(dt);		
 	}
 
 	/* Basic movement */
@@ -785,7 +780,7 @@ public class Facade implements IFacade{
 	@Override
 	public void work(Unit unit) throws ModelException {
 		unit.startWorking();
-		//TODO replace this with thee work at method
+		//TODO replace this with the work at method
 	}
 
 	/**
@@ -925,8 +920,7 @@ public class Facade implements IFacade{
 	 */
 	@Override
 	public Set<Boulder> getBoulders(World world) throws ModelException {
-		// TODO Auto-generated method stub
-		return null;
+		return world.getSetOfBoulders();
 	}
 
 	/* LOGS */
@@ -958,7 +952,6 @@ public class Facade implements IFacade{
 	 */
 	@Override
 	public Set<Log> getLogs(World world) throws ModelException {
-		// TODO Auto-generated method stub
-		return null;
+		return world.getSetOfLogs();
 	}
 }
