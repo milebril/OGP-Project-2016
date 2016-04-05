@@ -4,13 +4,18 @@ import java.util.Set;
 
 public class Faction {
 	
+<<<<<<< HEAD
 	private Set<Faction> listOfFactions;
 	private Set<Unit> unitsInFaction;
 	
+=======
+	/* constructor */
+>>>>>>> origin/master
 	public Faction() {
 		
 	}
 	
+<<<<<<< HEAD
 	public Faction getFaction(Unit unit) {
 		for (Faction f : listOfFactions) {
 			for (Unit u : f.unitsInFaction) {
@@ -21,5 +26,8 @@ public class Faction {
 		}
 		return null;
 	}
+=======
+	
+>>>>>>> origin/master
 	
 }

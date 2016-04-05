@@ -1,6 +1,6 @@
 package hillbillies.model;
 
-import java.util.Random;
+import java.util.*;
 
 import be.kuleuven.cs.som.annotate.*;
 import hillbillies.part2.listener.TerrainChangeListener;
@@ -20,6 +20,10 @@ import ogp.framework.util.ModelException;
  * @invar  The terrainType of each world must be a valid terrainType for any
  *         world.
  *       | isValidTerrainType(getTerrainType())
+ *       
+ * @invar  The list of boulders of each world must be a valid list of boulders for any
+ *         world.
+ *       | isValidArrayListOfBoulders(getArrayListOfBoulders())
  */
 public class World {
 	
@@ -242,9 +246,117 @@ public class World {
 ////////////////////////////////////////////inspect each individual cube////////////////////////////////////////////
 		
 ////////////////////////////////////////////list all boulders////////////////////////////////////////////
+	/**
+	 * arraylist that contains all boulders of a given world.
+	 */
+	public Set<Boulder> arrayListOfBoulder = (Set<Boulder>) new ArrayList();
+
+	/**
+	 * Return the list of boulders of this world.
+	 */
+	@Basic @Raw
+	public Set<Boulder> getArrayListOfBoulders() {
+		return this.arrayListOfBoulder;
+	}
+
+	/**
+	 * Check whether the given list of boulders is a valid list of boulders for
+	 * any world.
+	 *  
+	 * @param  list of boulders
+	 *         The list of boulders to check.
+	 * @return return true if the length of the arraylist is smaller than getMaxCapacityBoulders().
+	*/
+	public boolean isValidArrayListOfBoulders() {
+		if (arrayListOfBoulder.size() <= getMaxCapacityBoulders()) return true;
+		return false;
+	}
 	
+	
+	/**
+	 * return the maximum capacity of boulders in this world.
+	 */
+	private int getMaxCapacityBoulders(){
+		return 100;
+	}
+
+	/**
+	 * add the given boulder to the list of boulders.
+	 * @param boulder
+	 * 		  the boulder to add.
+	 */
+	public void addBoulder(Boulder boulder){
+		if (isValidArrayListOfBoulders())
+			arrayListOfBoulder.add(boulder);
+		//TODO else exception throwen?
+	}
+	
+	/**
+	 * removes the given boulder from the list of boulders.
+	 * @param boulder
+	 * 		  the boulder to remove.
+	 */
+	public void removeBoulder(Boulder boulder){
+		//TODO ik heb geen idee hoe dit te doen omdat ge enkel elementen op ene bepaalde positie moet wegdoen, maar dacht misschien
+		//TODO door de hele list te extracten in een array en dan de boulder te verwijderen en dan de array terug aan de lijst toetevoegen.
+		//TODO als de log niet in de lijst zit exception throwen?
+	}
 ////////////////////////////////////////////list all logs////////////////////////////////////////////
+	/**
+	 * arraylist that contains all the logs of a given world.
+	 */
+	public Set<Log> arrayListOfLog = (Set<Log>) new ArrayList();
+
+	/**
+	 * Return the list of logs of this world.
+	 */
+	@Basic @Raw
+	public Set<Log> getArrayListOfLog() {
+		return this.arrayListOfLog;
+	}
+
+	/**
+	 * Check whether the given list of logs is a valid list of logs for
+	 * any world.
+	 *  
+	 * @param  list of logs
+	 *         The list of logs to check.
+	 * @return return true if the length of the arraylist is smaller than getMaxCapacityLogs().
+	*/
+	public boolean isValidArrayListOfLogs() {
+		if (arrayListOfLog.size() <= getMaxCapacityLog()) return true;
+		return false;
+	}
 	
+	
+	/**
+	 * return the maximum capacity of logs in this world.
+	 */
+	private int getMaxCapacityLog(){
+		return 100;
+	}
+
+	/**
+	 * add the given log to the list of logs.
+	 * @param log
+	 * 		  the log to add.
+	 */
+	public void addLog(Log log){
+		if (isValidArrayListOfLogs())
+			arrayListOfLog.add(log);
+		//TODO else exception throwen?
+	}
+	
+	/**
+	 * removes the given log from the list of logs.
+	 * @param log
+	 * 		  the log to remove.
+	 */
+	public void removeLog(Log log){
+		//TODO ik heb geen idee hoe dit te doen omdat ge enkel elementen op ene bepaalde positie moet wegdoen, maar dacht misschien
+		//TODO door de hele list te extracten in een array en dan de boulder te verwijderen en dan de array terug aan de lijst toetevoegen.
+		//TODO als de log niet in de lijst zit exception throwen?
+	}
 ////////////////////////////////////////////Advance time////////////////////////////////////////////
 	
 	public void advanceTime(double dt) {
