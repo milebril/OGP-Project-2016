@@ -202,38 +202,7 @@ public class World {
 	/**
 	 * Set that contains all the factions of a world
 	 */
-<<<<<<< HEAD
-	private static int getMinAmountOfFactions(){
-		return 0;
-	}
-	
-	/**
-	 * Variable registering the amount of factions of this world.
-	 */
-	private int amountOfFactions;		
-
-////////////////////////////////////////////list all factions////////////////////////////////////////////	
-	
-////////////////////////////////////////////Units in a faction////////////////////////////////////////////
-	
-////////////////////////////////////////////Random Unit spawnen////////////////////////////////////////////
-	Random rand = new Random();
-	
-	public Unit spawnUnit(boolean enableDefaultBehavior) throws ModelException{
-		int x = rand.nextInt(getXLength());
-		int y = rand.nextInt(getYLength());
-		int z = rand.nextInt(getZLength());
-		
-		System.out.println(x + " " + y + " " + z);
-		
-		while (!(isCubePassable(x, y, z) && (z != 0 || getCubeType(x, y, z-1) != 1))) {
-			x = rand.nextInt(getXLength());
-			y = rand.nextInt(getYLength());
-			z = rand.nextInt(getZLength());
-		}
-=======
 	private Set<Faction> setOfFactions = new HashSet<Faction>();
->>>>>>> origin/master
 		
 ////////////////////////////////////////////list of all boulders////////////////////////////////////////////
 	/**
@@ -371,7 +340,7 @@ public class World {
 		
 		System.out.println(x + " " + y + " " + z);
 		
-		while (!isCubePassable(x, y, z) && (getTerrainType()[x][y][z-1] != 1 || z != 0)) {
+		while (!(isCubePassable(x, y, z) && (z != 0 || getCubeType(x, y, z-1) != 1))) {
 			x = rand.nextInt(getXLength());
 			y = rand.nextInt(getYLength());
 			z = rand.nextInt(getZLength());
@@ -394,6 +363,9 @@ public class World {
 			f.addUnitToFaction(newUnit);
 			newUnit.setFaction(f);
 		}
+		
+		newUnit.setWorld(this);
+		addUnit(newUnit);
 		
 		return newUnit;
 	}

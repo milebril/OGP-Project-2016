@@ -1,21 +1,8 @@
 package hillbillies.model;
 
-<<<<<<< HEAD
+import java.util.LinkedHashSet;
 import java.util.Set;
 
-public class Faction {
-	
-<<<<<<< HEAD
-	private Set<Faction> listOfFactions;
-	private Set<Unit> unitsInFaction;
-	
-=======
-	/* constructor */
->>>>>>> origin/master
-=======
-import java.util.*;
-
-import be.kuleuven.cs.som.annotate.Raw;
 import ogp.framework.util.ModelException;
 
 /**
@@ -33,18 +20,16 @@ import ogp.framework.util.ModelException;
 public class Faction {
 	
 	private Set<Unit> unitsInFaction;
+	private Set<Faction> listOfFactions;
 	
 	/* constructor */
 	/**
 	 * initialize a new faction with an empty list of units.
 	 */
->>>>>>> origin/master
 	public Faction() {
 		unitsInFaction = new LinkedHashSet<Unit>();
 	}
 	
-<<<<<<< HEAD
-<<<<<<< HEAD
 	public Faction getFaction(Unit unit) {
 		for (Faction f : listOfFactions) {
 			for (Unit u : f.unitsInFaction) {
@@ -55,10 +40,7 @@ public class Faction {
 		}
 		return null;
 	}
-=======
 	
->>>>>>> origin/master
-=======
 	/**
 	 * add the given unit to the faction.
 	 * @param unit
@@ -84,7 +66,6 @@ public class Faction {
 	public boolean canAddUnit() {
 		return getAmountOfUnitsInFaction() < getMaxAmountOfUnitsInFaction();
 	}
->>>>>>> origin/master
 	
 	/**
 	 * get all the units that are in the faction.
