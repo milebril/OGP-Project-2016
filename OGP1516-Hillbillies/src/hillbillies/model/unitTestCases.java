@@ -279,6 +279,21 @@ public class unitTestCases {
 		assertTrue(alive.isUnitAlive());
 	}
 	
-
+	/*
+	 * Experience
+	 */
 	
+	@Test
+	public void unitLevels() throws IllegalArgumentException, ModelException  {
+		int[] pos = {0,0,0};
+		Unit test = new Unit("Emil", pos, 50, 50, 50, 50, false);
+		
+		Unit test2 = new Unit("Emil", pos, 50, 50, 50, 50, false);
+		
+		test.setExperience(50);
+		
+		assertFalse(test.equals(test2));
+		
+		
+	}
 }

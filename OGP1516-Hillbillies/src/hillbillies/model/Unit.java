@@ -664,7 +664,7 @@ public class Unit {
 	 */
 	private static int getMaxValueCoordinate(){
 		//return unitsWorld.getXLength();
-		return 50;
+		return 15;
 		//TODO de maximum waarde moet de lengte van de wereld zijn, deze moet uit de world class gehaald worden.
 	}
  
@@ -780,7 +780,6 @@ public class Unit {
 		this.hitpoints = hitpoints;
 	}
 	
-	//TODO kan dit niet door de setter vervangen worden.
 	/**
 	 * Increase the hitpoints of this unit with the given hitpoints.
 	 * 
@@ -802,7 +801,6 @@ public class Unit {
 	}
 	
 	
-	//TODO kan dit niet door de setter vervangen worden.
 	/**
 	 * Decrease the hitpoints of this unit with the given hitpoints.
 	 * 
@@ -875,7 +873,6 @@ public class Unit {
 		return stamina > 0;
 	}
 		
-	//TODO kan dit niet door de setter vervangen worden.
 	/**
 	 * Increase the Stamina of this unit to the given Stamina.
 	 * 
@@ -896,7 +893,6 @@ public class Unit {
 			this.stamina = this.stamina + stamina;
 	}
 	
-	//TODO kan dit niet door de setter vervangen worden.
 	/**
 	 * Decreases the Stamina of this unit to the given Stamina.
 	 * 
@@ -1252,7 +1248,10 @@ public class Unit {
 	 */
 	private int[] pathfindingTo = {0,0,0};
 	
-	/* Work */
+	/*
+	 * Work
+	 */
+	
 	//TODO Nieuwe work implementeren
 	/**
 	 * Return the state of working of this unit.
@@ -1291,18 +1290,115 @@ public class Unit {
 	 * @param dt
 	 */
 	private void working(double dt){
-		if(this.canWork() == true){ 
-			if (this.timeLeftWorking == 0){
-				this.stopWorking();
-			}else{
-				this.timeLeftWorking = this.timeLeftWorking -  dt;
+		if (canWork()) {
+			if (this.timeLeftWorking == 0) {
+				try {
+					setExperience(10);
+				} catch (ModelException e) {
+					
+				}
+				stopWorking();
+			} else {
+				this.timeLeftWorking -= dt;
 				if(this.timeLeftWorking <= 0){
 					this.timeLeftWorking = 0;
 				}
+				//The working
+				
+				if (isCarryingBoulder() || isCarryingLog()) {
+					if (isCarryingBoulder()) {
+						carriedBoulder.setPosition(new double[] {getPosition()[0], getPosition()[0], getPosition()[0]});
+						carriedBoulder.stopBeingCarried();
+						this.carriedBoulder = null;
+						//TODO
+					}
+				} else if (unitsWorld.getCubeType((int) getPosition()[0], (int) getPosition()[1], (int) getPosition()[2]) == 3 &&
+						logAtCurrentPos() && boulderAtCurrentPos()) {
+					unitsWorld.removeBoulder(getBoulderAtPosition(getPosition()[0], getPosition()[1], getPosition()[2]));
+					unitsWorld.removeLog(getLogAtPosition(getPosition()[0], getPosition()[1], getPosition()[2]));
+					this.setToughness(getToughness() + 5); 
+					this.setWeight(getWeight() + 5); 
+				} else if (boulderAtCurrentPos()) {
+					getBoulderAtPosition(getPosition()[0], getPosition()[1], getPosition()[2]).startBeingCarried(this);
+				} else if (logAtCurrentPos()) {
+					getLogAtPosition(getPosition()[0], getPosition()[1], getPosition()[2]).startBeingCarried(this);
+				} else if (unitsWorld.getCubeType((int) getPosition()[0], (int) getPosition()[1], (int) getPosition()[2]) == 2) {
+					//TODO cube collapses en drop een Log
+				} else if (unitsWorld.getCubeType((int) getPosition()[0], (int) getPosition()[1], (int) getPosition()[2]) == 1) {
+					//TODO cube collapses and drop a Boulder
+				}
+				
 			}
-		}else{
-			this.stopWorking();
+		} else {
+			stopWorking();
 		}
+	}
+	
+	private Log getLogAtPosition(double x, double y, double z) {
+		for (Log l : unitsWorld.getSetOfLogs()) {
+			if (l.getPosition()[0] == x && l.getPosition()[1] == y && l.getPosition()[2] == z) {
+				return l;
+			}
+		}
+		return null;
+	}
+	
+	private Boulder getBoulderAtPosition(double x, double y, double z) {
+		for (Boulder b : unitsWorld.getSetOfBoulders()) {
+			if (b.getPosition()[0] == x && b.getPosition()[1] == y && b.getPosition()[2] == z) {
+				return b;
+			}
+		}
+		return null;
+	}
+	
+	private boolean logAtCurrentPos() {
+		for (Log l : unitsWorld.getSetOfLogs()) {
+			if (l.getPosition()[0] == getPosition()[0] && l.getPosition()[1] == getPosition()[1] && l.getPosition()[2] == getPosition()[2]) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	private boolean boulderAtCurrentPos() {
+		for (Boulder b : unitsWorld.getSetOfBoulders()) {
+			if (b.getPosition()[0] == getPosition()[0] && b.getPosition()[1] == getPosition()[1] && b.getPosition()[2] == getPosition()[2]) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	private Log carriedLog = null;
+	private Boulder carriedBoulder = null;
+	
+	public void startCarryingBoulder(Boulder b) {
+		this.carriedBoulder = b;
+	}
+	
+	/*
+	 * Returns whether a unit is carrying a log
+	 */
+	private boolean isCarryingLog() {
+		for (Log l : unitsWorld.getSetOfLogs()) {
+			if (l.getCarrier().equals(this)) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	/*
+	 * Returns whether a unit is carrying a boulder
+	 */
+	private boolean isCarryingBoulder() {
+		for (Boulder b : unitsWorld.getSetOfBoulders()) {
+			if (b.getCarrier().equals(this)) {
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	/**
@@ -1316,23 +1412,20 @@ public class Unit {
 	}
 
 	/**
-	 * variable registering the time left that a unit hase to work.
+	 * variable registering the time left that a unit has to work.
 	 */
 	private double timeLeftWorking;
 	
 	/* Fighting */
-	//TODO Attacker en Defender moeten tot andere faction behoren
-	//TODO succesfull att, dodge of block +20 exp
 	
 	/**
 	 * Let the unit start attacking.
 	 */
 	public void startAttacking(Unit defender) {
-		if (targetOnValidPosition(defender)) {
+		if (targetOnValidPosition(defender) && targetFromDifferentFaction(defender)) {
 			stopWorking();
 			stopResting();
 			this.isPathfinding = false;
-			defenderClone = defender;
 			this.isAttacking = true;
 		}
 		
@@ -1346,7 +1439,11 @@ public class Unit {
 	private void attacking(Unit defender) {
 		this.isAttacking = true;
 		defender.isDefending = true;
-		defender.defending(defender);
+		try {
+			defender.defending(defender);
+		} catch (ModelException e) { 
+			
+		}
 		stopAttacking();
 		defender.isDefending = false;
 	}
@@ -1355,14 +1452,18 @@ public class Unit {
 	 * let the defending unit defend himself
 	 * @param defender
 	 * 		  the defending unit
+	 * @throws ModelException When invalid experience
 	 */
-	private void defending(Unit defender) {
+	private void defending(Unit defender) throws ModelException {
 		if (succesfullDodge(defender)) {
 			dodgethis(defender);
+			defender.setExperience(20);
 		} else if (succesfullBlock(defender)) {
 			blockthis(defender);
+			defender.setExperience(20);
 		} else {
 			takeDamage(defender);
+			this.setExperience(20);
 		}
 	}
 	
@@ -1378,6 +1479,10 @@ public class Unit {
 		if (Math.abs(dx) <= 1 && Math.abs(dy) <= 1)
 				return true;
 		return false;
+	}
+	
+	private boolean targetFromDifferentFaction(Unit defender) {
+		return ! (getFaction().equals(defender.getFaction()));
 	}
 	
 	/**
@@ -1413,7 +1518,6 @@ public class Unit {
 	private Unit defenderClone;
 	
 	/* Dodging */
-	//TODO kan enkel dodgen naar passable terain
 	
 	/**
 	 * return the chance that a defending unit can dodge the attack.
@@ -1448,7 +1552,8 @@ public class Unit {
 		newPos[0] += newX;
 		newPos[1] += newY;
 		
-		if(isValidPosition(newPos) && (newPos[0] != getPosition()[0] && newPos[1] != getPosition()[1])) {
+		if(isValidPosition(newPos) && (newPos[0] != getPosition()[0] && newPos[1] != getPosition()[1]) &&
+				unitsWorld.isCubePassable((int) newPos[0], (int) newPos[1], (int) getPosition()[2])) {			
 			this.setUnitPosition(newPos);
 		} else {
 			moveToRandomAdjecant();
@@ -1517,7 +1622,7 @@ public class Unit {
 		return this.isResting;
 	}
 	
-	//TODO welke state moeten allemaal op false worden gezet? dit moet ook in post conditie.
+	//TODO welke state moeten allemaal op false worden gezet? dit moet ook in post conditie. Default Behavirot
 	/**
 	 * make the unit start resting
 	 * 
@@ -1531,6 +1636,7 @@ public class Unit {
 		this.isPathfinding = false;
 		this.isWorking = false;
 		this.isResting = true;
+		this.defaultBehaviour = false;
 	}
 	
 	/**
@@ -1638,7 +1744,7 @@ public class Unit {
 	 */
 	private void defaultBehavior(double dt){
 		Random random = new Random();
-		int ActionChance = random.nextInt(3);
+		int ActionChance = random.nextInt(4);
 		if(ActionChance == 1){
 			int[] cube = {0,0,0};
 			cube[0] = random.nextInt(50);
@@ -1654,8 +1760,13 @@ public class Unit {
 		}
 		else if(ActionChance == 3){
 			this.startResting();
-		} 
-		//TODO fight potential enemys
+		} else if (ActionChance == 4) {
+			for (Unit unit : unitsWorld.getSetOfUnits()) {
+				if (targetOnValidPosition(unit) && targetFromDifferentFaction(unit)) {
+					startAttacking(unit);
+				}
+			}
+		}
 	}
 	
 	/* Death */
@@ -1766,9 +1877,9 @@ public class Unit {
 		this.expTillNextLevel += experience;
 		this.experience += experience;
 		
-		if (expTillNextLevel >= 10) { //TODO stel 20xp ervij
-			increaceRandomStat();
+		for (int i = expTillNextLevel; i >= 10; i -= 10) {
 			expTillNextLevel -= 10;
+			increaceRandomStat();
 		}
 	}
 	
@@ -1802,6 +1913,7 @@ public class Unit {
 	 * Faction
 	 */
 	
+	//TODO
 	/** TO BE ADDED TO CLASS HEADING
 	 * @invar  The faction of each unit must be a valid faction for any
 	 *         unit.
@@ -1838,7 +1950,7 @@ public class Unit {
 	 *       |		else result == true
 	*/
 	public static boolean isValidFaction(Faction faction) {
-		return (faction == null);
+		return (faction != null);
 	}
 
 	/**

@@ -209,7 +209,6 @@ public class Facade implements IFacade{
 	 */
 	@Override
 	public void addUnit(Unit unit, World world) throws ModelException {
-		// TODO Auto-generated method stub
 		world.addUnit(unit);
 	}
 
@@ -393,7 +392,6 @@ public class Facade implements IFacade{
 	 */
 	@Override
 	public double[] getPosition(Unit unit) throws ModelException {
-		
 		return unit.getPosition();
 	}
 
