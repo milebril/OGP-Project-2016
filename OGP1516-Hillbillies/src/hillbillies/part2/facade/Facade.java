@@ -778,7 +778,6 @@ public class Facade implements IFacade{
 	@Override
 	public void work(Unit unit) throws ModelException {
 		unit.startWorking();
-		//TODO replace this with the work at method
 	}
 
 	/**

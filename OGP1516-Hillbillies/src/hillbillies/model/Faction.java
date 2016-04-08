@@ -82,6 +82,7 @@ public class Faction {
 	 */
 	public void removeUnitFromFaction(Unit unit) {
 		unitsInFaction.remove(unit);
+		// if faction is empty remove faction
 	}
 	
 	/**

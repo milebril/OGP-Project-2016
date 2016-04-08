@@ -46,6 +46,9 @@ import java.util.Random;
  * @invar  The experience of each Unit must be a valid experience for any
  *         Unit.
  *       | isValidExperience(getExperience())
+ * @invar  The faction of each unit must be a valid faction for any
+ *         unit.
+ *       | isValidFaction(getFaction())
  *       
  * @version 2.0
  * @author Emil Peters
@@ -177,6 +180,14 @@ public class Unit {
 	 * @effect The experience of this new Unit is set to
 	 *         the given experience.
 	 *       | this.setExperience(experience)
+	 *   
+	 * Initialize this new unit with given faction.
+	 *
+	 * @param  faction
+	 *         The faction for this new unit.
+	 * @effect The faction of this new unit is set to
+	 *         the given faction.
+	 *       | this.setFaction(faction)
 	 *       
 	 * @throws illegalStateException
 	 * 
@@ -223,10 +234,15 @@ public class Unit {
 			throw new IllegalNameException(name);
 		else this.setName(name);
 		
+		/* World */
+		//int[][][] terrainType = World.getTerrainTypes();
+		//TODO getter en setter maken. + world terraintypes static maken.
+		
 		/* Position */
 		double[] position = putUnitInCenter(castIntToDouble(initialPosition));
 		if (! isValidPosition(position)) throw new IllegalArgumentException();
 		this.setUnitPosition(position);
+		
 		//TODO PLaats waar we unit creeeren moet een passeble plaats zijn
 		
 		/* Hitpoints */
@@ -1909,28 +1925,7 @@ public class Unit {
 	 */
 	private int expTillNextLevel;
 	
-	/*
-	 * Faction
-	 */
-	
-	//TODO
-	/** TO BE ADDED TO CLASS HEADING
-	 * @invar  The faction of each unit must be a valid faction for any
-	 *         unit.
-	 *       | isValidFaction(getFaction())
-	 */
-
-//TODO aan de constructor toevoegen
-/**
- * Initialize this new unit with given faction.
- *
- * @param  faction
- *         The faction for this new unit.
- * @effect The faction of this new unit is set to
- *         the given faction.
- *       | this.setFaction(faction)
- */
-
+	/* Faction */
 	/**
 	 * Return the faction of this unit.
 	 */

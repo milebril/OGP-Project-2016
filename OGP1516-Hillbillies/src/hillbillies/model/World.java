@@ -485,6 +485,7 @@ public class World {
 	 * Variable registering the terrainType of this world.
 	 */
 	private int[][][] terrainTypes;
+	//TODO static of niet?
 	
 	/**
 	 * return the length of the world on the x-axis.
@@ -535,4 +536,9 @@ public class World {
 		connect = new ConnectedToBorder(getXLength(), getYLength(), getZLength());
 		return connect.isSolidConnectedToBorder(x, y, z);
 	}
+	
+	/*
+	public static int[][][] getTerrainTypes(){
+		return terrainTypes;
+	}*/
 }

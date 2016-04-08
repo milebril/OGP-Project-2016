@@ -22,9 +22,7 @@ public class factionTestCases {
 		TerrainChangeListener modelListener = new TerrainChangeListener() {
 			
 			@Override
-			public void notifyTerrainChanged(int x, int y, int z) {
-				// TODO Auto-generated method stub
-				
+			public void notifyTerrainChanged(int x, int y, int z) {				
 			}
 		};
 		testWorld = new World(new int [5][5][5], modelListener);
