@@ -23,6 +23,11 @@ import ogp.framework.util.ModelException;
  * @invar  The list of boulders of each world must be a valid list of boulders for any
  *         world.
  *       | isValidArrayListOfBoulders(getArrayListOfBoulders())
+ *       
+ * @invar  The list of logs of each world must be a valid list of logs for any
+ *         world.
+ *       | isValidArrayListOfLogs(getArrayListOfLogs())
+ *       
  * @invar  The amount of factions of each world must be a valid amount of factions for any
  *         world.
  *       | isValidFactionAmount(getFactionAmount())
@@ -64,6 +69,10 @@ public class World {
 	 * @effect The terrainType of this new world is set to
 	 *         the given terrainType.
 	 *       | this.setTerrainType(terrainTypes)
+	 *       
+	 * @effect create a new list that contains all the logs in a world.
+	 * 
+	 * @effect create a new list that contains all the boulders in a world.
 	 */
 	public World(int[][][] terrainTypes, TerrainChangeListener modelListener) throws ModelException{
 		this.setTerrainType(terrainTypes);
@@ -107,8 +116,6 @@ public class World {
 	
 	public void removeUnit(Unit unit) {
 		this.setOfUnits.remove(unit);
-	//TODO exception throwen als unit niet in lijst zit????????
-	//TODO Zouden we dit doen? want dit gaat toch nooit gebeuren als de unit sws al niet bestaat?
 	}
 	
 	/**
@@ -195,7 +202,7 @@ public class World {
 	/**
 	 * return the maximum number of factions for each world.
 	 */
-	private static int getMaxAmountOfFactions(){
+	private static int getMaxAmountOfFactions() {
 		return 5;
 	}
 	
@@ -229,11 +236,10 @@ public class World {
 	return false;
 	}
 	
-	
 	/**
 	* return the maximum capacity of boulders in this world.
 	*/
-	private int getMaxCapacityBoulders(){
+	private int getMaxCapacityBoulders() {
 		return 100;
 	}
 	
@@ -244,7 +250,7 @@ public class World {
 	* @throws ModelException when invalid set
 	* 		| ! isValidArrayListOfBoulders()
 	*/
-	public void addBoulder(Boulder boulder) throws ModelException{
+	public void addBoulder(Boulder boulder) throws ModelException {
 		if (isValidArrayListOfBoulders())
 			setOfBoulders.add(boulder);
 		else
@@ -256,7 +262,7 @@ public class World {
 	* @param boulder
 	* 		  the boulder to remove.
 	*/
-	public void removeBoulder(Boulder boulder){
+	public void removeBoulder(Boulder boulder) {
 		setOfBoulders.remove(boulder);
 	}
 	
@@ -289,7 +295,7 @@ public class World {
 	/**
 	* return the maximum capacity of logs in this world.
 	*/
-	private int getMaxCapacityLog(){
+	private int getMaxCapacityLog() {
 		return 100;
 	}
 	
@@ -300,7 +306,7 @@ public class World {
 	* @throws ModelException when invalid set
 	* 		| ! isValidArrayListOfLogs()
 	*/
-	public void addLog(Log log) throws ModelException{
+	public void addLog(Log log) throws ModelException {
 		if (isValidArrayListOfLogs())
 			setOfLogs.add(log);
 		else
@@ -333,7 +339,7 @@ public class World {
 	 * 		
 	 * @throws ModelException
 	 */
-	public Unit spawnUnit(boolean enableDefaultBehavior) throws ModelException{
+	public Unit spawnUnit(boolean enableDefaultBehavior) throws ModelException {
 		int x = rand.nextInt(getXLength());
 		int y = rand.nextInt(getYLength());
 		int z = rand.nextInt(getZLength());
@@ -371,7 +377,7 @@ public class World {
 	}
 	
 	/**
-	 * Return the faction with the fewest mambers.
+	 * Return the faction with the fewest members.
 	 */
 	private Faction lowestMemberFaction() {
 		Faction min = null;
@@ -384,11 +390,7 @@ public class World {
 		
 		return min;
 	}
-	
-////////////////////////////////////////////inspect each individual cube////////////////////////////////////////////
 		
-
-	
 ////////////////////////////////////////////Advance time////////////////////////////////////////////
 	/**
 	 * advance all objects of the game world over a given time dt.
@@ -446,9 +448,16 @@ public class World {
 	 * @return 
 	 *       | result == 
 	*/
-	public static boolean isValidTerrainType(int[][][] terrainType) {
-		//TODO check if valid terrain type
-		//TODO is dit nodig? of wil je hier bv heel de lijst doorlopen en kijken of de value, 1,2,3 of 4 is???
+	public boolean isValidTerrainType(int[][][] terrainType) {
+		for ( int i = 0; i < this.getXLength() ; i++){
+			for ( int j = 0; j < this.getXLength() ; j++){
+				for ( int k = 0; k < this.getXLength() ; k++){
+					if (terrainType[i][j][k] != 1 && terrainType[i][j][k] != 2 && 
+							terrainType[i][j][k] != 3 && terrainType[i][j][k] != 4)
+						return false;
+				}				
+			}
+		}
 		return true;
 	}
 	
@@ -480,21 +489,21 @@ public class World {
 	/**
 	 * return the length of the world on the x-axis.
 	 */
-	public int getXLength(){
+	public int getXLength() {
 		return getTerrainType().length;
 	}
 	
 	/**
 	 * return the length of the world on the y-axis.
 	 */
-	public int getYLength(){
+	public int getYLength() {
 		return getTerrainType()[0].length;
 	}
 	
 	/**
 	 * return the length of the world on the z-axis.
 	 */
-	public int getZLength(){
+	public int getZLength() {
 		return getTerrainType()[0][0].length;
 	}
 	
