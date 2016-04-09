@@ -240,7 +240,6 @@ public class Unit {
 		double[] position = putUnitInCenter(castIntToDouble(initialPosition));
 		if (! isValidPosition(position)) throw new IllegalArgumentException();
 		this.setUnitPosition(position);
-		//TODO PLaats waar we unit creeeren moet een passeble plaats zijn
 		
 		/* Hitpoints */
 		this.increaseHitpoints(getMaxHitpoints());
