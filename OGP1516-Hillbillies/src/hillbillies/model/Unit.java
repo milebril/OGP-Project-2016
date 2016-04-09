@@ -58,7 +58,7 @@ import java.util.Random;
 public class Unit {
 	
 	//TODO 10 expiernce voor elke opdracht die ze uitvoeren
-	
+	//TODO terainChangeListener
 	/*constructor*/
 	/**
 	 * initialize this new unit with the given name, position, weight, agility,
@@ -679,9 +679,8 @@ public class Unit {
 	 * Return the value of the lowest coordinate value.
 	 */
 	private static int getMaxValueCoordinate(){
-		//return unitsWorld.getXLength();
-		return 15;
-		//TODO de maximum waarde moet de lengte van de wereld zijn, deze moet uit de world class gehaald worden.
+		return World.getTerrainTypesForUnits()[0][0].length;
+		//TODO als dit niet op de statische manier kan moet dit verandert worden.
 	}
  
 	/**
@@ -945,9 +944,12 @@ public class Unit {
 		if (unitLifetime >= 1) {
 			unitLifetimeInSeconds++;
 			unitLifetime = 0;
+			//TODO wat doet gij hier? wrm niet gewoon unit lifetime in doubles en telkens dt bij optellen.
 		}
-		
-		if (this.isResting == true && this.isWalking == false)
+		this.canFall(World.getTerrainTypesForUnits());
+		if (isFalling())
+			this.fall(dt, World.getTerrainTypesForUnits());
+		else if (this.isResting == true && this.isWalking == false)
 			this.resting(dt);
 		else if (this.isWorking == true && this.isWalking == false)
 			this.working(dt);
@@ -1338,8 +1340,9 @@ public class Unit {
 					getBoulderAtPosition(getPosition()[0], getPosition()[1], getPosition()[2]).startBeingCarried(this);
 				} else if (logAtCurrentPos()) {
 					getLogAtPosition(getPosition()[0], getPosition()[1], getPosition()[2]).startBeingCarried(this);
-				} else if (unitsWorld.getCubeType((int) getPosition()[0], (int) getPosition()[1], (int) getPosition()[2]) == 2) {
+				} else if (World.getTerrainTypesForUnits()[(int) getPosition()[0]][(int) getPosition()[1]][(int) getPosition()[2]] == 2) {
 					//TODO cube collapses en drop een Log
+					//TODO als niet static moet worden aangepast.
 				} else if (unitsWorld.getCubeType((int) getPosition()[0], (int) getPosition()[1], (int) getPosition()[2]) == 1) {
 					//TODO cube collapses and drop a Boulder
 				}
@@ -1821,26 +1824,22 @@ public class Unit {
 	}
 	
 	/**
-	 * this unit stops falling
+	 * make the unit stops falling
 	 */
 	private void stopFalling() {
 		this.isFalling = false;
+		decreaseHitpoints((int)(this.numberOfZlevelsFallen * 10));
+		setNumberOfZlevelsFallen(0);
 	}
 	
-	//TODO falling comentaar en functie wordt niet gebruikt.
+	/**
+	 * make the unit start falling
+	 */
 	private void startFalling() {
 		this.isFalling = true;
-		//TODO fall aanroepen in de advanceTime
+		//TODO set false.
 	}
-	
-	public void fall(double dt) {
 		
-		if ( (int) getPosition()[3] == 0) /*|| World.getTerainType == solid*/ //TODO) {
-				stopFalling();
-		
-		decreaseHitpoints(numberOfZlevelsFallen * 10);
-	}
-	
 	/**
 	 * Variable registering if a unit is falling or not.
 	 */
@@ -1849,7 +1848,52 @@ public class Unit {
 	/**
 	 * variable registering how many levels a units has fallen.
 	 */
-	private int numberOfZlevelsFallen = 0;
+	private double numberOfZlevelsFallen = 0;
+	
+	private void setNumberOfZlevelsFallen(double number){
+		this.numberOfZlevelsFallen = number;
+	}
+	
+	/**
+	 * check if a log can fall.
+	 */
+	private void canFall(int[][][] terrainTypes){
+		int[] position = castDoubleToInt(this.getPosition());
+		if(position[2] == 0) this.stopFalling();;
+		if(terrainTypes[position[0]][position[1]][position[2]-1] == 0) this.startFalling();
+		this.stopFalling();
+	}
+	
+	/**
+	 * return the speed of falling in m/s.
+	 */
+	private static int speedOfFalling() {
+		return 3;
+	}
+	
+	/**
+	 * move the unit over a given time period dt.
+	 */
+	private void fall(double dt, int[][][] terrainTypes) {
+		double[] positionInInt = this.getPosition();
+		double distanceToFall = speedOfFalling() * dt;
+		if(distanceToFall < 1){
+			positionInInt[2] -= distanceToFall;
+			setNumberOfZlevelsFallen(this.numberOfZlevelsFallen + distanceToFall);
+		}
+		else {
+			int[] position = castDoubleToInt(this.getPosition());
+			int a = 0;
+			for( int i = 0; i < distanceToFall; i++){
+				if(terrainTypes[position[0]][position[1]][position[2]- i] == 0)
+					a++;
+			}
+			distanceToFall = a + distanceToFall % (int)distanceToFall;
+			positionInInt[2] -= distanceToFall;
+			setNumberOfZlevelsFallen(this.numberOfZlevelsFallen + distanceToFall);
+		}
+		this.setUnitPosition(positionInInt);
+	}
 	
 	/* Experience */
 	/**
@@ -1986,4 +2030,5 @@ public class Unit {
 		
 		this.unitsWorld = world;
 	}
+	
 }

@@ -76,6 +76,8 @@ public class World {
 	 */
 	public World(int[][][] terrainTypes, TerrainChangeListener modelListener) throws ModelException{
 		this.setTerrainType(terrainTypes);
+		setTerrainTypesForUnits(terrainTypes);
+		setTerrainChangeListenerForUnits(modelListener);
 		this.setOfUnits = new LinkedHashSet<>(); //initializing setOfUnits on creating world
 		this.setOfFactions = new LinkedHashSet<>(); //initializing setOfFactions on creating world
 		this.setOfBoulders = new LinkedHashSet<>(); //initializing setOfBoulders on creating world
@@ -537,8 +539,23 @@ public class World {
 		return connect.isSolidConnectedToBorder(x, y, z);
 	}
 	
-	/*
-	public static int[][][] getTerrainTypes(){
-		return terrainTypes;
-	}*/
+//////////////////////////////////////////// TerainType for Units ////////////////////////////////////////////
+	
+	//TODO comentaar
+	public static int[][][] getTerrainTypesForUnits() {
+		return terrainTypesForUnits;
+	}
+	
+	private static int[][][] terrainTypesForUnits;
+	
+	private static void setTerrainTypesForUnits(int[][][] terraintypes) {
+		terrainTypesForUnits = terraintypes;
+	}
+	
+	private static void setTerrainChangeListenerForUnits(TerrainChangeListener modelListener){
+		terrainChangeListenerForUnits = modelListener;
+	}
+	
+	public static TerrainChangeListener terrainChangeListenerForUnits;
+
 }
