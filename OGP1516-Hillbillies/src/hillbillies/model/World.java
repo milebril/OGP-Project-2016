@@ -76,8 +76,6 @@ public class World {
 	 */
 	public World(int[][][] terrainTypes, TerrainChangeListener modelListener) throws ModelException{
 		this.setTerrainType(terrainTypes);
-		setTerrainTypesForUnits(terrainTypes);
-		setTerrainChangeListenerForUnits(modelListener);
 		this.setOfUnits = new LinkedHashSet<>(); //initializing setOfUnits on creating world
 		this.setOfFactions = new LinkedHashSet<>(); //initializing setOfFactions on creating world
 		this.setOfBoulders = new LinkedHashSet<>(); //initializing setOfBoulders on creating world
@@ -359,7 +357,7 @@ public class World {
 		int agility = rand.nextInt(75) + 25;
 		int toughness = rand.nextInt(75) + 25;
 		
-		Unit newUnit = new Unit("New Unit", new int[] {x, y, z}, weight, agility, strength, toughness, enableDefaultBehavior);
+		Unit newUnit = new Unit("New Unit", new int[] {x, y, z}, weight, agility, strength, toughness, enableDefaultBehavior, this);
 		
 		if (getAmountOfFaction() < getMaxAmountOfFactions()) {
 			Faction f = new Faction();
@@ -372,7 +370,6 @@ public class World {
 			newUnit.setFaction(f);
 		}
 		
-		newUnit.setWorld(this);
 		addUnit(newUnit);
 		
 		return newUnit;
@@ -451,11 +448,11 @@ public class World {
 	 *       | result == 
 	*/
 	public boolean isValidTerrainType(int[][][] terrainType) {
-		for ( int i = 0; i < this.getXLength() ; i++){
-			for ( int j = 0; j < this.getXLength() ; j++){
-				for ( int k = 0; k < this.getXLength() ; k++){
+		for ( int i = 0; i < terrainType.length ; i++){
+			for ( int j = 0; j < terrainType[0].length ; j++){
+				for ( int k = 0; k < terrainType[0][0].length ; k++){
 					if (terrainType[i][j][k] != 1 && terrainType[i][j][k] != 2 && 
-							terrainType[i][j][k] != 3 && terrainType[i][j][k] != 4)
+							terrainType[i][j][k] != 3 && terrainType[i][j][k] != 0)
 						return false;
 				}				
 			}
@@ -478,8 +475,7 @@ public class World {
 	 */
 	@Raw
 	public void setTerrainType(int[][][] terrainTypes) throws IllegalArgumentException {
-		if (! isValidTerrainType(terrainTypes))
-			throw new IllegalArgumentException();
+		if (! isValidTerrainType(terrainTypes)) throw new IllegalArgumentException();
 		this.terrainTypes = terrainTypes;
 	}
 	
@@ -487,12 +483,12 @@ public class World {
 	 * Variable registering the terrainType of this world.
 	 */
 	private int[][][] terrainTypes;
-	//TODO static of niet?
 	
 	/**
 	 * return the length of the world on the x-axis.
 	 */
 	public int getXLength() {
+		System.out.println(getTerrainType().length);
 		return getTerrainType().length;
 	}
 	
@@ -539,23 +535,4 @@ public class World {
 		return connect.isSolidConnectedToBorder(x, y, z);
 	}
 	
-//////////////////////////////////////////// TerainType for Units ////////////////////////////////////////////
-	
-	//TODO comentaar
-	public static int[][][] getTerrainTypesForUnits() {
-		return terrainTypesForUnits;
-	}
-	
-	private static int[][][] terrainTypesForUnits;
-	
-	private static void setTerrainTypesForUnits(int[][][] terraintypes) {
-		terrainTypesForUnits = terraintypes;
-	}
-	
-	private static void setTerrainChangeListenerForUnits(TerrainChangeListener modelListener){
-		terrainChangeListenerForUnits = modelListener;
-	}
-	
-	public static TerrainChangeListener terrainChangeListenerForUnits;
-
 }

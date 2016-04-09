@@ -347,38 +347,6 @@ public class Facade implements IFacade{
 		return world.getSetOfFactions();
 	}
 	
-	/* Unit creation */
-	/**
-	 * Create a new unit with the given attributes.
-	 * 
-	 * @param name
-	 *            The name of the unit.
-	 * @param initialPosition
-	 *            The initial position of the unit, as an array with 3 elements
-	 *            {x, y, z}.
-	 * @param weight
-	 *            The initial weight of the unit
-	 * @param agility
-	 *            The initial agility of the unit
-	 * @param strength
-	 *            The initial strength of the unit
-	 * @param toughness
-	 *            The initial toughness of the unit
-	 * @param enableDefaultBehavior
-	 *            Whether the default behavior of the unit is enabled
-	 * 
-	 * @return The generated unit
-	 * 
-	 * @throws ModelException
-	 *             A precondition was violated or an exception was thrown.
-	 */
-
-	@Override
-	public Unit createUnit(String name, int[] initialPosition, int weight, int agility, int strength, int toughness,
-			boolean enableDefaultBehavior) throws ModelException {
-		return new Unit (name, initialPosition, weight, agility, strength, toughness, enableDefaultBehavior);
-	}
-	
 	/* Position */
 	/**
 	 * Get the precise coordinate of the given unit.
@@ -950,5 +918,12 @@ public class Facade implements IFacade{
 	@Override
 	public Set<Log> getLogs(World world) throws ModelException {
 		return world.getSetOfLogs();
+	}
+
+	@Override
+	@Deprecated
+	public Unit createUnit(String name, int[] initialPosition, int weight, int agility, int strength, int toughness,
+			boolean enableDefaultBehavior) throws ModelException {
+		return null;
 	}
 }

@@ -193,7 +193,10 @@ public class Unit {
 	 * 
 	 */
 	public Unit (String name, int[] initialPosition, int weight, int agility, int strength, int toughness,
-			boolean enableDefaultBehavior) throws IllegalArgumentException, ModelException {
+			boolean enableDefaultBehavior, World world) throws IllegalArgumentException, ModelException {
+		/* World */ 
+		setWorld(world);
+		
 		/* Weight */
 		if (weight > 100)
 			this.setWeight(100);
@@ -679,8 +682,7 @@ public class Unit {
 	 * Return the value of the lowest coordinate value.
 	 */
 	private static int getMaxValueCoordinate(){
-		return World.getTerrainTypesForUnits()[0][0].length;
-		//TODO als dit niet op de statische manier kan moet dit verandert worden.
+		return unitsWorld.getXLength();
 	}
  
 	/**
@@ -946,9 +948,9 @@ public class Unit {
 			unitLifetime = 0;
 			//TODO wat doet gij hier? wrm niet gewoon unit lifetime in doubles en telkens dt bij optellen.
 		}
-		this.canFall(World.getTerrainTypesForUnits());
+		this.canFall(unitsWorld.getTerrainType());
 		if (isFalling())
-			this.fall(dt, World.getTerrainTypesForUnits());
+			this.fall(dt, unitsWorld.getTerrainType());
 		else if (this.isResting == true && this.isWalking == false)
 			this.resting(dt);
 		else if (this.isWorking == true && this.isWalking == false)
@@ -1340,7 +1342,7 @@ public class Unit {
 					getBoulderAtPosition(getPosition()[0], getPosition()[1], getPosition()[2]).startBeingCarried(this);
 				} else if (logAtCurrentPos()) {
 					getLogAtPosition(getPosition()[0], getPosition()[1], getPosition()[2]).startBeingCarried(this);
-				} else if (World.getTerrainTypesForUnits()[(int) getPosition()[0]][(int) getPosition()[1]][(int) getPosition()[2]] == 2) {
+				} else if (unitsWorld.getCubeType((int) getPosition()[0], (int) getPosition()[1], (int) getPosition()[2]) == 2) {
 					//TODO cube collapses en drop een Log
 					//TODO als niet static moet worden aangepast.
 				} else if (unitsWorld.getCubeType((int) getPosition()[0], (int) getPosition()[1], (int) getPosition()[2]) == 1) {
@@ -2026,8 +2028,6 @@ public class Unit {
 	private static World unitsWorld;
 	
 	public void setWorld(World world) {
-		//TODO validworldcheck
-		
 		this.unitsWorld = world;
 	}
 	
