@@ -46,6 +46,9 @@ import java.util.Random;
  * @invar  The experience of each Unit must be a valid experience for any
  *         Unit.
  *       | isValidExperience(getExperience())
+ * @invar  The faction of each unit must be a valid faction for any
+ *         unit.
+ *       | isValidFaction(getFaction())
  *       
  * @version 2.0
  * @author Emil Peters
@@ -55,7 +58,7 @@ import java.util.Random;
 public class Unit {
 	
 	//TODO 10 expiernce voor elke opdracht die ze uitvoeren
-	
+	//TODO terainChangeListener
 	/*constructor*/
 	/**
 	 * initialize this new unit with the given name, position, weight, agility,
@@ -177,12 +180,23 @@ public class Unit {
 	 * @effect The experience of this new Unit is set to
 	 *         the given experience.
 	 *       | this.setExperience(experience)
+	 *   
+	 * Initialize this new unit with given faction.
+	 *
+	 * @param  faction
+	 *         The faction for this new unit.
+	 * @effect The faction of this new unit is set to
+	 *         the given faction.
+	 *       | this.setFaction(faction)
 	 *       
 	 * @throws illegalStateException
 	 * 
 	 */
 	public Unit (String name, int[] initialPosition, int weight, int agility, int strength, int toughness,
-			boolean enableDefaultBehavior) throws IllegalArgumentException, ModelException {
+			boolean enableDefaultBehavior, World world) throws IllegalArgumentException, ModelException {
+		/* World */ 
+		setWorld(world);
+		
 		/* Weight */
 		if (weight > 100)
 			this.setWeight(100);
@@ -223,10 +237,19 @@ public class Unit {
 			throw new IllegalNameException(name);
 		else this.setName(name);
 		
+		/* World */
+		//int[][][] terrainType = World.getTerrainTypes();
+		//TODO getter en setter maken. + world terraintypes static maken.
+		
 		/* Position */
 		double[] position = putUnitInCenter(castIntToDouble(initialPosition));
 		if (! isValidPosition(position)) throw new IllegalArgumentException();
 		this.setUnitPosition(position);
+<<<<<<< HEAD
+=======
+		
+		//TODO PLaats waar we unit creeeren moet een passeble plaats zijn
+>>>>>>> origin/master
 		
 		/* Hitpoints */
 		this.increaseHitpoints(getMaxHitpoints());
@@ -662,9 +685,7 @@ public class Unit {
 	 * Return the value of the lowest coordinate value.
 	 */
 	private static int getMaxValueCoordinate(){
-		//return unitsWorld.getXLength();
-		return 15;
-		//TODO de maximum waarde moet de lengte van de wereld zijn, deze moet uit de world class gehaald worden.
+		return unitsWorld.getXLength();
 	}
  
 	/**
@@ -928,9 +949,12 @@ public class Unit {
 		if (unitLifetime >= 1) {
 			unitLifetimeInSeconds++;
 			unitLifetime = 0;
+			//TODO wat doet gij hier? wrm niet gewoon unit lifetime in doubles en telkens dt bij optellen.
 		}
-		
-		if (this.isResting == true && this.isWalking == false)
+		this.canFall(unitsWorld.getTerrainType());
+		if (isFalling())
+			this.fall(dt, unitsWorld.getTerrainType());
+		else if (this.isResting == true && this.isWalking == false)
 			this.resting(dt);
 		else if (this.isWorking == true && this.isWalking == false)
 			this.working(dt);
@@ -1323,6 +1347,7 @@ public class Unit {
 					getLogAtPosition(getPosition()[0], getPosition()[1], getPosition()[2]).startBeingCarried(this);
 				} else if (unitsWorld.getCubeType((int) getPosition()[0], (int) getPosition()[1], (int) getPosition()[2]) == 2) {
 					//TODO cube collapses en drop een Log
+					//TODO als niet static moet worden aangepast.
 				} else if (unitsWorld.getCubeType((int) getPosition()[0], (int) getPosition()[1], (int) getPosition()[2]) == 1) {
 					//TODO cube collapses and drop a Boulder
 				}
@@ -1804,26 +1829,22 @@ public class Unit {
 	}
 	
 	/**
-	 * this unit stops falling
+	 * make the unit stops falling
 	 */
 	private void stopFalling() {
 		this.isFalling = false;
+		decreaseHitpoints((int)(this.numberOfZlevelsFallen * 10));
+		setNumberOfZlevelsFallen(0);
 	}
 	
-	//TODO falling comentaar en functie wordt niet gebruikt.
+	/**
+	 * make the unit start falling
+	 */
 	private void startFalling() {
 		this.isFalling = true;
-		//TODO fall aanroepen in de advanceTime
+		//TODO set false.
 	}
-	
-	public void fall(double dt) {
 		
-		if ( (int) getPosition()[3] == 0) /*|| World.getTerainType == solid*/ //TODO) {
-				stopFalling();
-		
-		decreaseHitpoints(numberOfZlevelsFallen * 10);
-	}
-	
 	/**
 	 * Variable registering if a unit is falling or not.
 	 */
@@ -1832,7 +1853,52 @@ public class Unit {
 	/**
 	 * variable registering how many levels a units has fallen.
 	 */
-	private int numberOfZlevelsFallen = 0;
+	private double numberOfZlevelsFallen = 0;
+	
+	private void setNumberOfZlevelsFallen(double number){
+		this.numberOfZlevelsFallen = number;
+	}
+	
+	/**
+	 * check if a log can fall.
+	 */
+	private void canFall(int[][][] terrainTypes){
+		int[] position = castDoubleToInt(this.getPosition());
+		if(position[2] == 0) this.stopFalling();;
+		if(terrainTypes[position[0]][position[1]][position[2]-1] == 0) this.startFalling();
+		this.stopFalling();
+	}
+	
+	/**
+	 * return the speed of falling in m/s.
+	 */
+	private static int speedOfFalling() {
+		return 3;
+	}
+	
+	/**
+	 * move the unit over a given time period dt.
+	 */
+	private void fall(double dt, int[][][] terrainTypes) {
+		double[] positionInInt = this.getPosition();
+		double distanceToFall = speedOfFalling() * dt;
+		if(distanceToFall < 1){
+			positionInInt[2] -= distanceToFall;
+			setNumberOfZlevelsFallen(this.numberOfZlevelsFallen + distanceToFall);
+		}
+		else {
+			int[] position = castDoubleToInt(this.getPosition());
+			int a = 0;
+			for( int i = 0; i < distanceToFall; i++){
+				if(terrainTypes[position[0]][position[1]][position[2]- i] == 0)
+					a++;
+			}
+			distanceToFall = a + distanceToFall % (int)distanceToFall;
+			positionInInt[2] -= distanceToFall;
+			setNumberOfZlevelsFallen(this.numberOfZlevelsFallen + distanceToFall);
+		}
+		this.setUnitPosition(positionInInt);
+	}
 	
 	/* Experience */
 	/**
@@ -1908,28 +1974,7 @@ public class Unit {
 	 */
 	private int expTillNextLevel;
 	
-	/*
-	 * Faction
-	 */
-	
-	//TODO
-	/** TO BE ADDED TO CLASS HEADING
-	 * @invar  The faction of each unit must be a valid faction for any
-	 *         unit.
-	 *       | isValidFaction(getFaction())
-	 */
-
-//TODO aan de constructor toevoegen
-/**
- * Initialize this new unit with given faction.
- *
- * @param  faction
- *         The faction for this new unit.
- * @effect The faction of this new unit is set to
- *         the given faction.
- *       | this.setFaction(faction)
- */
-
+	/* Faction */
 	/**
 	 * Return the faction of this unit.
 	 */
@@ -1986,8 +2031,7 @@ public class Unit {
 	private static World unitsWorld;
 	
 	public void setWorld(World world) {
-		//TODO validworldcheck
-		
 		this.unitsWorld = world;
 	}
+	
 }
