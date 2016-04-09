@@ -200,6 +200,15 @@ public class World {
 	}
 	
 	/**
+	 * remove the given faction from the list of factions.
+	 * @param faction
+	 * 		  the given faction.
+	 */
+	public void removeFaction(Faction faction){
+		this.setOfFactions.remove(faction);
+	}
+	
+	/**
 	 * return the maximum number of factions for each world.
 	 */
 	private static int getMaxAmountOfFactions() {
@@ -210,7 +219,7 @@ public class World {
 	 * Set that contains all the factions of a world
 	 */
 	private Set<Faction> setOfFactions = new HashSet<Faction>();
-		
+	
 ////////////////////////////////////////////list of all boulders////////////////////////////////////////////
 	/**
 	* set that contains all boulders of a given world.
@@ -360,7 +369,7 @@ public class World {
 		Unit newUnit = new Unit("New Unit", new int[] {x, y, z}, weight, agility, strength, toughness, enableDefaultBehavior, this);
 		
 		if (getAmountOfFaction() < getMaxAmountOfFactions()) {
-			Faction f = new Faction();
+			Faction f = new Faction(this);
 			createFaction(f);
 			f.addUnitToFaction(newUnit);
 			newUnit.setFaction(f);

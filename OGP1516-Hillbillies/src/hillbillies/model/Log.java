@@ -194,6 +194,8 @@ public class Log {
 		this.isCarried = true;
 		this.unitCarryingLog = unit;
 		unit.setWeight(unit.getWeight() + this.getWeight());
+		unit.startCarryingLog(this);
+		//TODO doen we da hier of in unit
 	}
 	
 	/**

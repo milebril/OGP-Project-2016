@@ -56,10 +56,8 @@ import java.util.Random;
  *
  */
 public class Unit {
-	
-	//TODO 10 expiernce voor elke opdracht die ze uitvoeren
 	//TODO terainChangeListener
-	/*constructor*/
+/////////////////////////////////////////////Constructor/////////////////////////////////////////////
 	/**
 	 * initialize this new unit with the given name, position, weight, agility,
 	 * strength, toughness and default behavior.
@@ -208,6 +206,7 @@ public class Unit {
 		else{ 
 			this.setWeight(weight);
 			}
+		
 		/* Strength */
 		if (strength < 25)
 			this.setStrength(25);
@@ -236,37 +235,55 @@ public class Unit {
 		if (! isValidName(name)) 
 			throw new IllegalNameException(name);
 		else this.setName(name);
-		
-		/* World */
-		//int[][][] terrainType = World.getTerrainTypes();
-		//TODO getter en setter maken. + world terraintypes static maken.
-		
+				
 		/* Position */
 		double[] position = putUnitInCenter(castIntToDouble(initialPosition));
 		if (! isValidPosition(position)) throw new IllegalArgumentException();
 		this.setUnitPosition(position);
-		
 		//TODO PLaats waar we unit creeeren moet een passeble plaats zijn
 		
 		/* Hitpoints */
 		this.increaseHitpoints(getMaxHitpoints());
+		
 		/* Stamina */
 		this.increaseStamina(getMaxStamina());
+		
 		/* Default Behavior */
 		this.setDefaultBehavior(enableDefaultBehavior);
 		
 		/* Experience */
 		this.setExperience(0);
-		
-		return ;
-		
-		/* Faction */
-		//TODO faction
-	
 	}
-			
+		
+/////////////////////////////////////////////World/////////////////////////////////////////////
+	/**
+	 * set the world of this unit to the given world.
+	 * @param world
+	 * 		  the given world
+	 */
+	private static void setWorld(World worldForUnits) {
+		world = worldForUnits;
+	}
+	
+	/**
+	 * return the world of the unit.
+	 */
+	@Basic
+	private static World getWorld() {
+		return world;
+	}
+	
+	/**
+	 * variable registering the world of the unit
+	 */
+	private static World world;
+	
+	private static int getTerrainType(int[] coordinate){
+		return getWorld().getTerrainType()[coordinate[0]][coordinate[1]][coordinate[2]];
+	}
+	
 /////////////////////////////////////////////weight/////////////////////////////////////////////	
-	/* weight*/
+
 	/**
 	 * Return the weight of this unit.
 	 */
@@ -395,7 +412,8 @@ public class Unit {
 	 */
 	private int strength;
 	
-	/* Agility */
+/////////////////////////////////////////////Agility/////////////////////////////////////////////
+	
 	/**
 	 * @invar The agility of each unit must be a valid agility for any
 	 *         unit.
@@ -464,7 +482,8 @@ public class Unit {
 	 */
 	private int agility;
 	
-	/* Toughness */
+/////////////////////////////////////////////Toughness/////////////////////////////////////////////
+	
 	/**
 	 * Return the toughness of this unit.
 	 */
@@ -527,7 +546,7 @@ public class Unit {
 	 */
 	private int toughness;
 	
-	/* Name */
+/////////////////////////////////////////////Name/////////////////////////////////////////////
 	
 	/**
 	 * Return the name of this unit.
@@ -600,7 +619,8 @@ public class Unit {
 	 */
 	private String name;	
 	
-	/* Position */
+/////////////////////////////////////////////Position/////////////////////////////////////////////
+	
 	/**
 	 * Return the Position of this Unit.
 	 */
@@ -621,7 +641,7 @@ public class Unit {
 	
 	/**
 	 * cast an array of doubles in an array of integers
-	 * @param arrayInDouble
+	 * @param arrayInDoubles
 	 * @return arrayInInt
 	 */
 	public int[] castDoubleToInt (double[] arrayInDoubles){
@@ -639,14 +659,16 @@ public class Unit {
 	 *       | if (unitPosition < 0 && unitPositio > 50) Then false
 	 *       |		else false
 	*/
-	public static boolean isValidPosition(double[] unitPosition) {
+	public boolean isValidPosition(double[] unitPosition) {
 		int N = unitPosition.length;
-		if (N > 3)
+		if (N != 3)
 			return false;
 		for (int i=0; i < unitPosition.length; i++) {
 			if (unitPosition[i] < getMinValueCoordinate() || unitPosition[i] > getMaxValueCoordinate())
 				return false;
 		} 
+		if(getTerrainType(castDoubleToInt(this.getPosition().clone())) == 1) return false;
+		if(getTerrainType(castDoubleToInt(this.getPosition().clone())) == 2) return false;
 		return true;
 	}
 	
@@ -682,7 +704,7 @@ public class Unit {
 	 * Return the value of the lowest coordinate value.
 	 */
 	private static int getMaxValueCoordinate(){
-		return unitsWorld.getXLength();
+		return getWorld().getXLength();
 	}
  
 	/**
@@ -690,7 +712,8 @@ public class Unit {
 	 */
 	private double[] unitPosition;
 	
-	/* Orientation */
+/////////////////////////////////////////////Orientation/////////////////////////////////////////////
+	
 	/**
 	 * Return the orientation of this unit.
 	 */
@@ -745,7 +768,8 @@ public class Unit {
 	 */
 	private float orientation = (float) (PI / 2);
 	
-	/* Hitpoints */
+/////////////////////////////////////////////Hitpoints/////////////////////////////////////////////
+	
 	/**
 	 * @invar  The hitpoints of each unit must be a valid hitpoints for any
 	 *         unit.
@@ -845,7 +869,8 @@ public class Unit {
 	 */
 	private int hitpoints;
 	
-	/* Stamina */
+/////////////////////////////////////////////Stamina/////////////////////////////////////////////
+	
 	/**
 	 * Return the Stamina of this unit.
 	 */
@@ -935,7 +960,8 @@ public class Unit {
 	 */
 	private int stamina;
 	
-	/* Default Behavior */	
+/////////////////////////////////////////////Advance Time/////////////////////////////////////////////
+	
 	/**
 	 * a method that moves the unit through the time over a period dt.
 	 * @param dt
@@ -948,9 +974,9 @@ public class Unit {
 			unitLifetime = 0;
 			//TODO wat doet gij hier? wrm niet gewoon unit lifetime in doubles en telkens dt bij optellen.
 		}
-		this.canFall(unitsWorld.getTerrainType());
+		this.canFall(getWorld().getTerrainType());
 		if (isFalling())
-			this.fall(dt, unitsWorld.getTerrainType());
+			this.fall(dt, getWorld().getTerrainType());
 		else if (this.isResting == true && this.isWalking == false)
 			this.resting(dt);
 		else if (this.isWorking == true && this.isWalking == false)
@@ -1036,11 +1062,13 @@ public class Unit {
 	 * 		 |The z coordinate
 	 */
 	public void startWalking(int dx, int dy, int dz) {
-		if (this.isWalking == true)
+		if (isAttacking() || isDefending() || isFalling())
 			return;
 		this.isWalking = true;
-		this.isWorking = false;
+		stopWorking();
 		stopResting();
+		stopPathfinding();
+		
 		double[] pos = getPosition();
 		
 		this.walkingTo[0] = pos[0] + dx;
@@ -1056,7 +1084,7 @@ public class Unit {
 	 * @return the true if the unit is moving, return false
 	 * 			false if the unit isn't moving.
 	 */
-	public boolean isTheUnitMoving(){
+	public boolean isWalking(){
 		return this.isWalking;
 	}
 	
@@ -1163,6 +1191,13 @@ public class Unit {
 		}
 	
 	/**
+	 * make the unit stop walking.
+	 */
+	private void stopWalking(){
+		this.isWalking = false;
+	}
+	
+	/**
 	 * array registering the destination of a unit in doubles.
 	 */
 	private double[] walkingTo = {0,0,0};
@@ -1177,7 +1212,7 @@ public class Unit {
 	 */
 	private double counterForRunning = 0;
 	
-	/* Pathfinding */
+/////////////////////////////////////////////Path Finding/////////////////////////////////////////////
 	//TODO Nieuwe pathfinding
 	
 	/**
@@ -1187,13 +1222,12 @@ public class Unit {
 	 * 		  Coordinate of the final destination.
 	 */
 	public void startPathfinding(int[] cube){
-		if (this.isPathfinding == true) {
-			this.isPathfinding = false;
+		if (isAttacking() || isDefending() || isFalling())
 			return;
-		}
 		this.isPathfinding = true;
 		stopResting();
-		this.isWorking = false;
+		stopWorking();
+		stopWalking();
 		this.pathfindingTo = cube.clone();
 	}
 	
@@ -1259,6 +1293,20 @@ public class Unit {
 	}
 	
 	/**
+	 * make a unit stopPathfinding.
+	 */
+	private void stopPathfinding(){
+		this.isPathfinding = false;
+	}
+	
+	/**
+	 * return if a unit is pathfinding or not.
+	 */
+	private boolean isPathfinding(){
+		return this.isPathfinding;
+	}
+	
+	/**
 	 * boolean registering if a unit is pathfinding or not.
 	 */
 	private boolean isPathfinding = false;
@@ -1268,11 +1316,8 @@ public class Unit {
 	 */
 	private int[] pathfindingTo = {0,0,0};
 	
-	/*
-	 * Work
-	 */
+/////////////////////////////////////////////Work/////////////////////////////////////////////
 	
-	//TODO Nieuwe work implementeren
 	/**
 	 * Return the state of working of this unit.
 	 */
@@ -1298,10 +1343,21 @@ public class Unit {
 	 * 		new.isWalking == false
 	 * 		new.timeLeftWorking = (500 / getStrenght())
 	 */
-	public void startWorking(){
+	public void startWorking(int[] positionOfCube){
+		if(castDoubleToInt(getPosition()) == positionOfCube || isAttacking() == true || isDefending() == true || isFalling() == true)
+			return;
+		if (this.isCarryingBoulder()){
+			this.carriedBoulder.stopBeingCarried();
+			this.stopCarryingBoulder();
+		} else if (this.isCarryingLog()){
+			this.carriedLog.stopBeingCarried();
+			this.stopCarryingLog();
+		} 
 		this.isWorking = true;
 		stopResting();
-		this.isPathfinding = false;
+		stopWalking();
+		isPathfinding();
+
 		this.timeLeftWorking = (500 / getStrength());
 	}
 	
@@ -1325,27 +1381,20 @@ public class Unit {
 				}
 				//The working
 				
-				if (isCarryingBoulder() || isCarryingLog()) {
-					if (isCarryingBoulder()) {
-						carriedBoulder.setPosition(new double[] {getPosition()[0], getPosition()[0], getPosition()[0]});
-						carriedBoulder.stopBeingCarried();
-						this.carriedBoulder = null;
-						//TODO
-					}
-				} else if (unitsWorld.getCubeType((int) getPosition()[0], (int) getPosition()[1], (int) getPosition()[2]) == 3 &&
+				if (getTerrainType(castDoubleToInt(this.getPosition())) == 3 &&
 						logAtCurrentPos() && boulderAtCurrentPos()) {
-					unitsWorld.removeBoulder(getBoulderAtPosition(getPosition()[0], getPosition()[1], getPosition()[2]));
-					unitsWorld.removeLog(getLogAtPosition(getPosition()[0], getPosition()[1], getPosition()[2]));
+					getWorld().removeBoulder(getBoulderAtPosition(getPosition()[0], getPosition()[1], getPosition()[2]));
+					getWorld().removeLog(getLogAtPosition(getPosition()[0], getPosition()[1], getPosition()[2]));
 					this.setToughness(getToughness() + 5); 
 					this.setWeight(getWeight() + 5); 
 				} else if (boulderAtCurrentPos()) {
 					getBoulderAtPosition(getPosition()[0], getPosition()[1], getPosition()[2]).startBeingCarried(this);
 				} else if (logAtCurrentPos()) {
 					getLogAtPosition(getPosition()[0], getPosition()[1], getPosition()[2]).startBeingCarried(this);
-				} else if (unitsWorld.getCubeType((int) getPosition()[0], (int) getPosition()[1], (int) getPosition()[2]) == 2) {
+				} else if (getTerrainType(castDoubleToInt(this.getPosition())) == 2) {
 					//TODO cube collapses en drop een Log
-					//TODO als niet static moet worden aangepast.
-				} else if (unitsWorld.getCubeType((int) getPosition()[0], (int) getPosition()[1], (int) getPosition()[2]) == 1) {
+					
+				} else if (getTerrainType(castDoubleToInt(this.getPosition())) == 1) {
 					//TODO cube collapses and drop a Boulder
 				}
 				
@@ -1356,7 +1405,7 @@ public class Unit {
 	}
 	
 	private Log getLogAtPosition(double x, double y, double z) {
-		for (Log l : unitsWorld.getSetOfLogs()) {
+		for (Log l : getWorld().getSetOfLogs()) {
 			if (l.getPosition()[0] == x && l.getPosition()[1] == y && l.getPosition()[2] == z) {
 				return l;
 			}
@@ -1365,7 +1414,7 @@ public class Unit {
 	}
 	
 	private Boulder getBoulderAtPosition(double x, double y, double z) {
-		for (Boulder b : unitsWorld.getSetOfBoulders()) {
+		for (Boulder b : getWorld().getSetOfBoulders()) {
 			if (b.getPosition()[0] == x && b.getPosition()[1] == y && b.getPosition()[2] == z) {
 				return b;
 			}
@@ -1374,7 +1423,7 @@ public class Unit {
 	}
 	
 	private boolean logAtCurrentPos() {
-		for (Log l : unitsWorld.getSetOfLogs()) {
+		for (Log l : getWorld().getSetOfLogs()) {
 			if (l.getPosition()[0] == getPosition()[0] && l.getPosition()[1] == getPosition()[1] && l.getPosition()[2] == getPosition()[2]) {
 				return true;
 			}
@@ -1383,45 +1432,14 @@ public class Unit {
 	}
 	
 	private boolean boulderAtCurrentPos() {
-		for (Boulder b : unitsWorld.getSetOfBoulders()) {
+		for (Boulder b : getWorld().getSetOfBoulders()) {
 			if (b.getPosition()[0] == getPosition()[0] && b.getPosition()[1] == getPosition()[1] && b.getPosition()[2] == getPosition()[2]) {
 				return true;
 			}
 		}
 		return false;
 	}
-	
-	private Log carriedLog = null;
-	private Boulder carriedBoulder = null;
-	
-	public void startCarryingBoulder(Boulder b) {
-		this.carriedBoulder = b;
-	}
-	
-	/*
-	 * Returns whether a unit is carrying a log
-	 */
-	private boolean isCarryingLog() {
-		for (Log l : unitsWorld.getSetOfLogs()) {
-			if (l.getCarrier().equals(this)) {
-				return true;
-			}
-		}
-		return false;
-	}
-	
-	/*
-	 * Returns whether a unit is carrying a boulder
-	 */
-	private boolean isCarryingBoulder() {
-		for (Boulder b : unitsWorld.getSetOfBoulders()) {
-			if (b.getCarrier().equals(this)) {
-				return true;
-			}
-		}
-		return false;
-	}
-	
+				
 	/**
 	 * The unit stops working
 	 * 
@@ -1437,16 +1455,98 @@ public class Unit {
 	 */
 	private double timeLeftWorking;
 	
-	/* Fighting */
+/////////////////////////////////////////////Carrying Log/////////////////////////////////////////////
+	
+	/**
+	 * stop carrying the log that the unit is carrying.
+	 */
+	private void stopCarryingLog(){
+		this.carriedLog = null;
+	}
+	
+	/**
+	 * start carrying the given log.
+	 * @param l
+	 * 		  the given log.
+	 */
+	public void startCarryingLog(Log l) {
+		if (castDoubleToInt(getPosition()) == castDoubleToInt(l.getPosition()) || isFalling())
+			return;
+		this.carriedLog = l;
+		stopWorking();
+	}
+	
+	/**
+	 * Returns whether a unit is carrying a log
+	 */
+	public boolean isCarryingLog() {
+		for (Log l : getWorld().getSetOfLogs()) {
+			if (l.getCarrier().equals(this)) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	/**
+	 * Variable registering the log that the unit is carrying.
+	 */
+	private Log carriedLog = null;
+	
+/////////////////////////////////////////////Carrying Boulder/////////////////////////////////////////////
+	
+	/**
+	 * stop carrying the boulder that the unit is carrying.
+	 */
+	private void stopCarryingBoulder(){
+		this.carriedBoulder = null;
+	}
+	
+	/**
+	 * start carrying the given boulder.
+	 * @param b
+	 * 		  the given boulder.
+	 */
+	public void startCarryingBoulder(Boulder b) {
+		if (castDoubleToInt(getPosition()) == castDoubleToInt(b.getPosition()) || isFalling())
+			return;
+		this.carriedBoulder = b;
+		stopWorking();
+	}
+	
+	/**
+	 * Returns whether a unit is carrying a boulder
+	 */
+	public boolean isCarryingBoulder() {
+		for (Boulder b : getWorld().getSetOfBoulders()) {
+			if (b.getCarrier().equals(this)) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	/**
+	 * Variable registering the boulder that the unit is carrying.
+	 */
+	private Boulder carriedBoulder = null;
+	
+/////////////////////////////////////////////Fighting/////////////////////////////////////////////
 	
 	/**
 	 * Let the unit start attacking.
 	 */
 	public void startAttacking(Unit defender) {
+		if (isFalling() || defender.isFalling()) return;
 		if (targetOnValidPosition(defender) && targetFromDifferentFaction(defender)) {
 			stopWorking();
 			stopResting();
-			this.isPathfinding = false;
+			stopPathfinding();
+			stopWalking();
+			defender.stopWorking();
+			defender.stopResting();
+			defender.stopPathfinding();
+			defender.stopWalking();
 			this.isAttacking = true;
 		}
 		
@@ -1486,6 +1586,13 @@ public class Unit {
 			takeDamage(defender);
 			this.setExperience(20);
 		}
+	}
+	
+	/**
+	 * return if a unit is defending or not.
+	 */
+	private boolean isDefending(){
+		return this.isDefending;
 	}
 	
 	/**
@@ -1538,7 +1645,7 @@ public class Unit {
 	 */
 	private Unit defenderClone;
 	
-	/* Dodging */
+/////////////////////////////////////////////Dodging/////////////////////////////////////////////
 	
 	/**
 	 * return the chance that a defending unit can dodge the attack.
@@ -1574,7 +1681,7 @@ public class Unit {
 		newPos[1] += newY;
 		
 		if(isValidPosition(newPos) && (newPos[0] != getPosition()[0] && newPos[1] != getPosition()[1]) &&
-				unitsWorld.isCubePassable((int) newPos[0], (int) newPos[1], (int) getPosition()[2])) {			
+				getWorld().isCubePassable((int) newPos[0], (int) newPos[1], (int) getPosition()[2])) {			
 			this.setUnitPosition(newPos);
 		} else {
 			moveToRandomAdjecant();
@@ -1587,9 +1694,11 @@ public class Unit {
 	 */
 	private void dodgethis(Unit defender) {
 			moveToRandomAdjecant();
+			
 	}
 	
-	/* Blocking */
+/////////////////////////////////////////////Blocking/////////////////////////////////////////////
+	
 	/**
 	 * return the chance that a defending unit can dodge the attack.
 	 * @param defender
@@ -1623,7 +1732,8 @@ public class Unit {
 		}
 	}
 	
-	/* Taking Damage */
+/////////////////////////////////////////////Taking Damage/////////////////////////////////////////////
+	
 	/**
 	 * decrease the hitpoints of the defending unit.
 	 * @param defender
@@ -1634,7 +1744,8 @@ public class Unit {
 	}
 	
 	
-	/* Resting */
+/////////////////////////////////////////////Resting/////////////////////////////////////////////
+	
 	/**
 	 * Return the state of resting of this unit.
 	 */
@@ -1643,7 +1754,6 @@ public class Unit {
 		return this.isResting;
 	}
 	
-	//TODO welke state moeten allemaal op false worden gezet? dit moet ook in post conditie. Default Behavirot
 	/**
 	 * make the unit start resting
 	 * 
@@ -1651,13 +1761,15 @@ public class Unit {
 	 * 		| this.isResting == true
 	 */
 	public void startResting (){
+		if (isFalling() || isAttacking() || isDefending())
+			return;
 		if (getHitpoints() == getMaxHitpoints()) {
 			totalHPRestored = -5;
 		}
-		this.isPathfinding = false;
-		this.isWorking = false;
+		stopPathfinding();
+		stopWalking();
+		stopWorking();
 		this.isResting = true;
-		this.defaultBehaviour = false;
 	}
 	
 	/**
@@ -1666,7 +1778,7 @@ public class Unit {
 	 * @return if the unit can rest return true
 	*/
 	private boolean canRest( ) {
-		if (this.isAttacking == true || this.isDefending == true 
+		if (isAttacking() || isDefending() || isFalling()
 				|| (getHitpoints() >= getMaxHitpoints() && getStamina() >= getMaxStamina() ))
 			return false;
 		return true;
@@ -1742,7 +1854,8 @@ public class Unit {
 	 */
 	private double counterForStamina = 0;
 	
-	/* Default Behavior */
+/////////////////////////////////////////////Default Behavior/////////////////////////////////////////////
+	
 	/**
 	 * check if the default behavior of this unit is on.
 	 * @return unit.defaultBehavior
@@ -1777,12 +1890,12 @@ public class Unit {
 			this.startPathfinding(cube);
 		}
 		else if(ActionChance == 2){
-			this.startWorking();
+			this.startWorking(castDoubleToInt(getPosition()));
 		}
 		else if(ActionChance == 3){
 			this.startResting();
 		} else if (ActionChance == 4) {
-			for (Unit unit : unitsWorld.getSetOfUnits()) {
+			for (Unit unit : getWorld().getSetOfUnits()) {
 				if (targetOnValidPosition(unit) && targetFromDifferentFaction(unit)) {
 					startAttacking(unit);
 				}
@@ -1790,7 +1903,8 @@ public class Unit {
 		}
 	}
 	
-	/* Death */
+/////////////////////////////////////////////Death/////////////////////////////////////////////
+	
 	/**
 	 * Return the vivacity of this unit.
 	 */
@@ -1816,7 +1930,8 @@ public class Unit {
 	 */
 	private boolean isAlive = true;
 	
-	/* falling */
+/////////////////////////////////////////////Falling/////////////////////////////////////////////
+	
 	/**
 	 * Return if is unit is falling or not.
 	 */
@@ -1839,7 +1954,11 @@ public class Unit {
 	 */
 	private void startFalling() {
 		this.isFalling = true;
-		//TODO set false.
+		stopWorking();
+		stopAttacking();
+		stopPathfinding();
+		stopWalking();
+		stopResting();		
 	}
 		
 	/**
@@ -1897,7 +2016,8 @@ public class Unit {
 		this.setUnitPosition(positionInInt);
 	}
 	
-	/* Experience */
+/////////////////////////////////////////////Experience/////////////////////////////////////////////
+	
 	/**
 	 * Return the experience of this Unit.
 	 */
@@ -1971,7 +2091,8 @@ public class Unit {
 	 */
 	private int expTillNextLevel;
 	
-	/* Faction */
+/////////////////////////////////////////////Faction/////////////////////////////////////////////
+	
 	/**
 	 * Return the faction of this unit.
 	 */
@@ -2019,16 +2140,5 @@ public class Unit {
 	 * Variable registering the faction of this unit.
 	 */
 	private Faction faction;
-	
-	
-	/*
-	 * World
-	 */
-	
-	private static World unitsWorld;
-	
-	public void setWorld(World world) {
-		this.unitsWorld = world;
-	}
 	
 }

@@ -237,8 +237,7 @@ public class Facade implements IFacade{
 	 */
 	@Override
 	public boolean isCarryingLog(Unit unit) throws ModelException {
-		// TODO Auto-generated method stub
-		return false;
+		return unit.isCarryingLog();
 	}
 
 	/**
@@ -252,8 +251,7 @@ public class Facade implements IFacade{
 	 */
 	@Override
 	public boolean isCarryingBoulder(Unit unit) throws ModelException {
-		// TODO Auto-generated method stub
-		return false;
+		return unit.isCarryingBoulder();
 	}
 
 	/**
@@ -301,8 +299,7 @@ public class Facade implements IFacade{
 	 */
 	@Override
 	public void workAt(Unit unit, int x, int y, int z) throws ModelException {
-		// TODO Auto-generated method stub
-		
+		unit.startWorking(new int[] {x,y,z});	
 	}
 
 	/* FACTIONS */
@@ -656,7 +653,7 @@ public class Facade implements IFacade{
 	 */
 	@Override
 	public boolean isMoving(Unit unit) throws ModelException {
-		return unit.isTheUnitMoving();
+		return unit.isWalking();
 	}
 
 	/**
@@ -744,8 +741,8 @@ public class Facade implements IFacade{
 	 *             A precondition was violated or an exception was thrown.
 	 */
 	@Override
+	@Deprecated
 	public void work(Unit unit) throws ModelException {
-		unit.startWorking();
 	}
 
 	/**

@@ -193,6 +193,7 @@ public class Boulder {
 		this.unitCarryingBoulder = unit;
 		unit.setWeight(unit.getWeight() + this.getWeight());
 		unit.startCarryingBoulder(this);
+		//TODO doen we DA HIER OF IN UNIT?
 	}
 	
 	/**
