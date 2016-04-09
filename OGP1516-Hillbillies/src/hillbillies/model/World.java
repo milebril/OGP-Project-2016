@@ -256,14 +256,10 @@ public class World {
 	* add the given boulder to the set of boulders.
 	* @param boulder
 	* 		  the boulder to add.
-	* @throws ModelException when invalid set
-	* 		| ! isValidArrayListOfBoulders()
 	*/
-	public void addBoulder(Boulder boulder) throws ModelException {
-		if (isValidArrayListOfBoulders())
+	public void addBoulder(Boulder boulder) {
+		if (setOfBoulders.size() < getMaxCapacityBoulders())
 			setOfBoulders.add(boulder);
-		else
-			throw new ModelException();
 	}
 	
 	/**
@@ -312,14 +308,10 @@ public class World {
 	* add the given log to the set of logs.
 	* @param log
 	* 		 the log to add.
-	* @throws ModelException when invalid set
-	* 		| ! isValidArrayListOfLogs()
 	*/
-	public void addLog(Log log) throws ModelException {
-		if (isValidArrayListOfLogs())
+	public void addLog(Log log) {
+		if (setOfLogs.size() < getMaxCapacityLog())
 			setOfLogs.add(log);
-		else
-			throw new ModelException();
 	}
 	
 	/**

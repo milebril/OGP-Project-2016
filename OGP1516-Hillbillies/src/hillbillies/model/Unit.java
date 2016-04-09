@@ -4,6 +4,9 @@ import be.kuleuven.cs.som.annotate.*;
 import ogp.framework.util.ModelException;
 
 import static java.lang.Math.PI;
+
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.Random;
 
 /**
@@ -56,7 +59,6 @@ import java.util.Random;
  *
  */
 public class Unit {
-	//TODO terainChangeListener
 /////////////////////////////////////////////Constructor/////////////////////////////////////////////
 	/**
 	 * initialize this new unit with the given name, position, weight, agility,
@@ -625,7 +627,7 @@ public class Unit {
 	 */
 	@Basic @Raw
 	public double[] getPosition() {
-		return this.unitPosition.clone();
+		return this.unitPosition;
 	}
 	
 	/**
@@ -1314,6 +1316,17 @@ public class Unit {
 	 * array registering the final destination of the unit in integers.
 	 */
 	private int[] pathfindingTo = {0,0,0};
+
+/////////////////////////////////////////////New Path Finding/////////////////////////////////////////////
+	
+	/**
+	 * a queue for path finding.
+	 */
+	Queue<Integer[]> Q = new LinkedList<Integer[]>();
+	
+	private void search(int[] position, int n0) {
+		
+	}
 	
 /////////////////////////////////////////////Work/////////////////////////////////////////////
 	
@@ -1391,10 +1404,20 @@ public class Unit {
 				} else if (logAtCurrentPos()) {
 					getLogAtPosition(getPosition()[0], getPosition()[1], getPosition()[2]).startBeingCarried(this);
 				} else if (getTerrainType(castDoubleToInt(this.getPosition())) == 2) {
-					//TODO cube collapses en drop een Log
+					int[][][] terrainTypes = getWorld().getTerrainType();
+					terrainTypes[(int) this.getPosition()[0]][(int) this.getPosition()[1]][(int) this.getPosition()[2]] = 0;
+					getWorld().setTerrainType(terrainTypes);
+					Log NewLog = new Log(putUnitInCenter(getPosition()));
+					getWorld().addLog(NewLog);
+					//TODO terrainChangeListener
 					
 				} else if (getTerrainType(castDoubleToInt(this.getPosition())) == 1) {
-					//TODO cube collapses and drop a Boulder
+					int[][][] terrainTypes = getWorld().getTerrainType();
+					terrainTypes[(int) this.getPosition()[0]][(int) this.getPosition()[1]][(int) this.getPosition()[2]] = 0;
+					getWorld().setTerrainType(terrainTypes);
+					Boulder NewBoulder = new Boulder(putUnitInCenter(getPosition()));
+					getWorld().addBoulder(NewBoulder);
+					//TODO terrainChangeListener
 				}
 				
 			}
