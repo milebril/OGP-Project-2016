@@ -625,7 +625,7 @@ public class Unit {
 	 */
 	@Basic @Raw
 	public double[] getPosition() {
-		return this.unitPosition;
+		return this.unitPosition.clone();
 	}
 	
 	/**
@@ -666,8 +666,8 @@ public class Unit {
 			if (unitPosition[i] < getMinValueCoordinate() || unitPosition[i] > getMaxValueCoordinate())
 				return false;
 		} 
-		if(getTerrainType(castDoubleToInt(this.getPosition().clone())) == 1) return false;
-		if(getTerrainType(castDoubleToInt(this.getPosition().clone())) == 2) return false;
+		if(getTerrainType(castDoubleToInt(getPosition())) == 1) return false;
+		if(getTerrainType(castDoubleToInt(getPosition())) == 2) return false;
 		return true;
 	}
 	
