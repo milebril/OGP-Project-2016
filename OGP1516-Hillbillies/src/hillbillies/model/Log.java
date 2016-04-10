@@ -230,10 +230,13 @@ public class Log {
 	 * check if a log can fall.
 	 */
 	private boolean canFall(int[][][] terrainTypes){
+		if(isCarried) return false;
 		int[] position = castDoubleToInt(this.getPosition());
-		if(position[2] == 0) return false;
-		if(terrainTypes[position[0]][position[1]][position[2]-1] == 0) return true;
-		return false;
+		if(position[2]-1 >= 0){
+			if((terrainTypes[position[0]][position[1]][position[2]-1] == 1 || terrainTypes[position[0]][position[1]][position[2]-1] == 2)&& 
+				getPosition()[2] % getPosition()[2] == 0) return false;
+		}
+		return true;
 	}
 	
 	/**

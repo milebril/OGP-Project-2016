@@ -978,15 +978,15 @@ public class Unit {
 		this.canFall(getWorld().getTerrainType());
 		if (isFalling())
 			this.fall(dt, getWorld().getTerrainType());
-		else if (this.isResting == true && this.isWalking == false)
+		else if (this.isResting == true)
 			this.resting(dt);
-		else if (this.isWorking == true && this.isWalking == false)
+		else if (this.isWorking == true)
 			this.working(dt);
 		else if (this.isWalking == true)
 			this.walking(dt);
 		else if (this.isPathfinding == true)
 			this.pathfinding(dt);
-		else if (this.isAttacking == true && this.isWalking == false) {
+		else if (this.isAttacking == true) {
 			attTime += dt;
 			updateOrientation(defenderClone);
 			if (attTime >= 1) {
@@ -1214,7 +1214,6 @@ public class Unit {
 	private double counterForRunning = 0;
 	
 /////////////////////////////////////////////Path Finding/////////////////////////////////////////////
-	//TODO Nieuwe pathfinding
 	
 	/**
 	 * start walking to the given position
@@ -1318,16 +1317,8 @@ public class Unit {
 	private int[] pathfindingTo = {0,0,0};
 
 /////////////////////////////////////////////New Path Finding/////////////////////////////////////////////
-	
-	/**
-	 * a queue for path finding.
-	 */
-	Queue<Integer[]> Q = new LinkedList<Integer[]>();
-	
-	private void search(int[] position, int n0) {
+	//TODO Nieuwe pathfinding
 		
-	}
-	
 /////////////////////////////////////////////Work/////////////////////////////////////////////
 	
 	/**
@@ -1409,7 +1400,7 @@ public class Unit {
 					getWorld().setTerrainType(terrainTypes);
 					Log NewLog = new Log(putUnitInCenter(getPosition()));
 					getWorld().addLog(NewLog);
-					//TODO terrainChangeListener
+					getWorld().TerrainChangeListener.notifyTerrainChanged((int) this.getPosition()[0], (int) this.getPosition()[1], (int) this.getPosition()[2]);
 					
 				} else if (getTerrainType(castDoubleToInt(this.getPosition())) == 1) {
 					int[][][] terrainTypes = getWorld().getTerrainType();
@@ -1417,7 +1408,7 @@ public class Unit {
 					getWorld().setTerrainType(terrainTypes);
 					Boulder NewBoulder = new Boulder(putUnitInCenter(getPosition()));
 					getWorld().addBoulder(NewBoulder);
-					//TODO terrainChangeListener
+					getWorld().TerrainChangeListener.notifyTerrainChanged((int) this.getPosition()[0], (int) this.getPosition()[1], (int) this.getPosition()[2]);
 				}
 				
 			}
@@ -1998,13 +1989,30 @@ public class Unit {
 	}
 	
 	/**
-	 * check if a log can fall.
+	 * check if a unit can fall.
 	 */
 	private void canFall(int[][][] terrainTypes){
 		int[] position = castDoubleToInt(this.getPosition());
-		if(position[2] == 0) this.stopFalling();;
-		if(terrainTypes[position[0]][position[1]][position[2]-1] == 0) this.startFalling();
-		this.stopFalling();
+		if (position[0] - 1 >= 0){
+			if((terrainTypes[position[0]-1][position[1]][position[2]] == 1 || terrainTypes[position[0]-1][position[1]][position[2]-1] == 2)&&
+			getPosition()[1] % getPosition()[1] == 0) this.stopFalling();	
+		}
+		if (position[0] + 1 >= getWorld().getXLength()){
+			if((terrainTypes[position[0]+1][position[1]][position[2]] == 1 || terrainTypes[position[0]+1][position[1]][position[2]-1] == 2)&&
+			getPosition()[1] % getPosition()[1] == 0) this.stopFalling();
+		}
+		if (position[1] - 1 >= 0){
+			if((terrainTypes[position[0]][position[1]-1][position[2]] == 1 || terrainTypes[position[0]][position[1]-1][position[2]-1] == 2)&&
+			getPosition()[1] % getPosition()[1] == 0) this.stopFalling();	
+		}if (position[1] + 1 >= getWorld().getYLength()){
+			if((terrainTypes[position[0]][position[1]+1][position[2]] == 1 || terrainTypes[position[0]][position[1]+1][position[2]-1] == 2)&&
+			getPosition()[1] % getPosition()[1] == 0) this.stopFalling();
+		}
+		if(position[2]-1 >= 0){
+			if((terrainTypes[position[0]][position[1]][position[2]-1] == 1 || terrainTypes[position[0]][position[1]][position[2]-1] == 2)&& 
+				getPosition()[2] % getPosition()[2] == 0) this.stopFalling();
+		}
+		this.startFalling();
 	}
 	
 	/**

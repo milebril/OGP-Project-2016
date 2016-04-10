@@ -80,6 +80,7 @@ public class World {
 		this.setOfFactions = new LinkedHashSet<>(); //initializing setOfFactions on creating world
 		this.setOfBoulders = new LinkedHashSet<>(); //initializing setOfBoulders on creating world
 		this.setOfLogs = new LinkedHashSet<>(); //initializing setOfLogs on creating world
+		this.TerrainChangeListener = modelListener;
 	}
 
 ////////////////////////////////////////////List of all units////////////////////////////////////////////
@@ -536,4 +537,8 @@ public class World {
 		return connect.isSolidConnectedToBorder(x, y, z);
 	}
 	
+	/**
+	 * variable registering the terrainchanglistener of a world.
+	 */
+	public TerrainChangeListener TerrainChangeListener;
 }
