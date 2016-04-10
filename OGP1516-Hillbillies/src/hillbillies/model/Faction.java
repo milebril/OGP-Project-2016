@@ -46,7 +46,7 @@ public class Faction {
 	public Faction getFaction(Unit unit) {
 		for (Faction f : listOfFactions) {
 			for (Unit u : f.unitsInFaction) {
-				if (u == unit) {
+				if (u.equals(unit)) {
 					return f;
 				}
 			}
