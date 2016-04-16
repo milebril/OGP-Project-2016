@@ -44,6 +44,8 @@ public class Boulder {
 		if (! canHaveAsWeight(weight))
 			throw new IllegalArgumentException();
 		this.weight =  weight;
+		
+		this.setPosition(position);
 	}
  
 ////////////////////////////////////////////Weight////////////////////////////////////////////
@@ -177,7 +179,7 @@ public class Boulder {
 		if (this.isCarried == true){
 			this.position = this.unitCarryingBoulder.getPosition();
 		}
-		if ( !this.isCarried && this.canFall(terrainTypes)){
+		if ( !this.isCarried  && this.canFall(terrainTypes)){ //TODO terug aanzetten als canFallw erkt
 			this.fall(dt, terrainTypes);
 		}
 	}
@@ -226,6 +228,7 @@ public class Boulder {
 	/**
 	 * check if a boulder can fall.
 	 */
+	//TODO hier zit een fout dus, we moeten optijd stoppen, en zorgen dat we niet uit de wereld valln!
 	private boolean canFall(int[][][] terrainTypes){
 		if(isCarried) return false;
 		int[] position = castDoubleToInt(this.getPosition());
@@ -261,6 +264,8 @@ public class Boulder {
 			distanceToFall = a + distanceToFall % (int)distanceToFall;
 			positionInInt[2] -= distanceToFall;
 		}
+		System.out.println(positionInInt[0] +" "+ positionInInt[1] + " " + positionInInt[2]);
+		//TODO De boulder stopt niet op tijd, en valt dus uit de wereld eig, fout in canFall??
 		this.setPosition(positionInInt);
 	}
 }

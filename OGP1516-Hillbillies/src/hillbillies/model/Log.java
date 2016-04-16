@@ -44,6 +44,8 @@ public class Log {
 		if (! canHaveAsWeight(weight))
 			throw new IllegalArgumentException();
 		this.weight =  weight;
+		
+		this.setPosition(position);
 	}
  
 ////////////////////////////////////////////Weight////////////////////////////////////////////

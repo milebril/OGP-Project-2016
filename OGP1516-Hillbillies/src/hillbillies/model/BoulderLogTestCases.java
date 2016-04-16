@@ -8,13 +8,18 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import hillbillies.part2.facade.Facade;
+import hillbillies.part2.facade.IFacade;
+import hillbillies.part2.listener.DefaultTerrainChangeListener;
 import hillbillies.part2.listener.TerrainChangeListener;
+import ogp.framework.util.ModelException;
 
 public class BoulderLogTestCases {
 
 	public Log log;
 	public Boulder boulder;
 	public World testWorld;
+	public Unit testunit;
 	
 	@Before
 	public void setUp() throws Exception {
@@ -26,8 +31,11 @@ public class BoulderLogTestCases {
 			}
 		};
 		testWorld = new World(new int [50][50][50], modelListener);
-		 log = new Log( new double[] {5,5,5});
+		 log = new Log(new double[] {5,5,5});
 		 boulder = new Boulder( new double[] {4,4,4});
+		 
+		 int[] pos = {0,0,0};
+		testunit = new Unit("Emil", pos, 50, 50, 50, 50, false, testWorld);
 	}
 
 	@Test
@@ -53,11 +61,85 @@ public class BoulderLogTestCases {
 	
 	@Test
 	public void carried() {
-		//TODO
+		testunit.startCarryingBoulder(boulder);
+		boulder.startBeingCarried(testunit);
+		
+		assertEquals(boulder.getCarrier(), testunit);
+		assertTrue(testunit.isCarryingBoulder());
+		
+		testunit.stopCarryingBoulder();
+		assertEquals(boulder.getCarrier(), null);
+		assertFalse(testunit.isCarryingBoulder());
+		
+		testunit.startCarryingLog(log);
+		log.startBeingCarried(testunit);
+		
+		assertEquals(log.getCarrier(), testunit);
+		assertTrue(testunit.isCarryingLog());
+		
+		testunit.stopCarryingLog();
+		assertEquals(log.getCarrier(), null);
+		assertFalse(testunit.isCarryingLog());
+	}
+	
+	@Test
+	public void excistsInwWorldOnCreation() throws ModelException {
+		Facade facade = new Facade();
+		
+		int[][][] types = new int[3][3][3];
+		types[1][1][1] = 1;
+		types[2][2][2] = 2;
+		types[1][1][2] = 3;
+
+		World world = facade.createWorld(types, new DefaultTerrainChangeListener());
+		
+		/*
+		 * Boulder
+		 */
+		
+		//TODO deze zouden moeten gaan werken als falling klopt hoop ik...
+		
+		assertEquals(world.getSetOfBoulders().size(), 0);
+		
+		Unit unit = new Unit("Emil", new int[] {1,1,1}, 50, 50, 50, 50, false, world);
+		facade.addUnit(unit, world);
+		assertTrue(facade.isSolidConnectedToBorder(world, 1, 1, 0));
+		assertTrue(facade.isSolidConnectedToBorder(world, 1, 1, 1));
+		facade.workAt(unit, 1, 1, 1);
+		advanceTimeFor(facade, world, 100, 0.02);
+		//There should now be a boulder at position {1,1,1}
+		assertEquals(world.getSetOfBoulders().size(), 1);
+		
+		/*
+		 * Log
+		 */
+		
+		assertEquals(world.getSetOfLogs().size(), 0);
+		System.out.println(unit.isCarryingBoulder());
+		unit.setUnitPosition(new double[] {2.5,2.5,2.5});
+		facade.workAt(unit, 2, 2, 2);
+		advanceTimeFor(facade, world, 10000, 0.02);
+		
+		assertEquals(world.getSetOfLogs().size(), 1);
 	}
 	
 	@Test
 	public void advanceTime() {
 		//TODO
+	}
+	
+	/**
+	 * Helper method to advance time for the given world by some time.
+	 * 
+	 * @param time
+	 *            The time, in seconds, to advance.
+	 * @param step
+	 *            The step size, in seconds, by which to advance.
+	 */
+	private static void advanceTimeFor(IFacade facade, World world, double time, double step) throws ModelException {
+		int n = (int) (time / step);
+		for (int i = 0; i < n; i++)
+			facade.advanceTime(world, step);
+		facade.advanceTime(world, time - n * step);
 	}
 }

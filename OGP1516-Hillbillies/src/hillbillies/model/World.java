@@ -346,8 +346,6 @@ public class World {
 		int y = rand.nextInt(getYLength());
 		int z = rand.nextInt(getZLength());
 		
-		System.out.println(x + " " + y + " " + z);
-		
 		while (!(isCubePassable(x, y, z) && (z != 0 || getCubeType(x, y, z-1) != 1))) {
 			x = rand.nextInt(getXLength());
 			y = rand.nextInt(getYLength());
@@ -490,7 +488,6 @@ public class World {
 	 * return the length of the world on the x-axis.
 	 */
 	public int getXLength() {
-		System.out.println(getTerrainType().length);
 		return getTerrainType().length;
 	}
 	

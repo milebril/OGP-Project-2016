@@ -5,9 +5,11 @@ import ogp.framework.util.ModelException;
 
 import static java.lang.Math.PI;
 
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Random;
+import java.util.Set;
 
 /**
  * A class that deals with a unit and all the actions that they can complete 
@@ -660,7 +662,7 @@ public class Unit {
 	 *       | if (unitPosition < 0 && unitPositio > 50) Then false
 	 *       |		else false
 	*/
-	public boolean isValidPosition(double[] unitPosition) {
+	public static boolean isValidPosition(double[] unitPosition) {
 		int N = unitPosition.length;
 		if (N != 3)
 			return false;
@@ -668,8 +670,9 @@ public class Unit {
 			if (unitPosition[i] < getMinValueCoordinate() || unitPosition[i] > getMaxValueCoordinate())
 				return false;
 		} 
-		if(getTerrainType(castDoubleToInt(getPosition())) == 1) return false;
-		if(getTerrainType(castDoubleToInt(getPosition())) == 2) return false;
+		//TODO zorgen dat deze static kan blijven
+		//if(getTerrainType(castDoubleToInt(getPosition())) == 1) return false;
+		//if(getTerrainType(castDoubleToInt(getPosition())) == 2) return false;
 		return true;
 	}
 	
@@ -973,9 +976,9 @@ public class Unit {
 		if (unitLifetime >= 1) {
 			unitLifetimeInSeconds++;
 			unitLifetime = 0;
-			//TODO wat doet gij hier? wrm niet gewoon unit lifetime in doubles en telkens dt bij optellen.
 		}
-		this.canFall(getWorld().getTerrainType());
+		//TODO Falling werkt niet, array out of bounds!!!!
+		//this.canFall(getWorld().getTerrainType());
 		if (isFalling())
 			this.fall(dt, getWorld().getTerrainType());
 		else if (this.isResting == true)
@@ -1319,7 +1322,126 @@ public class Unit {
 /////////////////////////////////////////////New Path Finding/////////////////////////////////////////////
 	//TODO Nieuwe pathfinding
 		
+	public void pathFindingAlgorithm(int[] destination) {
+		Queue<Object[]> Queue = new LinkedList<>();
+		while (castDoubleToInt(getPosition()) != destination) {
+			Object[] o = {destination, 0};
+			Queue.add(o);
+			while ((!inQue(Queue, destination)) && (Queue.peek() != null)) {
+				Object[] something = Queue.poll();
+				search(Queue, something);
+			}
+			if (inQue(Queue, castDoubleToInt(getPosition()))) {
+				int[] next = getNextElement(Queue);
+				moveToAdjacent(next[0], next[1], next[2]); //TODO weer niet hoe ik deze doe?? sjaan help
+			} else
+				break;
+		}
+				
+	}
+	private int[] getNextElement(Queue<Object[]> Queue) {
+		int maxNum = Integer.MAX_VALUE;
+		int[] nextElement = null;
+		
+		for (Object[] o : Queue) {
+			if ((int) o[1] <= maxNum) {
+				maxNum = (int) o[1];
+				nextElement = (int[]) o[1];
+			}
+		}
+		
+		return nextElement;
+	}
+
+	private boolean inQue(Queue<Object[]> Queue, int[] destination) {
+		for (Object[] o : Queue) {
+			if (((int[]) o[0]).equals(destination)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	
+	private void search(Queue<Object[]> Queue, Object[] something) {
+		int[] position = ((int[]) something[0]);
+		int n0 = ((int) something[1]);
+		search(Queue, position, n0);
+		
+		Set<int[]> adjacentCubes = this.getAdjacentCubes(castDoubleToInt(getPosition()));
+		for (int[] cube: adjacentCubes) {
+			if ((getWorld().isCubePassable(cube[0], cube[1], cube[2]) && (isNeighbouringSolidTerrain(cube))
+					&& (isNotInQueue(Queue, position, n0)))) {
+				Object[] somethingNew = {cube, n0+1};
+				Queue.add(somethingNew);
+			}
+		}
+	}
+	
+	private boolean isNotInQueue(Queue<Object[]> Queue, int[] position, int n0) {
+		
+		if (Queue.size() == 0) 
+			return true;
+		for (Object[] something: Queue) { 
+			if ((something[0] == position) && (((int) something[1]) >= n0))
+				return true;
+		}
+		return false;
+	}
+	
+	public Set<int[]> getAdjacentCubes(int[] position) {
+		Set<int[]> adjacentCubes = new LinkedHashSet<>();
+		
+		int X = position[0];
+		int Y = position[1];
+		int Z = position[2];
+		
+		for (int x = -1; x <= 1; x++) {
+			for (int y = -1; y <= 1; y++) {
+				for (int z = -1; z <= 1; z++) {
+					if (x != 0 | y != 0 | z != 0) {
+						int[] adjacentPosition = {X + x, Y + y, Z + z};
+						if (isInsideWorld(adjacentPosition))
+							adjacentCubes.add(adjacentPosition);
+
+					}
+				}
+			}
+		}
+		
+		return adjacentCubes;
+	}
+	
+	private boolean isNeighbouringSolidTerrain(int[] cube) {
+			
+		if (cube[2] == 0)
+			return true;
+
+		Set<int[]> adjacentCubes = getAdjacentCubes(cube);
+		
+		for (int[] ac: adjacentCubes) {
+			try{
+				if (!getWorld().isCubePassable(ac[0], ac[1], ac[2]))
+					return true;
+			} catch (IndexOutOfBoundsException e) {};
+		}
+		return false;
+			
+	}
+	
+	private boolean isInsideWorld(int[] position) {
+		if (position[0] <= getWorld().getXLength() && position[1] <= getWorld().getYLength() && position[2] <= getWorld().getZLength())
+			return true;
+		return false;
+	}
+	private void search(Queue<Object[]> Queue, int[] position, int n0) {
+		
+
+	}
+	
 /////////////////////////////////////////////Work/////////////////////////////////////////////
+	
+	private int workJob;
 	
 	/**
 	 * Return the state of working of this unit.
@@ -1347,8 +1469,10 @@ public class Unit {
 	 * 		new.timeLeftWorking = (500 / getStrenght())
 	 */
 	public void startWorking(int[] positionOfCube){
-		if(castDoubleToInt(getPosition()) == positionOfCube || isAttacking() == true || isDefending() == true || isFalling() == true)
+		if(castDoubleToInt(getPosition()) == positionOfCube || isAttacking() == true || isDefending() == true || isFalling() == true) {
+			System.out.println('d');
 			return;
+		}
 		if (this.isCarryingBoulder()){
 			this.carriedBoulder.stopBeingCarried();
 			this.stopCarryingBoulder();
@@ -1357,11 +1481,32 @@ public class Unit {
 			this.stopCarryingLog();
 		} 
 		this.isWorking = true;
+		System.out.println(this.isWorking);
 		stopResting();
 		stopWalking();
 		isPathfinding();
-
+		
+		this.workJob = whatWorkToDo();
+		
 		this.timeLeftWorking = (500 / getStrength());
+		
+		System.out.println(this.workJob);
+	}
+	
+	public int whatWorkToDo() {
+		if (getTerrainType(castDoubleToInt(this.getPosition())) == 3 &&
+				logAtCurrentPos() && boulderAtCurrentPos()) {
+			return 1;
+		} else if (boulderAtCurrentPos()) {
+			return 2;
+		} else if (logAtCurrentPos()) {
+			return 3;
+		} else if (getTerrainType(castDoubleToInt(this.getPosition())) == 2) {
+			return 4;
+		} else if (getTerrainType(castDoubleToInt(this.getPosition())) == 1) {
+			return 5;
+		}
+		return -1;
 	}
 	
 	/**
@@ -1383,7 +1528,8 @@ public class Unit {
 					this.timeLeftWorking = 0;
 				}
 				//The working
-				
+				//TODO kijken of het andere werkt
+				/*
 				if (getTerrainType(castDoubleToInt(this.getPosition())) == 3 &&
 						logAtCurrentPos() && boulderAtCurrentPos()) {
 					getWorld().removeBoulder(getBoulderAtPosition(getPosition()[0], getPosition()[1], getPosition()[2]));
@@ -1403,6 +1549,8 @@ public class Unit {
 					getWorld().TerrainChangeListener.notifyTerrainChanged((int) this.getPosition()[0], (int) this.getPosition()[1], (int) this.getPosition()[2]);
 					
 				} else if (getTerrainType(castDoubleToInt(this.getPosition())) == 1) {
+					System.out.println("Ben hier");
+					
 					int[][][] terrainTypes = getWorld().getTerrainType();
 					terrainTypes[(int) this.getPosition()[0]][(int) this.getPosition()[1]][(int) this.getPosition()[2]] = 0;
 					getWorld().setTerrainType(terrainTypes);
@@ -1410,7 +1558,38 @@ public class Unit {
 					getWorld().addBoulder(NewBoulder);
 					getWorld().TerrainChangeListener.notifyTerrainChanged((int) this.getPosition()[0], (int) this.getPosition()[1], (int) this.getPosition()[2]);
 				}
-				
+				*/
+				switch(workJob) {
+				case 1:
+					getWorld().removeBoulder(getBoulderAtPosition(getPosition()[0], getPosition()[1], getPosition()[2]));
+					getWorld().removeLog(getLogAtPosition(getPosition()[0], getPosition()[1], getPosition()[2]));
+					this.setToughness(getToughness() + 5); 
+					this.setWeight(getWeight() + 5); 
+					break;
+				case 2:
+					getBoulderAtPosition(getPosition()[0], getPosition()[1], getPosition()[2]).startBeingCarried(this);
+					break;
+				case 3:
+					getLogAtPosition(getPosition()[0], getPosition()[1], getPosition()[2]).startBeingCarried(this);
+					break;
+				case 4:
+					int[][][] terrainTypes = getWorld().getTerrainType();
+					terrainTypes[(int) this.getPosition()[0]][(int) this.getPosition()[1]][(int) this.getPosition()[2]] = 0;
+					getWorld().setTerrainType(terrainTypes);
+					Log NewLog = new Log(putUnitInCenter(getPosition()));
+					getWorld().addLog(NewLog);
+					getWorld().TerrainChangeListener.notifyTerrainChanged((int) this.getPosition()[0], (int) this.getPosition()[1], (int) this.getPosition()[2]);
+					break;
+				case 5:
+					System.out.println("hier");
+					int[][][] terrainTypes2 = getWorld().getTerrainType();
+					terrainTypes2[(int) this.getPosition()[0]][(int) this.getPosition()[1]][(int) this.getPosition()[2]] = 0;
+					getWorld().setTerrainType(terrainTypes2);
+					Boulder NewBoulder = new Boulder(putUnitInCenter(getPosition()));
+					getWorld().addBoulder(NewBoulder);
+					getWorld().TerrainChangeListener.notifyTerrainChanged((int) this.getPosition()[0], (int) this.getPosition()[1], (int) this.getPosition()[2]);
+					this.workJob = -1;
+				} 
 			}
 		} else {
 			stopWorking();
@@ -1461,6 +1640,7 @@ public class Unit {
 	 */
 	private void stopWorking(){
 		this.isWorking = false;
+		this.workJob = -1;
 	}
 
 	/**
@@ -1473,7 +1653,8 @@ public class Unit {
 	/**
 	 * stop carrying the log that the unit is carrying.
 	 */
-	private void stopCarryingLog(){
+	public void stopCarryingLog(){
+		this.carriedLog.stopBeingCarried();
 		this.carriedLog = null;
 	}
 	
@@ -1493,11 +1674,8 @@ public class Unit {
 	 * Returns whether a unit is carrying a log
 	 */
 	public boolean isCarryingLog() {
-		for (Log l : getWorld().getSetOfLogs()) {
-			if (l.getCarrier().equals(this)) {
-				return true;
-			}
-		}
+		if(this.carriedLog != null)
+			return true;
 		return false;
 	}
 	
@@ -1511,7 +1689,8 @@ public class Unit {
 	/**
 	 * stop carrying the boulder that the unit is carrying.
 	 */
-	private void stopCarryingBoulder(){
+	public void stopCarryingBoulder(){
+		this.carriedBoulder.stopBeingCarried();
 		this.carriedBoulder = null;
 	}
 	
@@ -1531,11 +1710,8 @@ public class Unit {
 	 * Returns whether a unit is carrying a boulder
 	 */
 	public boolean isCarryingBoulder() {
-		for (Boulder b : getWorld().getSetOfBoulders()) {
-			if (b.getCarrier().equals(this)) {
-				return true;
-			}
-		}
+		if(this.carriedBoulder != null)
+			return true;
 		return false;
 	}
 	
