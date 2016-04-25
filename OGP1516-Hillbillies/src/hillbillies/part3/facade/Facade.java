@@ -360,6 +360,10 @@ public class Facade implements IFacade{
 		return false;
 	}
 
+	/*
+	 * Scheduler
+	 */
+	
 	@Override
 	public ITaskFactory<?, ?, Task> createTaskFactory() {
 		// TODO Auto-generated method stub

@@ -1,6 +1,8 @@
 package hillbillies.model;
 
 import be.kuleuven.cs.som.annotate.*;
+
+import java.io.ObjectInputStream.GetField;
 import java.util.Random;
 
 /**
@@ -176,11 +178,16 @@ public class Boulder {
 	 * @post the position of the stone is updated.
 	 */
 	public void advanceTimeOfBoulder(double dt, int[][][] terrainTypes){
+		
 		if (this.isCarried == true){
 			this.position = this.unitCarryingBoulder.getPosition();
 		}
 		if ( !this.isCarried  && this.canFall(terrainTypes)){ //TODO terug aanzetten als canFallw erkt
 			this.fall(dt, terrainTypes);
+		}
+		
+		if (!this.canFall(terrainTypes) && getPosition()[2] != 0.5) {
+			this.setPosition(new double[] {getPosition()[0], getPosition()[1], (int) getPosition()[2] + 0.5});
 		}
 	}
 ////////////////////////////////////////////Carried////////////////////////////////////////////
@@ -230,12 +237,24 @@ public class Boulder {
 	 */
 	//TODO hier zit een fout dus, we moeten optijd stoppen, en zorgen dat we niet uit de wereld valln!
 	private boolean canFall(int[][][] terrainTypes){
-		if(isCarried) return false;
-		int[] position = castDoubleToInt(this.getPosition());
-		if(position[2]-1 >= 0){
-			if((terrainTypes[position[0]][position[1]][position[2]-1] == 1 || terrainTypes[position[0]][position[1]][position[2]-1] == 2)&& 
-				getPosition()[2] % getPosition()[2] == 0) return false;
+		if(isCarried) {
+			return false;
 		}
+		
+		if (this.getPosition()[2] <= 0.5) {
+			return false;
+		}
+		
+		int[] position = castDoubleToInt(this.getPosition());
+		
+		if (position[2] - 1 >= 0) {
+			if ((terrainTypes[position[0]][position[1]][position[2]-1] == 1 ||
+					terrainTypes[position[0]][position[1]][position[2]-1] == 2) &&
+					getPosition()[2] % position[2] <= 0.5) {
+				return false;
+			}
+		}
+		
 		return true;
 	}
 	
@@ -249,23 +268,8 @@ public class Boulder {
 	/**
 	 * move the boulder over a given time period dt.
 	 */
-	private void fall(double dt, int[][][] terrainTypes) {
-		double[] positionInInt = this.getPosition();
-		double distanceToFall = speedOfFalling() * dt;
-		if(distanceToFall < 1)
-			positionInInt[2] -= distanceToFall;
-		else {
-			int[] position = castDoubleToInt(this.getPosition());
-			int a = 0;
-			for( int i = 0; i < distanceToFall; i++){
-				if(terrainTypes[position[0]][position[1]][position[2]- i] == 0)
-					a++;
-			}
-			distanceToFall = a + distanceToFall % (int)distanceToFall;
-			positionInInt[2] -= distanceToFall;
-		}
-		System.out.println(positionInInt[0] +" "+ positionInInt[1] + " " + positionInInt[2]);
-		//TODO De boulder stopt niet op tijd, en valt dus uit de wereld eig, fout in canFall??
-		this.setPosition(positionInInt);
+	private void fall(double dt, int[][][] terrainTypes) {		
+		this.setPosition(new double[] {getPosition()[0], getPosition()[1], getPosition()[2] - speedOfFalling() * dt});
+		
 	}
 }

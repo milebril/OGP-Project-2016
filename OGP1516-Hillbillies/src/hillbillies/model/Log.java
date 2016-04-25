@@ -180,8 +180,12 @@ public class Log {
 		if (this.isCarried == true){
 			this.position = this.unitCarryingLog.getPosition();
 		}
-		if ( !this.isCarried && this.canFall(terrainTypes)){
+		if ( !this.isCarried  && this.canFall(terrainTypes)){ //TODO terug aanzetten als canFallw erkt
 			this.fall(dt, terrainTypes);
+		}
+		
+		if (!this.canFall(terrainTypes) && getPosition()[2] != 0.5) {
+			this.setPosition(new double[] {getPosition()[0], getPosition()[1], (int) getPosition()[2] + 0.5});
 		}
 	}
 
@@ -232,12 +236,24 @@ public class Log {
 	 * check if a log can fall.
 	 */
 	private boolean canFall(int[][][] terrainTypes){
-		if(isCarried) return false;
-		int[] position = castDoubleToInt(this.getPosition());
-		if(position[2]-1 >= 0){
-			if((terrainTypes[position[0]][position[1]][position[2]-1] == 1 || terrainTypes[position[0]][position[1]][position[2]-1] == 2)&& 
-				getPosition()[2] % getPosition()[2] == 0) return false;
+		if(isCarried) {
+			return false;
 		}
+		
+		if (this.getPosition()[2] <= 0.5) {
+			return false;
+		}
+		
+		int[] position = castDoubleToInt(this.getPosition());
+		
+		if (position[2] - 1 >= 0) {
+			if ((terrainTypes[position[0]][position[1]][position[2]-1] == 1 ||
+					terrainTypes[position[0]][position[1]][position[2]-1] == 2) &&
+					getPosition()[2] % position[2] <= 0.5) {
+				return false;
+			}
+		}
+		
 		return true;
 	}
 	
@@ -252,20 +268,9 @@ public class Log {
 	 * move the log over a given time period dt.
 	 */
 	private void fall(double dt, int[][][] terrainTypes) {
-		double[] positionInInt = this.getPosition();
-		double distanceToFall = speedOfFalling() * dt;
-		if(distanceToFall < 1)
-			positionInInt[2] -= distanceToFall;
-		else {
-			int[] position = castDoubleToInt(this.getPosition());
-			int a = 0;
-			for( int i = 0; i < distanceToFall; i++){
-				if(terrainTypes[position[0]][position[1]][position[2]- i] == 0)
-					a++;
-			}
-			distanceToFall = a + distanceToFall % (int)distanceToFall;
-			positionInInt[2] -= distanceToFall;
-		}
-		this.setPosition(positionInInt);
+		
+		System.out.println(getPosition()[0] +" "+ getPosition()[1] + " " + getPosition()[2]);
+		
+		this.setPosition(new double[] {getPosition()[0], getPosition()[1], getPosition()[2] - speedOfFalling() * dt});
 	}
 }

@@ -348,13 +348,9 @@ public class World {
 		int y = rand.nextInt(getYLength());
 		int z = rand.nextInt(getZLength());
 		
-<<<<<<< HEAD
 		System.out.println(x + " " + y + " " + z);
 		
-		while (!isCubePassable(x, y, z) && (getTerrainType()[x][y][z-1] != 1 || z != 0)) { //TODO staat juisty op men desktop normaal
-=======
 		while (!(isCubePassable(x, y, z) && (z != 0 || getCubeType(x, y, z-1) != 1))) {
->>>>>>> origin/master
 			x = rand.nextInt(getXLength());
 			y = rand.nextInt(getYLength());
 			z = rand.nextInt(getZLength());
