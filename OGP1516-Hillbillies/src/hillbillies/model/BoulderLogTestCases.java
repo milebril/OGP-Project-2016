@@ -90,6 +90,7 @@ public class BoulderLogTestCases {
 		types[1][1][1] = 1;
 		types[2][2][2] = 2;
 		types[1][1][2] = 3;
+		//types[2][2][0] = 1;
 
 		World world = facade.createWorld(types, new DefaultTerrainChangeListener());
 		
@@ -106,26 +107,42 @@ public class BoulderLogTestCases {
 		assertTrue(facade.isSolidConnectedToBorder(world, 1, 1, 0));
 		assertTrue(facade.isSolidConnectedToBorder(world, 1, 1, 1));
 		facade.workAt(unit, 1, 1, 1);
-		advanceTimeFor(facade, world, 100, 0.02);
+		advanceTimeFor(facade, world, 50, 0.02);
 		//There should now be a boulder at position {1,1,1}
 		assertEquals(world.getSetOfBoulders().size(), 1);
+		
+		//System.out.println();
 		
 		/*
 		 * Log
 		 */
 		
-		assertEquals(world.getSetOfLogs().size(), 0);
-		System.out.println(unit.isCarryingBoulder());
-		unit.setUnitPosition(new double[] {2.5,2.5,2.5});
-		facade.workAt(unit, 2, 2, 2);
-		advanceTimeFor(facade, world, 10000, 0.02);
 		
-		assertEquals(world.getSetOfLogs().size(), 1);
 	}
 	
 	@Test
-	public void advanceTime() {
-		//TODO
+	public void excistsInwWorldOnCreationLog() throws ModelException {
+		System.out.println("\n");
+		System.out.println("Begin van Log");
+		
+		Facade facade = new Facade();
+		
+		int[][][] types = new int[3][3][3];
+		types[1][1][1] = 2;
+		types[2][2][2] = 1;
+		types[1][1][2] = 3;
+		//types[2][2][0] = 1;
+
+		World world = facade.createWorld(types, new DefaultTerrainChangeListener());
+	
+		Unit unit = new Unit("Emil", new int[] {1,1,1}, 50, 50, 50, 50, false, world);
+		facade.addUnit(unit, world);
+		assertEquals(world.getSetOfLogs().size(), 0);
+		System.out.println(unit.isCarryingLog());
+		facade.workAt(unit, 1, 1, 1);
+		advanceTimeFor(facade, world, 50, 0.02);
+		
+		assertEquals(world.getSetOfLogs().size(), 1);
 	}
 	
 	/**

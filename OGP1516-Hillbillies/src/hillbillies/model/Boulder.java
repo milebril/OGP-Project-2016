@@ -5,6 +5,8 @@ import be.kuleuven.cs.som.annotate.*;
 import java.io.ObjectInputStream.GetField;
 import java.util.Random;
 
+import com.sun.xml.internal.fastinfoset.stax.factory.StAXOutputFactory;
+
 /**
  * A class that deals with a boulder and all the properties of the boulder 
  * in a given game world.
@@ -246,6 +248,7 @@ public class Boulder {
 		}
 		
 		int[] position = castDoubleToInt(this.getPosition());
+<<<<<<< HEAD
 		
 		if (position[2] - 1 >= 0) {
 			if ((terrainTypes[position[0]][position[1]][position[2]-1] == 1 ||
@@ -253,6 +256,12 @@ public class Boulder {
 					getPosition()[2] % position[2] <= 0.5) {
 				return false;
 			}
+=======
+		if(position[2]-1 >= 0){
+			if((terrainTypes[position[0]][position[1]][position[2]-1] == 1 || 
+				terrainTypes[position[0]][position[1]][position[2]-1] == 2)&& 
+				getPosition()[2] % position[2] > 0.5) return false;
+>>>>>>> ad6fb2a7f4d0087b18dd9b7313266d362ed00c84
 		}
 		
 		return true;
@@ -268,8 +277,28 @@ public class Boulder {
 	/**
 	 * move the boulder over a given time period dt.
 	 */
+<<<<<<< HEAD
 	private void fall(double dt, int[][][] terrainTypes) {		
 		this.setPosition(new double[] {getPosition()[0], getPosition()[1], getPosition()[2] - speedOfFalling() * dt});
 		
+=======
+	private void fall(double dt, int[][][] terrainTypes) {
+		double[] position = this.getPosition();
+		double distanceToFall = speedOfFalling() * dt;
+		double distanceCanFall = distanceCanFall();
+		if(distanceToFall >= distanceCanFall){
+			position[2] -= distanceCanFall;
+		}else{
+			position[2] -= distanceToFall;
+		}
+		this.setPosition(position);
+	}
+	
+	private double distanceCanFall(){
+		double[] position = this.getPosition();
+		for(int i = (int) position[2]; i>0; i-- ){
+			if this.ter
+		}
+>>>>>>> ad6fb2a7f4d0087b18dd9b7313266d362ed00c84
 	}
 }
