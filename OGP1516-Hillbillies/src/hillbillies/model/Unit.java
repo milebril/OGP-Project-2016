@@ -978,7 +978,7 @@ public class Unit {
 			unitLifetime = 0;
 		}
 		//TODO Falling werkt niet, array out of bounds!!!!
-		//this.canFall(getWorld().getTerrainType());
+		this.canFall(getWorld().getTerrainType());
 		if (isFalling())
 			this.fall(dt, getWorld().getTerrainType());
 		else if (this.isResting == true)
@@ -1333,7 +1333,7 @@ public class Unit {
 			}
 			if (inQue(Queue, castDoubleToInt(getPosition()))) {
 				int[] next = getNextElement(Queue);
-				moveToAdjacent(next[0], next[1], next[2]); //TODO weer niet hoe ik deze doe?? sjaan help
+				startWalking(next[0], next[1], next[2]);
 			} else
 				break;
 		}

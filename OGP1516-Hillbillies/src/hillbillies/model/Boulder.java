@@ -3,6 +3,8 @@ package hillbillies.model;
 import be.kuleuven.cs.som.annotate.*;
 import java.util.Random;
 
+import com.sun.xml.internal.fastinfoset.stax.factory.StAXOutputFactory;
+
 /**
  * A class that deals with a boulder and all the properties of the boulder 
  * in a given game world.
@@ -233,8 +235,9 @@ public class Boulder {
 		if(isCarried) return false;
 		int[] position = castDoubleToInt(this.getPosition());
 		if(position[2]-1 >= 0){
-			if((terrainTypes[position[0]][position[1]][position[2]-1] == 1 || terrainTypes[position[0]][position[1]][position[2]-1] == 2)&& 
-				getPosition()[2] % getPosition()[2] == 0) return false;
+			if((terrainTypes[position[0]][position[1]][position[2]-1] == 1 || 
+				terrainTypes[position[0]][position[1]][position[2]-1] == 2)&& 
+				getPosition()[2] % position[2] > 0.5) return false;
 		}
 		return true;
 	}
@@ -250,22 +253,21 @@ public class Boulder {
 	 * move the boulder over a given time period dt.
 	 */
 	private void fall(double dt, int[][][] terrainTypes) {
-		double[] positionInInt = this.getPosition();
+		double[] position = this.getPosition();
 		double distanceToFall = speedOfFalling() * dt;
-		if(distanceToFall < 1)
-			positionInInt[2] -= distanceToFall;
-		else {
-			int[] position = castDoubleToInt(this.getPosition());
-			int a = 0;
-			for( int i = 0; i < distanceToFall; i++){
-				if(terrainTypes[position[0]][position[1]][position[2]- i] == 0)
-					a++;
-			}
-			distanceToFall = a + distanceToFall % (int)distanceToFall;
-			positionInInt[2] -= distanceToFall;
+		double distanceCanFall = distanceCanFall();
+		if(distanceToFall >= distanceCanFall){
+			position[2] -= distanceCanFall;
+		}else{
+			position[2] -= distanceToFall;
 		}
-		System.out.println(positionInInt[0] +" "+ positionInInt[1] + " " + positionInInt[2]);
-		//TODO De boulder stopt niet op tijd, en valt dus uit de wereld eig, fout in canFall??
-		this.setPosition(positionInInt);
+		this.setPosition(position);
+	}
+	
+	private double distanceCanFall(){
+		double[] position = this.getPosition();
+		for(int i = (int) position[2]; i>0; i-- ){
+			if this.ter
+		}
 	}
 }
