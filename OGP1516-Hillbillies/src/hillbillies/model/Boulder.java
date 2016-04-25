@@ -44,6 +44,8 @@ public class Boulder {
 		if (! canHaveAsWeight(weight))
 			throw new IllegalArgumentException();
 		this.weight =  weight;
+		
+		this.setPosition(position);
 	}
  
 ////////////////////////////////////////////Weight////////////////////////////////////////////
@@ -65,7 +67,7 @@ public class Boulder {
 	 *       
 	*/
 	@Raw
-	public boolean canHaveAsWeight(int weight) {
+	private boolean canHaveAsWeight(int weight) {
 		if( getMinWeight() <= weight && weight <= getMaxWeight())
 			return true;
 		return false;
@@ -109,7 +111,7 @@ public class Boulder {
 	 * @return if all the three elements of the list lays between the minimum
 	 * 		   and maximum value for a coordinate return true. 
 	*/
-	public static boolean isValidPosition(double[] position) {
+	public boolean isValidPosition(double[] position) {
 		if (position.length > 3)
 			return false;
 		for (int i=0; i < position.length; i++) {
@@ -177,7 +179,7 @@ public class Boulder {
 		if (this.isCarried == true){
 			this.position = this.unitCarryingBoulder.getPosition();
 		}
-		if ( !this.isCarried && this.canFall(terrainTypes)){
+		if ( !this.isCarried  && this.canFall(terrainTypes)){ //TODO terug aanzetten als canFallw erkt
 			this.fall(dt, terrainTypes);
 		}
 	}
@@ -192,6 +194,7 @@ public class Boulder {
 		this.isCarried = true;
 		this.unitCarryingBoulder = unit;
 		unit.setWeight(unit.getWeight() + this.getWeight());
+		unit.startCarryingBoulder(this);
 	}
 	
 	/**
@@ -225,11 +228,15 @@ public class Boulder {
 	/**
 	 * check if a boulder can fall.
 	 */
+	//TODO hier zit een fout dus, we moeten optijd stoppen, en zorgen dat we niet uit de wereld valln!
 	private boolean canFall(int[][][] terrainTypes){
+		if(isCarried) return false;
 		int[] position = castDoubleToInt(this.getPosition());
-		if(position[2] == 0) return false;
-		if(terrainTypes[position[0]][position[1]][position[2]-1] == 0) return true;
-		return false;
+		if(position[2]-1 >= 0){
+			if((terrainTypes[position[0]][position[1]][position[2]-1] == 1 || terrainTypes[position[0]][position[1]][position[2]-1] == 2)&& 
+				getPosition()[2] % getPosition()[2] == 0) return false;
+		}
+		return true;
 	}
 	
 	/**
@@ -257,6 +264,8 @@ public class Boulder {
 			distanceToFall = a + distanceToFall % (int)distanceToFall;
 			positionInInt[2] -= distanceToFall;
 		}
+		System.out.println(positionInInt[0] +" "+ positionInInt[1] + " " + positionInInt[2]);
+		//TODO De boulder stopt niet op tijd, en valt dus uit de wereld eig, fout in canFall??
 		this.setPosition(positionInInt);
 	}
 }

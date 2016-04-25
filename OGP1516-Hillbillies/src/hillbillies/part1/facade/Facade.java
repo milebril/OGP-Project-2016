@@ -346,7 +346,8 @@ public class Facade implements IFacade{
 	 */
 	@Override
 	public boolean isMoving(Unit unit) throws ModelException {
-		return unit.isTheUnitMoving();
+		return false;
+		//return unit.isTheUnitMoving();
 	}
 
 	/**
@@ -435,7 +436,7 @@ public class Facade implements IFacade{
 	 */
 	@Override
 	public void work(Unit unit) throws ModelException {
-		unit.startWorking();
+		//unit.startWorking();
 	}
 
 	/**

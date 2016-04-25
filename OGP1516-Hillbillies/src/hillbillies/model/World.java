@@ -23,6 +23,11 @@ import ogp.framework.util.ModelException;
  * @invar  The list of boulders of each world must be a valid list of boulders for any
  *         world.
  *       | isValidArrayListOfBoulders(getArrayListOfBoulders())
+ *       
+ * @invar  The list of logs of each world must be a valid list of logs for any
+ *         world.
+ *       | isValidArrayListOfLogs(getArrayListOfLogs())
+ *       
  * @invar  The amount of factions of each world must be a valid amount of factions for any
  *         world.
  *       | isValidFactionAmount(getFactionAmount())
@@ -64,6 +69,10 @@ public class World {
 	 * @effect The terrainType of this new world is set to
 	 *         the given terrainType.
 	 *       | this.setTerrainType(terrainTypes)
+	 *       
+	 * @effect create a new list that contains all the logs in a world.
+	 * 
+	 * @effect create a new list that contains all the boulders in a world.
 	 */
 	public World(int[][][] terrainTypes, TerrainChangeListener modelListener) throws ModelException{
 		this.setTerrainType(terrainTypes);
@@ -71,6 +80,7 @@ public class World {
 		this.setOfFactions = new LinkedHashSet<>(); //initializing setOfFactions on creating world
 		this.setOfBoulders = new LinkedHashSet<>(); //initializing setOfBoulders on creating world
 		this.setOfLogs = new LinkedHashSet<>(); //initializing setOfLogs on creating world
+		this.TerrainChangeListener = modelListener;
 	}
 
 ////////////////////////////////////////////List of all units////////////////////////////////////////////
@@ -107,8 +117,6 @@ public class World {
 	
 	public void removeUnit(Unit unit) {
 		this.setOfUnits.remove(unit);
-	//TODO exception throwen als unit niet in lijst zit????????
-	//TODO Zouden we dit doen? want dit gaat toch nooit gebeuren als de unit sws al niet bestaat?
 	}
 	
 	/**
@@ -193,9 +201,18 @@ public class World {
 	}
 	
 	/**
+	 * remove the given faction from the list of factions.
+	 * @param faction
+	 * 		  the given faction.
+	 */
+	public void removeFaction(Faction faction){
+		this.setOfFactions.remove(faction);
+	}
+	
+	/**
 	 * return the maximum number of factions for each world.
 	 */
-	private static int getMaxAmountOfFactions(){
+	private static int getMaxAmountOfFactions() {
 		return 5;
 	}
 	
@@ -203,7 +220,7 @@ public class World {
 	 * Set that contains all the factions of a world
 	 */
 	private Set<Faction> setOfFactions = new HashSet<Faction>();
-		
+	
 ////////////////////////////////////////////list of all boulders////////////////////////////////////////////
 	/**
 	* set that contains all boulders of a given world.
@@ -230,11 +247,10 @@ public class World {
 		return false;
 	}
 	
-	
 	/**
 	* return the maximum capacity of boulders in this world.
 	*/
-	private int getMaxCapacityBoulders(){
+	private int getMaxCapacityBoulders() {
 		return 100;
 	}
 	
@@ -242,14 +258,10 @@ public class World {
 	* add the given boulder to the set of boulders.
 	* @param boulder
 	* 		  the boulder to add.
-	* @throws ModelException when invalid set
-	* 		| ! isValidArrayListOfBoulders()
 	*/
-	public void addBoulder(Boulder boulder) throws ModelException{
-		if (isValidArrayListOfBoulders())
+	public void addBoulder(Boulder boulder) {
+		if (setOfBoulders.size() < getMaxCapacityBoulders())
 			setOfBoulders.add(boulder);
-		else
-			throw new ModelException();
 	}
 	
 	/**
@@ -257,7 +269,7 @@ public class World {
 	* @param boulder
 	* 		  the boulder to remove.
 	*/
-	public void removeBoulder(Boulder boulder){
+	public void removeBoulder(Boulder boulder) {
 		setOfBoulders.remove(boulder);
 	}
 	
@@ -291,7 +303,7 @@ public class World {
 	/**
 	* return the maximum capacity of logs in this world.
 	*/
-	private int getMaxCapacityLog(){
+	private int getMaxCapacityLog() {
 		return 100;
 	}
 	
@@ -299,14 +311,10 @@ public class World {
 	* add the given log to the set of logs.
 	* @param log
 	* 		 the log to add.
-	* @throws ModelException when invalid set
-	* 		| ! isValidArrayListOfLogs()
 	*/
-	public void addLog(Log log) throws ModelException{
-		if (isValidArrayListOfLogs())
+	public void addLog(Log log) {
+		if (setOfLogs.size() < getMaxCapacityLog())
 			setOfLogs.add(log);
-		else
-			throw new ModelException();
 	}
 	
 	/**
@@ -335,14 +343,18 @@ public class World {
 	 * 		
 	 * @throws ModelException
 	 */
-	public Unit spawnUnit(boolean enableDefaultBehavior) throws ModelException{
+	public Unit spawnUnit(boolean enableDefaultBehavior) throws ModelException {
 		int x = rand.nextInt(getXLength());
 		int y = rand.nextInt(getYLength());
 		int z = rand.nextInt(getZLength());
 		
+<<<<<<< HEAD
 		System.out.println(x + " " + y + " " + z);
 		
 		while (!isCubePassable(x, y, z) && (getTerrainType()[x][y][z-1] != 1 || z != 0)) { //TODO staat juisty op men desktop normaal
+=======
+		while (!(isCubePassable(x, y, z) && (z != 0 || getCubeType(x, y, z-1) != 1))) {
+>>>>>>> origin/master
 			x = rand.nextInt(getXLength());
 			y = rand.nextInt(getYLength());
 			z = rand.nextInt(getZLength());
@@ -353,10 +365,10 @@ public class World {
 		int agility = rand.nextInt(75) + 25;
 		int toughness = rand.nextInt(75) + 25;
 		
-		Unit newUnit = new Unit("New Unit", new int[] {x, y, z}, weight, agility, strength, toughness, enableDefaultBehavior);
+		Unit newUnit = new Unit("New Unit", new int[] {x, y, z}, weight, agility, strength, toughness, enableDefaultBehavior, this);
 		
 		if (getAmountOfFaction() < getMaxAmountOfFactions()) {
-			Faction f = new Faction();
+			Faction f = new Faction(this);
 			createFaction(f);
 			f.addUnitToFaction(newUnit);
 			newUnit.setFaction(f);
@@ -366,11 +378,13 @@ public class World {
 			newUnit.setFaction(f);
 		}
 		
+		addUnit(newUnit);
+		
 		return newUnit;
 	}
 	
 	/**
-	 * Return the faction with the fewest mambers.
+	 * Return the faction with the fewest members.
 	 */
 	private Faction lowestMemberFaction() {
 		Faction min = null;
@@ -383,11 +397,7 @@ public class World {
 		
 		return min;
 	}
-	
-////////////////////////////////////////////inspect each individual cube////////////////////////////////////////////
 		
-
-	
 ////////////////////////////////////////////Advance time////////////////////////////////////////////
 	/**
 	 * advance all objects of the game world over a given time dt.
@@ -445,9 +455,16 @@ public class World {
 	 * @return 
 	 *       | result == 
 	*/
-	public static boolean isValidTerrainType(int[][][] terrainType) {
-		//TODO check if valid terrain type
-		//TODO is dit nodig? of wil je hier bv heel de lijst doorlopen en kijken of de value, 1,2,3 of 4 is???
+	public boolean isValidTerrainType(int[][][] terrainType) {
+		for ( int i = 0; i < terrainType.length ; i++){
+			for ( int j = 0; j < terrainType[0].length ; j++){
+				for ( int k = 0; k < terrainType[0][0].length ; k++){
+					if (terrainType[i][j][k] != 1 && terrainType[i][j][k] != 2 && 
+							terrainType[i][j][k] != 3 && terrainType[i][j][k] != 0)
+						return false;
+				}				
+			}
+		}
 		return true;
 	}
 	
@@ -466,8 +483,7 @@ public class World {
 	 */
 	@Raw
 	public void setTerrainType(int[][][] terrainTypes) throws IllegalArgumentException {
-		if (! isValidTerrainType(terrainTypes))
-			throw new IllegalArgumentException();
+		if (! isValidTerrainType(terrainTypes)) throw new IllegalArgumentException();
 		this.terrainTypes = terrainTypes;
 	}
 	
@@ -479,21 +495,21 @@ public class World {
 	/**
 	 * return the length of the world on the x-axis.
 	 */
-	public int getXLength(){
+	public int getXLength() {
 		return getTerrainType().length;
 	}
 	
 	/**
 	 * return the length of the world on the y-axis.
 	 */
-	public int getYLength(){
+	public int getYLength() {
 		return getTerrainType()[0].length;
 	}
 	
 	/**
 	 * return the length of the world on the z-axis.
 	 */
-	public int getZLength(){
+	public int getZLength() {
 		return getTerrainType()[0][0].length;
 	}
 	
@@ -525,4 +541,9 @@ public class World {
 		connect = new ConnectedToBorder(getXLength(), getYLength(), getZLength());
 		return connect.isSolidConnectedToBorder(x, y, z);
 	}
+	
+	/**
+	 * variable registering the terrainchanglistener of a world.
+	 */
+	public TerrainChangeListener TerrainChangeListener;
 }

@@ -44,6 +44,8 @@ public class Log {
 		if (! canHaveAsWeight(weight))
 			throw new IllegalArgumentException();
 		this.weight =  weight;
+		
+		this.setPosition(position);
 	}
  
 ////////////////////////////////////////////Weight////////////////////////////////////////////
@@ -65,7 +67,7 @@ public class Log {
 	 * 		   weight return true.  
 	*/
 	@Raw
-	public boolean canHaveAsWeight(int weight) {
+	private boolean canHaveAsWeight(int weight) {
 		if( getMinWeight() <= weight && weight <= getMaxWeight())
 			return true;
 		return false;
@@ -110,7 +112,7 @@ public class Log {
 	 * 		   and maximum value for a coordinate return true.
 	 *       
 	*/
-	public static boolean isValidPosition(double[] position) {
+	public boolean isValidPosition(double[] position) {
 		if (position.length > 3)
 			return false;
 		for (int i=0; i < position.length; i++) {
@@ -194,6 +196,7 @@ public class Log {
 		this.isCarried = true;
 		this.unitCarryingLog = unit;
 		unit.setWeight(unit.getWeight() + this.getWeight());
+		unit.startCarryingLog(this);
 	}
 	
 	/**
@@ -229,10 +232,13 @@ public class Log {
 	 * check if a log can fall.
 	 */
 	private boolean canFall(int[][][] terrainTypes){
+		if(isCarried) return false;
 		int[] position = castDoubleToInt(this.getPosition());
-		if(position[2] == 0) return false;
-		if(terrainTypes[position[0]][position[1]][position[2]-1] == 0) return true;
-		return false;
+		if(position[2]-1 >= 0){
+			if((terrainTypes[position[0]][position[1]][position[2]-1] == 1 || terrainTypes[position[0]][position[1]][position[2]-1] == 2)&& 
+				getPosition()[2] % getPosition()[2] == 0) return false;
+		}
+		return true;
 	}
 	
 	/**

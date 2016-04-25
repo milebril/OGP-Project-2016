@@ -1,8 +1,8 @@
 package hillbillies.model;
 
-import java.util.*;
-
-import be.kuleuven.cs.som.annotate.Raw;
+import java.util.LinkedHashSet;
+import java.util.Set;
+import be.kuleuven.cs.som.annotate.*;
 import ogp.framework.util.ModelException;
 
 /**
@@ -12,6 +12,10 @@ import ogp.framework.util.ModelException;
  * @invar  Each faction has a valid amount of units in it.
  *       | this.getAmountOfUnitsInFaction() < getMaxAmountOfUnitsInFaction()
  *       | this.getAmountOfUnitsInFaction() > 0
+ *       
+ * @invar  The world of each faction must be a valid world for any
+ *         faction.
+ *       | isValidFaction(getWorld())
  *	
  * @author Emil Peters
  * @author Sjaan Vandebeek
@@ -20,13 +24,34 @@ import ogp.framework.util.ModelException;
 public class Faction {
 	
 	private Set<Unit> unitsInFaction;
+	private Set<Faction> listOfFactions;
 	
 	/* constructor */
 	/**
 	 * initialize a new faction with an empty list of units.
+	 * 
+	 * Initialize this new faction with given world.
+	 *
+	 * @param  world
+	 *         The world for this new faction.
+	 * @effect The world of this new faction is set to
+	 *         the given world.
+	 *       | this.setWorld(world)
 	 */
-	public Faction() {
+	public Faction(World newWorld) {
+		this.setWorld(newWorld);
 		unitsInFaction = new LinkedHashSet<Unit>();
+	}
+	
+	public Faction getFaction(Unit unit) {
+		for (Faction f : listOfFactions) {
+			for (Unit u : f.unitsInFaction) {
+				if (u.equals(unit)) {
+					return f;
+				}
+			}
+		}
+		return null;
 	}
 	
 	/**
@@ -70,6 +95,8 @@ public class Faction {
 	 */
 	public void removeUnitFromFaction(Unit unit) {
 		unitsInFaction.remove(unit);
+		if (unitsInFaction.size() == 0);
+			this.getWorld().removeFaction(this);
 	}
 	
 	/**
@@ -84,4 +111,53 @@ public class Faction {
 	private static int getMaxAmountOfUnitsInFaction() {
 		return 50;
 	}
+	
+	/* world */
+
+	/**
+	 * Return the world of this faction.
+	 */
+	@Basic @Raw
+	public World getWorld() {
+		return this.world;
+	}
+
+	/**
+	 * Check whether the given world is a valid world for
+	 * any faction.
+	 *  
+	 * @param  world
+	 *         The world to check.
+	 * @return 
+	 *       | result == 
+	*/
+	public static boolean isValidFaction(World world) {
+		return true;
+	}
+
+	/**
+	 * Set the world of this faction to the given world.
+	 * 
+	 * @param  world
+	 *         The new world for this faction.
+	 * @post   The world of this new faction is equal to
+	 *         the given world.
+	 *       | new.getWorld() == world
+	 * @throws illegalArgumentException
+	 *         The given world is not a valid world for any
+	 *         faction.
+	 *       | ! isValidFaction(getWorld())
+	 */
+	@Raw
+	public void setWorld(World world) 
+			throws IllegalArgumentException {
+		if (! isValidFaction(world))
+			throw new IllegalArgumentException();
+		this.world = world;
+	}
+
+	/**
+	 * Variable registering the world of this faction.
+	 */
+	private World world;
 }

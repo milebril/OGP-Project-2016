@@ -22,9 +22,7 @@ public class factionTestCases {
 		TerrainChangeListener modelListener = new TerrainChangeListener() {
 			
 			@Override
-			public void notifyTerrainChanged(int x, int y, int z) {
-				// TODO Auto-generated method stub
-				
+			public void notifyTerrainChanged(int x, int y, int z) {				
 			}
 		};
 		testWorld = new World(new int [5][5][5], modelListener);
@@ -33,8 +31,8 @@ public class factionTestCases {
 	@Test
 	public void add_removeUnitToFaction() throws IllegalArgumentException, ModelException {
 		int[] pos = {0,0,0};
-		Unit alive = new Unit("Emil", pos, 50, 50, 50, 50, false);
-		Faction f = new Faction();
+		Unit alive = new Unit("Emil", pos, 50, 50, 50, 50, false, testWorld);
+		Faction f = new Faction(testWorld);
 		
 		f.addUnitToFaction(alive);
 		assertEquals(1, f.getUnitsInFaction().size());
@@ -45,7 +43,7 @@ public class factionTestCases {
 	
 	@Test
 	public void add_removeFactionsFromWorld() throws ModelException {
-		Faction f = new Faction();
+		Faction f = new Faction(testWorld);
 		testWorld.createFaction(f);
 		
 		assertEquals(1, testWorld.getAmountOfFaction());
@@ -55,7 +53,7 @@ public class factionTestCases {
 	
 	@Test
 	public void cannotAddMoreUnits() throws IllegalArgumentException, ModelException {
-		Faction f = new Faction();
+		Faction f = new Faction(testWorld);
 		for(int i=0; i<50; i++) {
 			Unit unit = createRandomUnit();
 			f.addUnitToFaction(unit);
@@ -78,7 +76,7 @@ public class factionTestCases {
 		int agility = rand.nextInt(75) + 25;
 		int toughness = rand.nextInt(75) + 25;
 		
-		Unit newUnit = new Unit("New Unit", new int[] {x, y, z}, weight, agility, strength, toughness, false);
+		Unit newUnit = new Unit("New Unit", new int[] {x, y, z}, weight, agility, strength, toughness, false, testWorld);
 		
 		return newUnit;
 	}

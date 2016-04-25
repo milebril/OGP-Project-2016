@@ -1,9 +1,12 @@
 package hillbillies.model;
 
 import hillbillies.part1.facade.Facade;
+import hillbillies.part2.facade.IFacade;
 import hillbillies.part2.listener.TerrainChangeListener;
 import ogp.framework.util.ModelException;
 import ogp.framework.util.Util;
+
+import static hillbillies.tests.util.PositionAsserts.assertDoublePositionEquals;
 import static org.junit.Assert.*;
 import org.junit.*;
 
@@ -14,13 +17,24 @@ public class unitTestCases {
 	
 	public Unit testunit, testunit2;
 	public World testworld;
+	public Facade facade;
 	
 	@Before
 	public void setUp() throws IllegalArgumentException, ModelException {
+		facade = new Facade();
+		
+		TerrainChangeListener modelListener = new TerrainChangeListener() {
+			@Override
+			public void notifyTerrainChanged(int x, int y, int z) {				
+			}
+		};
+		testworld = new World(new int [50][50][50], modelListener);
+		
+		
 		int[] pos = {0,0,0};
-		testunit = new Unit("Emil", pos, 50, 50, 50, 50, false);
+		testunit = new Unit("Emil", pos, 50, 50, 50, 50, false, testworld);
 		testunit.putUnitInCenter(testunit.castIntToDouble(pos));
-		testunit2 = new Unit("Emil", pos, 50, 50, 50, 50, false);
+		testunit2 = new Unit("Emil", pos, 50, 50, 50, 50, false, testworld);
 		testunit2.putUnitInCenter(testunit.castIntToDouble(pos));
 	}
 	/*
@@ -238,15 +252,6 @@ public class unitTestCases {
 	
 	@Test
 	public void correctPathfindeing() throws ModelException{
-		testunit.setUnitPosition(new double[] {0.0, 0.0, 0.0});
-		Facade ea = new Facade();
-		//testunit.startWalking(1, 1, 1);
-		ea.moveToAdjacent(testunit, 0, 1, 0);
-		//testunit.startPathfinding(new int[] {1, 1, 1});
-		System.out.println(testunit.getPosition()[0]);
-		assertEquals(1.0, testunit.getPosition()[0], Util.DEFAULT_EPSILON);
-		assertEquals(1.0, testunit.getPosition()[1], Util.DEFAULT_EPSILON);
-		assertEquals(1.0, testunit.getPosition()[2], Util.DEFAULT_EPSILON);
 	}
 	
 	/*
@@ -255,8 +260,8 @@ public class unitTestCases {
 	
 	@Test
 	public void fighting() {
-		testunit.startAttacking(testunit2);
-		System.out.println(testunit2.getHitpoints());
+		//testunit.startAttacking(testunit2);
+		//System.out.println(testunit2.getHitpoints());
 	}
 	
 	/*
@@ -273,12 +278,42 @@ public class unitTestCases {
 	@Test
 	public void newUnitLives_TrueCase() throws IllegalArgumentException, ModelException {
 		int[] pos = {0,0,0};
-		Unit alive = new Unit("Emil", pos, 50, 50, 50, 50, false);
+		Unit alive = new Unit("Emil", pos, 50, 50, 50, 50, false, testworld);
 		testunit2.putUnitInCenter(testunit.castIntToDouble(pos));
 		
 		assertTrue(alive.isUnitAlive());
 	}
 	
-
+	/*
+	 * Experience
+	 */
 	
+	@Test
+	public void unitLevels() throws IllegalArgumentException, ModelException  {
+		int[] pos = {0,0,0};
+		Unit test = new Unit("Emil", pos, 50, 50, 50, 50, false, testworld);
+		
+		Unit test2 = new Unit("Emil", pos, 50, 50, 50, 50, false, testworld);
+		
+		test.setExperience(50);
+		
+		assertFalse(test.equals(test2));
+		
+		
+	}
+	
+	/**
+	 * Helper method to advance time for the given world by some time.
+	 * 
+	 * @param time
+	 *            The time, in seconds, to advance.
+	 * @param step
+	 *            The step size, in seconds, by which to advance.
+	 */
+	private static void advanceTimeFor(IFacade facade2, World world, double time, double step) throws ModelException {
+		int n = (int) (time / step);
+		for (int i = 0; i < n; i++)
+			facade2.advanceTime(world, step);
+		facade2.advanceTime(world, time - n * step);
+	}
 }
