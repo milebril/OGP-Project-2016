@@ -1,5 +1,8 @@
 package hillbillies.model;
 
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.PriorityQueue;
 import java.util.Set;
 
 public class Scheduler {
@@ -9,25 +12,24 @@ public class Scheduler {
 	}
 	
 	public void addTask (Task task){
-		//TODO add task
+		this.priorityQueue.add(task);
 	}
 	
 	public void removeTask(Task task){
-		//TODO remove task
+		this.priorityQueue.remove(task);
 	}
 	
 	public void replaceTask (Task oldTask, Task newTask){
-		//TODO replace old task with new task
+		this.priorityQueue.remove(oldTask);
+		this.priorityQueue.add(newTask);
 	}
 	
 	public boolean isPartOf(Task task){
-		//TODO check if the given task is a part of the scheduler
-		return false;
+		return this.priorityQueue.contains(task);
 	}
 	
 	public Task getHighestPriorityTask(){
-		//TODO return the task with the highest priority
-		return null;
+		return this.priorityQueue.peek();
 	}
 	
 	public Set<Task> generalMethod(){
@@ -37,5 +39,19 @@ public class Scheduler {
 	}
 	
 	
+	public Iterator<Task> getIterator(){
+		return this.priorityQueue.iterator();
+	}
 	
+	/**
+	 * priorityQueue registering all tasks in the scheduler.
+	 */
+	private PriorityQueue<Task> priorityQueue = new PriorityQueue<Task>(10, new Comparator<Task>(){
+		public int compare(Task task1, Task task2){
+			if(task1.getPriority() > task2.getPriority()) return 1;
+			else if(task1.getPriority() < task2.getPriority())return -1;
+			else return 0;
+
+		}
+	});
 }

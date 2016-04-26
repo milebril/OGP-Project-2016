@@ -16,6 +16,9 @@ import ogp.framework.util.ModelException;
  * @invar  The world of each faction must be a valid world for any
  *         faction.
  *       | isValidFaction(getWorld())
+ *       
+ * @invar  Each Faction can have its scheduler as scheduler.
+ *       | canHaveAsScheduler(this.getScheduler())
  *	
  * @author Emil Peters
  * @author Sjaan Vandebeek
@@ -37,12 +40,22 @@ public class Faction {
 	 * @effect The world of this new faction is set to
 	 *         the given world.
 	 *       | this.setWorld(world)
+	 *       
+	 * initialize this faction with a new scheduler
 	 */
 	public Faction(World newWorld) {
 		this.setWorld(newWorld);
 		unitsInFaction = new LinkedHashSet<Unit>();
+		Scheduler Scheduler = new Scheduler();
+		assert this.canHaveAsScheduler(Scheduler);
+		this.scheduler = Scheduler;
 	}
 	
+	/**
+	 * return the faction of the given unit.
+	 * @param unit
+	 * 		  the given unit
+	 */
 	public Faction getFaction(Unit unit) {
 		for (Faction f : listOfFactions) {
 			for (Unit u : f.unitsInFaction) {
@@ -160,4 +173,32 @@ public class Faction {
 	 * Variable registering the world of this faction.
 	 */
 	private World world;
+	
+	/* scheduler */
+	/**
+	 * Return the scheduler of this Faction.
+	 */
+	@Basic @Raw @Immutable
+	public Scheduler getScheduler() {
+		return this.scheduler;
+	}
+
+	/**
+	 * Check whether this Faction can have the given scheduler as its scheduler.
+	 *  
+	 * @param  scheduler
+	 *         The scheduler to check.
+	 * @return 
+	 *       | result == 
+	*/
+	@Raw
+	public boolean canHaveAsScheduler(Scheduler scheduler) {
+		//TODO Hoe controleren voor valid scheduler?
+		return true;
+	}
+
+	/**
+	 * Variable registering the scheduler of this Faction.
+	 */
+	private final Scheduler scheduler;
 }
