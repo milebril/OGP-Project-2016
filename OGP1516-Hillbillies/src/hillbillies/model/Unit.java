@@ -799,7 +799,7 @@ public class Unit {
 	 *       | if 
 	*/
 	public boolean isValidHitpoints(int hitpoints) {
-		return hitpoints > 0 && hitpoints <= this.getMaxHitpoints();
+		return hitpoints > 0 /*&& hitpoints <= this.getMaxHitpoints()*/;
 	}
 	
 	/**
@@ -978,7 +978,7 @@ public class Unit {
 			unitLifetime = 0;
 		}
 		//TODO Falling werkt niet, array out of bounds!!!!
-		this.canFall(getWorld().getTerrainType());
+		//this.canFall(getWorld().getTerrainType());
 		if (isFalling())
 			this.fall(dt, getWorld().getTerrainType());
 		else if (this.isResting == true)
@@ -1529,36 +1529,6 @@ public class Unit {
 				}
 				//The working
 				//TODO kijken of het andere werkt
-				/*
-				if (getTerrainType(castDoubleToInt(this.getPosition())) == 3 &&
-						logAtCurrentPos() && boulderAtCurrentPos()) {
-					getWorld().removeBoulder(getBoulderAtPosition(getPosition()[0], getPosition()[1], getPosition()[2]));
-					getWorld().removeLog(getLogAtPosition(getPosition()[0], getPosition()[1], getPosition()[2]));
-					this.setToughness(getToughness() + 5); 
-					this.setWeight(getWeight() + 5); 
-				} else if (boulderAtCurrentPos()) {
-					getBoulderAtPosition(getPosition()[0], getPosition()[1], getPosition()[2]).startBeingCarried(this);
-				} else if (logAtCurrentPos()) {
-					getLogAtPosition(getPosition()[0], getPosition()[1], getPosition()[2]).startBeingCarried(this);
-				} else if (getTerrainType(castDoubleToInt(this.getPosition())) == 2) {
-					int[][][] terrainTypes = getWorld().getTerrainType();
-					terrainTypes[(int) this.getPosition()[0]][(int) this.getPosition()[1]][(int) this.getPosition()[2]] = 0;
-					getWorld().setTerrainType(terrainTypes);
-					Log NewLog = new Log(putUnitInCenter(getPosition()));
-					getWorld().addLog(NewLog);
-					getWorld().TerrainChangeListener.notifyTerrainChanged((int) this.getPosition()[0], (int) this.getPosition()[1], (int) this.getPosition()[2]);
-					
-				} else if (getTerrainType(castDoubleToInt(this.getPosition())) == 1) {
-					System.out.println("Ben hier");
-					
-					int[][][] terrainTypes = getWorld().getTerrainType();
-					terrainTypes[(int) this.getPosition()[0]][(int) this.getPosition()[1]][(int) this.getPosition()[2]] = 0;
-					getWorld().setTerrainType(terrainTypes);
-					Boulder NewBoulder = new Boulder(putUnitInCenter(getPosition()));
-					getWorld().addBoulder(NewBoulder);
-					getWorld().TerrainChangeListener.notifyTerrainChanged((int) this.getPosition()[0], (int) this.getPosition()[1], (int) this.getPosition()[2]);
-				}
-				*/
 				switch(workJob) {
 				case 1:
 					getWorld().removeBoulder(getBoulderAtPosition(getPosition()[0], getPosition()[1], getPosition()[2]));
@@ -1579,6 +1549,7 @@ public class Unit {
 					Log NewLog = new Log(putUnitInCenter(getPosition()));
 					getWorld().addLog(NewLog);
 					getWorld().TerrainChangeListener.notifyTerrainChanged((int) this.getPosition()[0], (int) this.getPosition()[1], (int) this.getPosition()[2]);
+					this.workJob = -1;
 					break;
 				case 5:
 					System.out.println("hier");
@@ -1589,6 +1560,7 @@ public class Unit {
 					getWorld().addBoulder(NewBoulder);
 					getWorld().TerrainChangeListener.notifyTerrainChanged((int) this.getPosition()[0], (int) this.getPosition()[1], (int) this.getPosition()[2]);
 					this.workJob = -1;
+					break;
 				} 
 			}
 		} else {
@@ -2168,6 +2140,7 @@ public class Unit {
 	 * check if a unit can fall.
 	 */
 	private void canFall(int[][][] terrainTypes){
+		/*
 		int[] position = castDoubleToInt(this.getPosition());
 		if (position[0] - 1 >= 0){
 			if((terrainTypes[position[0]-1][position[1]][position[2]] == 1 || terrainTypes[position[0]-1][position[1]][position[2]-1] == 2)&&
@@ -2188,6 +2161,21 @@ public class Unit {
 			if((terrainTypes[position[0]][position[1]][position[2]-1] == 1 || terrainTypes[position[0]][position[1]][position[2]-1] == 2)&& 
 				getPosition()[2] % getPosition()[2] == 0) this.stopFalling();
 		}
+		*/
+		
+		if ((int) getPosition()[2] == 0) {
+			startFalling();
+		}
+		
+		Iterable<int[]> it = getAdjacentCubes(castDoubleToInt(getPosition()));
+		
+		for (int[] pos : it) {
+			if (! getWorld().isCubePassable(pos[0], pos[1], pos[2])) {
+				stopFalling();
+			}
+		}
+		
+		
 		this.startFalling();
 	}
 	

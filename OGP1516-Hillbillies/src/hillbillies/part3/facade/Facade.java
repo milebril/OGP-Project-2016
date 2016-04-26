@@ -996,16 +996,7 @@ public class Facade implements IFacade{
 	 */
 	@Override
 	public boolean isDefaultBehaviorEnabled(Unit unit) throws ModelException {
-<<<<<<< HEAD
-		// TODO Auto-generated method stub
-		return false;
-	}
 
-	/*
-	 * Scheduler
-	 */
-	
-=======
 		return unit.isDefaultBehaviorOn();
 	}
 
@@ -1041,7 +1032,6 @@ public class Facade implements IFacade{
 	 * @return An instance of ITaskFactory. See the documentation of that
 	 *         interface for an explanation of its parameters.
 	 */
->>>>>>> ad6fb2a7f4d0087b18dd9b7313266d362ed00c84
 	@Override
 	public ITaskFactory<?, ?, Task> createTaskFactory() {
 		// TODO Auto-generated method stub

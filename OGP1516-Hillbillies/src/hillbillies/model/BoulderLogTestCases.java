@@ -131,18 +131,19 @@ public class BoulderLogTestCases {
 		types[1][1][1] = 2;
 		types[2][2][2] = 1;
 		types[1][1][2] = 3;
-		//types[2][2][0] = 1;
+		types[2][2][0] = 1;
 
 		World world = facade.createWorld(types, new DefaultTerrainChangeListener());
 	
 		Unit unit = new Unit("Emil", new int[] {1,1,1}, 50, 50, 50, 50, false, world);
 		facade.addUnit(unit, world);
-		assertEquals(world.getSetOfLogs().size(), 0);
-		System.out.println(unit.isCarryingLog());
+		assertTrue(facade.isSolidConnectedToBorder(world, 1, 1, 0));
+		assertTrue(facade.isSolidConnectedToBorder(world, 1, 1, 1));
 		facade.workAt(unit, 1, 1, 1);
 		advanceTimeFor(facade, world, 50, 0.02);
-		
+		//There should now be a boulder at position {1,1,1}
 		assertEquals(world.getSetOfLogs().size(), 1);
+		
 	}
 	
 	/**
