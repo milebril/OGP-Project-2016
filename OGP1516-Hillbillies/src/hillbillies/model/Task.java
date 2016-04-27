@@ -176,4 +176,32 @@ public class Task {
 	 * Variable registering the assignedUnit of this task.
 	 */
 	private Unit assignedUnit;
+	
+//////////////////////////////////// State of performance ////////////////////////////////////
+	/**
+	 * Return the State Of performance of this task.
+	 */
+	@Basic @Raw
+	public boolean getStateOfPerformance() {
+		return this.StateOfPerformance;
+	}
+
+	/**
+	 * Set the State Of performance of this task to the given State Of performance.
+	 * 
+	 * @param  StateOfperformance
+	 *         The new StateOfperformance for this task.
+	 * @post   The StateOfperformance of this task is equal to the given
+	 *         StateOfperformance.
+	 *       | new.getStateOfperformance() == StateOfperformance
+	 */
+	@Raw
+	public void setStateOfPerformance(boolean StateOfPerformance) {
+		this.StateOfPerformance = StateOfPerformance;
+	}
+
+	/**
+	 * Variable registering the State Of performance of this task.
+	 */
+	private boolean StateOfPerformance = false;
 }

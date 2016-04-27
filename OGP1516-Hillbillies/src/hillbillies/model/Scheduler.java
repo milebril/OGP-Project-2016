@@ -29,7 +29,11 @@ public class Scheduler {
 	}
 	
 	public Task getHighestPriorityTask(){
+//		Iterator<Task> it = this.priorityQueue.iterator();
+//		while( it.hasNext() && it.next().getStateOfPerformance()){
+//		}
 		return this.priorityQueue.peek();
+		//TODO return highest priority task that isn't executed.
 	}
 	
 	public Set<Task> generalMethod(){
@@ -54,4 +58,30 @@ public class Scheduler {
 
 		}
 	});
+	
+	/**
+	 * method that handles the assignment of a task to a given unit.
+	 * @param unit
+	 * 		  the given unit
+	 * @post the given unit gets the highest task that isn't performed assigned.
+	 * @post 
+	 */
+	public void assignTask(Unit unit){
+		Task task = getHighestPriorityTask();
+		unit.setTask(task);
+		task.setStateOfPerformance(true);
+	}
+	
+	/**
+	 * method that handles a task when a given unit has performed it.
+	 * @param unit
+	 * 		  the given unit.
+	 * @post the task is removed from the scheduler
+	 * @post the given unit has none tasks assigned.
+	 */
+	public void completeTask(Unit unit){
+		removeTask(unit.getTask());
+		unit.setTask(null);
+	}
+	
 }

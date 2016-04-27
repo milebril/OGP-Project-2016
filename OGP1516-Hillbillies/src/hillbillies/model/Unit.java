@@ -54,6 +54,9 @@ import java.util.Set;
  * @invar  The faction of each unit must be a valid faction for any
  *         unit.
  *       | isValidFaction(getFaction())
+ * @invar  The task of each unit must be a valid task for any
+ *         unit.
+ *       | isValidTask(getTask())
  *       
  * @version 2.0
  * @author Emil Peters
@@ -2334,5 +2337,53 @@ public class Unit {
 	 * Variable registering the faction of this unit.
 	 */
 	private Faction faction;
+	
+	
+///////////////////////////////////////////// Task /////////////////////////////////////////////
+		//TODO default behavior aanpassen	
+	/**
+	 * Return the task of this unit.
+	 */
+	@Basic @Raw
+	public Task getTask() {
+		return this.task;
+	}
+	
+	/**
+	 * Check whether the given task is a valid task for
+	 * any unit.
+	 *  
+	 * @param  task
+	 *         The task to check.
+	 * @return 
+	 *       | result == 
+	*/
+	public static boolean isValidTask(Task task) {
+		return false;
+		//TODO is vallid task
+	}
+	
+	/**
+	 * Set the task of this unit to the given task.
+	 * 
+	 * @param  task
+	 *         The new task for this unit.
+	 * @pre    The given task must be a valid task for any
+	 *         unit.
+	 *       | isValidTask(task)
+	 * @post   The task of this unit is equal to the given
+	 *         task.
+	 *       | new.getTask() == task
+	 */
+	@Raw
+	public void setTask(Task task) {
+		assert isValidTask(task);
+		this.task = task;
+	}
+	
+	/**
+	 * Variable registering the task of this unit.
+	 */
+	private Task task = null;
 	
 }
