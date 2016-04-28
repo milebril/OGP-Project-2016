@@ -2,6 +2,8 @@ package hillbillies.model;
 
 import java.util.*;
 import be.kuleuven.cs.som.annotate.*;
+import hillbillies.model.item.Boulder;
+import hillbillies.model.item.Log;
 import hillbillies.part2.listener.TerrainChangeListener;
 import hillbillies.util.ConnectedToBorder;
 import ogp.framework.util.ModelException;
@@ -403,12 +405,12 @@ public class World {
 	public void advanceTimeOfWorld(double dt) {
 		Object[] listOfBoulders = this.getSetOfBoulders().toArray();
 		for(int i = 0; i < listOfBoulders.length; i++) {
-			((Boulder) listOfBoulders[i]).advanceTimeOfBoulder(dt,this.terrainTypes);
+			((Boulder) listOfBoulders[i]).advanceTimeOfItem(dt,this.terrainTypes);
 		}
 		
 		Object[] listOfLogs = this.getSetOfLogs().toArray();
 		for(int i = 0; i < listOfLogs.length; i++) {
-			((Log) listOfLogs[i]).advanceTimeOfLog(dt,this.terrainTypes);
+			((Log) listOfLogs[i]).advanceTimeOfItem(dt,this.terrainTypes);
 		}
 		Object[] listOfUnits = this.getSetOfUnits().toArray();
 		for(int i = 0; i < listOfUnits.length; i++) {

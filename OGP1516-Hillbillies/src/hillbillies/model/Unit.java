@@ -1,6 +1,9 @@
 package hillbillies.model;
 
 import be.kuleuven.cs.som.annotate.*;
+import hillbillies.model.item.Boulder;
+import hillbillies.model.item.Item;
+import hillbillies.model.item.Log;
 import ogp.framework.util.ModelException;
 
 import static java.lang.Math.PI;
@@ -1476,13 +1479,10 @@ public class Unit {
 			System.out.println('d');
 			return;
 		}
-		if (this.isCarryingBoulder()){
-			this.carriedBoulder.stopBeingCarried();
-			this.stopCarryingBoulder();
-		} else if (this.isCarryingLog()){
-			this.carriedLog.stopBeingCarried();
-			this.stopCarryingLog();
-		} 
+		if (this.isCarryingItem()){
+			this.carriedItem.stopBeingCarried();
+			this.stopCarryingItem();
+		}
 		this.isWorking = true;
 		System.out.println(this.isWorking);
 		stopResting();
@@ -1623,50 +1623,14 @@ public class Unit {
 	 */
 	private double timeLeftWorking;
 	
-/////////////////////////////////////////////Carrying Log/////////////////////////////////////////////
-	
-	/**
-	 * stop carrying the log that the unit is carrying.
-	 */
-	public void stopCarryingLog(){
-		this.carriedLog.stopBeingCarried();
-		this.carriedLog = null;
-	}
-	
-	/**
-	 * start carrying the given log.
-	 * @param l
-	 * 		  the given log.
-	 */
-	public void startCarryingLog(Log l) {
-		if (castDoubleToInt(getPosition()) == castDoubleToInt(l.getPosition()) || isFalling())
-			return;
-		this.carriedLog = l;
-		stopWorking();
-	}
-	
-	/**
-	 * Returns whether a unit is carrying a log
-	 */
-	public boolean isCarryingLog() {
-		if(this.carriedLog != null)
-			return true;
-		return false;
-	}
-	
-	/**
-	 * Variable registering the log that the unit is carrying.
-	 */
-	private Log carriedLog = null;
-	
-/////////////////////////////////////////////Carrying Boulder/////////////////////////////////////////////
+/////////////////////////////////////////////Carrying Item/////////////////////////////////////////////
 	
 	/**
 	 * stop carrying the boulder that the unit is carrying.
 	 */
-	public void stopCarryingBoulder(){
-		this.carriedBoulder.stopBeingCarried();
-		this.carriedBoulder = null;
+	public void stopCarryingItem(){
+		this.carriedItem.stopBeingCarried();
+		this.carriedItem = null;
 	}
 	
 	/**
@@ -1674,10 +1638,10 @@ public class Unit {
 	 * @param b
 	 * 		  the given boulder.
 	 */
-	public void startCarryingBoulder(Boulder b) {
-		if (castDoubleToInt(getPosition()) == castDoubleToInt(b.getPosition()) || isFalling())
+	public void startCarryingItem(Item i) {
+		if (castDoubleToInt(getPosition()) == castDoubleToInt(i.getPosition()) || isFalling())
 			return;
-		this.carriedBoulder = b;
+		this.carriedItem = i;
 		stopWorking();
 	}
 	
@@ -1685,15 +1649,34 @@ public class Unit {
 	 * Returns whether a unit is carrying a boulder
 	 */
 	public boolean isCarryingBoulder() {
-		if(this.carriedBoulder != null)
+		if(this.carriedItem != null && this.carriedItem instanceof Boulder)
 			return true;
 		return false;
 	}
 	
 	/**
-	 * Variable registering the boulder that the unit is carrying.
+	 * Returns whether a unit is carrying a log
 	 */
-	private Boulder carriedBoulder = null;
+	public boolean isCarryingLog() {
+		if(this.carriedItem != null && this.carriedItem instanceof Log)
+			return true;
+		return false;
+	}
+	
+	/**
+	 * Returns whether a unit is carrying an item
+	 */
+	public boolean isCarryingItem() {
+		if(this.carriedItem != null)
+			return true;
+		return false;
+	}
+	
+	
+	/**
+	 * Variable registering the item that the unit is carrying.
+	 */
+	private Item carriedItem = null;
 	
 /////////////////////////////////////////////Fighting/////////////////////////////////////////////
 	

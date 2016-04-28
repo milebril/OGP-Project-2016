@@ -1,4 +1,4 @@
-package hillbillies.model;
+package hillbillies.model.item;
 
 import static org.junit.Assert.*;
 
@@ -8,6 +8,8 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import hillbillies.model.Unit;
+import hillbillies.model.World;
 import hillbillies.part2.facade.Facade;
 import hillbillies.part2.facade.IFacade;
 import hillbillies.part2.listener.DefaultTerrainChangeListener;
@@ -61,23 +63,23 @@ public class BoulderLogTestCases {
 	
 	@Test
 	public void carried() {
-		testunit.startCarryingBoulder(boulder);
+		testunit.startCarryingItem(boulder);
 		boulder.startBeingCarried(testunit);
 		
 		assertEquals(boulder.getCarrier(), testunit);
 		assertTrue(testunit.isCarryingBoulder());
 		
-		testunit.stopCarryingBoulder();
+		testunit.stopCarryingItem();
 		assertEquals(boulder.getCarrier(), null);
 		assertFalse(testunit.isCarryingBoulder());
 		
-		testunit.startCarryingLog(log);
+		testunit.startCarryingItem(log);
 		log.startBeingCarried(testunit);
 		
 		assertEquals(log.getCarrier(), testunit);
 		assertTrue(testunit.isCarryingLog());
 		
-		testunit.stopCarryingLog();
+		testunit.stopCarryingItem();
 		assertEquals(log.getCarrier(), null);
 		assertFalse(testunit.isCarryingLog());
 	}
