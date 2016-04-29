@@ -6,5 +6,6 @@
 	<classpathentry kind="lib" path="OGP1516-Hillbillies/lib/AnnotationsDoclets.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="C:/Users/Computer Recycling/Desktop/KULeuven/Informatica/1e bachelor/Semester 2 gegevenstructuren en algoritmes/Practicum 1/lib/junit-4.11.jar"/>
+	<classpathentry kind="lib" path="/OGP 12 Generic Classes/lib/antlr-4.5.3-complete.jar"/>
 	<classpathentry kind="output" path="OGP1516-Hillbillies/bin"/>
 </classpath>

@@ -30,10 +30,12 @@ public class Facade implements IFacade{
 	 *             A precondition was violated or an exception was thrown.
 	 */
 
-	@Override
+	@Override 
+	@Deprecated
 	public Unit createUnit(String name, int[] initialPosition, int weight, int agility, int strength, int toughness,
 			boolean enableDefaultBehavior) throws ModelException {
-		return new Unit (name, initialPosition, weight, agility, strength, toughness, enableDefaultBehavior);
+		//return new Unit (name, initialPosition, weight, agility, strength, toughness, enableDefaultBehavior);
+		return null;
 	}
 	
 	/* Position */
