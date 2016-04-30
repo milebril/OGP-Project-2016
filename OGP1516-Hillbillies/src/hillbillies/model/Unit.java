@@ -70,7 +70,12 @@ import java.util.Set;
  * @author Sjaan Vandebeek
  *
  */
+
+//TODO Alles rond behaviour maken
 public class Unit {
+	
+	private UnitBehaviour behaviour;
+
 /////////////////////////////////////////////Constructor/////////////////////////////////////////////
 	/**
 	 * initialize this new unit with the given name, position, weight, agility,
@@ -993,7 +998,7 @@ public class Unit {
 			this.fall(dt, getWorld().getTerrainType());
 		else if (this.isResting == true)
 			this.resting(dt);
-		else if (this.isWorking == true)
+		else if (this.behaviour == UnitBehaviour.WORKING)
 			this.working(dt);
 		else if (this.isWalking == true)
 			this.walking(dt);
@@ -1006,6 +1011,7 @@ public class Unit {
 			}
 		}
 		else if(defaultBehaviour == true){
+			System.out.println("vast in defailt");
 			this.defaultBehavior(dt);
 		} else if ((Math.round(unitLifetimeInSeconds) % 20) == 0 && unitLifetimeInSeconds > 1 && canRest()) {
 			startResting();
@@ -1080,6 +1086,9 @@ public class Unit {
 	public void startWalking(int dx, int dy, int dz) {
 		if (isAttacking() || isDefending() || isFalling())
 			return;
+		if (dx == 0 && dy ==0 && dz == 0) {
+			return;
+		}
 		this.isWalking = true;
 		stopWorking();
 		stopResting();
@@ -1245,7 +1254,6 @@ public class Unit {
 		stopWalking();
 		findPath(putUnitInCenter(castIntToDouble(cube)));
 		walkPath();
-		this.pathfindingTo = cube.clone();
 	}
 	
 	/**
@@ -1286,24 +1294,16 @@ public class Unit {
 	 * boolean registering if a unit is pathfinding or not.
 	 */
 	private boolean isPathfinding = false;
-	
-	/**
-	 * array registering the final destination of the unit in integers.
-	 */
-	private int[] pathfindingTo = {0,0,0};
 
 /////////////////////////////////////////////New Path Finding/////////////////////////////////////////////
 		
 	private Node bestNode;
 	
 	public void walkPath() {
-		System.out.println("wandel het pad");
 		List<double[]> path= path();
 		System.out.println(path.size());
 		for (double[] pos : path) {
-			System.out.println(pos[0] + " " + pos[1] + " " + pos[2] + " ");
-			startWalking((int) (getPosition()[0] - pos[0]),(int) (getPosition()[1] - pos[1]),(int) (getPosition()[2] - pos[2]));
-			//TODO zorgen dat voor elke keer we wandelen! dan is pathfinding af!!!!!!!!!!!
+			startWalking((int) (-getPosition()[0] + pos[0]),(int) (-getPosition()[1] + pos[1]),(int) (-getPosition()[2] + pos[2]));
 		}
 		
 	}
@@ -1334,17 +1334,14 @@ public class Unit {
 		PriorityQueue<Node> closedPQ =  new PriorityQueue<Node>();
 		
 		openPQ.add(new Node(getPosition(), 0, 0, null));
+		int counter = 0;
 		
-		boolean done = false;
-		System.out.println("endpos: " + goal[0] + " " + goal[1] + " " + goal[2]);
 		while (!openPQ.isEmpty()) {
-			//System.out.println("bereken het pad...");
 			
 			Node current = openPQ.poll();
 
 			
 			if (Arrays.equals(current.position, goal)) {
-				System.out.println("Doel berijkt");
 				this.bestNode = current;
 				break;
 			}
@@ -1352,7 +1349,7 @@ public class Unit {
 			Set<int[]> neighbors = getAdjacentCubes(castDoubleToInt(current.position));
 			for (int[] i : neighbors) {
 				double [] nodePos = putUnitInCenter(castIntToDouble(i));
-				if (! getWorld().isCubePassable((int) nodePos[0], (int) nodePos[1], (int) nodePos[2])) //TODO deze if weglaten, en we kunnen overal lopen
+				if (! isNeighbouringSolidTerrain(i)) //TODO deze if weglaten, en we kunnen overal lopen
 					continue;
 				
 				Node temp = new Node(nodePos, current.moves + 1, getDistance(nodePos, goal), current);
@@ -1365,8 +1362,19 @@ public class Unit {
 				}
 			}
 			closedPQ.add(current);
-
 			
+			counter++;
+			
+			if (counter > 5000) {
+				break;
+			}
+			
+		}
+		
+		if (bestNode == null) {
+			System.out.println("imposible to get");
+			stopPathfinding();
+			stopWalking();
 		}
 	
 	}
@@ -1416,8 +1424,6 @@ public class Unit {
 	{
 		List<double[]> l = new ArrayList<double[]>();
 		Node cur = this.bestNode;
-		System.out.println("bestnode:" + this.bestNode.position[0]);
-		System.out.println("endpos: " + cur.position[0] + " " + cur.position[1] + cur.position[2]);
 		while (cur != null) {
 			l.add(cur.position);
 			cur = cur.parent;
@@ -1449,21 +1455,16 @@ public class Unit {
 			return true;
 		return false;
 	}
-	private void search(Queue<Object[]> Queue, int[] position, int n0) {
-		
-
-	}
 	
 /////////////////////////////////////////////Work/////////////////////////////////////////////
-	
-	private int workJob;
 	
 	/**
 	 * Return the state of working of this unit.
 	 */
 	@Basic @Raw
 	public boolean isTheUnitWorking() {
-		return this.isWorking;
+		//return this.isWorking;
+		return behaviour == UnitBehaviour.WORKING;
 	}
 	
 	/**
@@ -1485,8 +1486,8 @@ public class Unit {
 	 */
 	public void startWorking(int[] positionOfCube){
 		if (!(Arrays.equals(castDoubleToInt(getPosition()), positionOfCube))) {
-			System.out.println("Begin met werken");
 			startPathfinding(positionOfCube);
+			startWorking(positionOfCube);
 		}
 		
 		if(isAttacking() == true || isDefending() == true || isFalling() == true) {
@@ -1494,34 +1495,37 @@ public class Unit {
 			return;
 		}
 		
-		this.isWorking = true;
-		stopResting();
-		stopWalking();
-		isPathfinding();
-		
-		this.workJob = whatWorkToDo();
-		
+		behaviour = UnitBehaviour.WORKING;
+		whatWorkToDo();
 		this.timeLeftWorking = (500 / getStrength());
 	}
 	
-	public int whatWorkToDo() {
+	enum workJob {
+		MAKE_ARMOUR, DROP_LOG, DROP_BOULDER, PICKUP_LOG, PICKUP_BOULDER, MINE_ROCK, CHOP_LOG, WAIT, NO_WORK
+	}
+	
+	private workJob work;
+	
+	public void whatWorkToDo() {
 		if (getTerrainType(castDoubleToInt(this.getPosition())) == 3 &&
 				logAtCurrentPos() && boulderAtCurrentPos()) {
-			return 1;
+			work = workJob.MAKE_ARMOUR;
 		} else if (isCarryingBoulder()) {
-			return 2;
+			work = workJob.DROP_BOULDER;
 		} else if (isCarryingLog()) {
-			return 3;
+			work = workJob.DROP_LOG;
 		} else if (boulderAtCurrentPos()) {
-			return 4;
+			work = workJob.PICKUP_BOULDER;
 		} else if (logAtCurrentPos()) {
-			return 5;
+			work = workJob.PICKUP_LOG;
 		} else if (getTerrainType(castDoubleToInt(this.getPosition())) == 2) {
-			return 6;
+			work = workJob.CHOP_LOG;
 		} else if (getTerrainType(castDoubleToInt(this.getPosition())) == 1) {
-			return 7;
+			work = workJob.MINE_ROCK;
+		} else {
+			work = workJob.NO_WORK;
 		}
-		return 0;
+		
 	}
 	
 	/**
@@ -1539,66 +1543,65 @@ public class Unit {
 				stopWorking();
 			} else {
 				this.timeLeftWorking -= dt;
+				System.out.println(timeLeftWorking);
 				if(this.timeLeftWorking <= 0){
 					this.timeLeftWorking = 0;
 				}
 				//The working
-				switch(workJob) {
-				case 0:
+				switch(work) {
+				case NO_WORK:
 					stopWorking();
 					break;
-				case 1:
+				case MAKE_ARMOUR:
 					System.out.println("maak armour");
 					getWorld().removeBoulder(getBoulderAtPosition(getPosition()[0], getPosition()[1], getPosition()[2]));
 					getWorld().removeLog(getLogAtPosition(getPosition()[0], getPosition()[1], getPosition()[2]));
 					this.setToughness(getToughness() + 5); 
 					this.setWeight(getWeight() + 5); 
-					this.workJob = -1;
+					work = workJob.WAIT;
 					break;
-				case 2:
+				case DROP_BOULDER:
 					getWorld().addBoulder((Boulder) this.carriedItem);
 					stopCarryingItem();
-					this.workJob = -1;
+					work = workJob.WAIT;
 					break;
-				case 3:
+				case DROP_LOG:
 					getWorld().addLog((Log) this.carriedItem);
 					stopCarryingItem();
-					this.workJob = -1;
+					work = workJob.WAIT;
 					break;
-				case 4:
+				case PICKUP_BOULDER:
 					Boulder b = getBoulderAtPosition(getPosition()[0], getPosition()[1], getPosition()[2]);
 					b.startBeingCarried(this);
 					getWorld().removeBoulder(b);
-					
-					System.out.println(this.carriedItem.getWeight());
-					this.workJob = -1;
+					work = workJob.WAIT;
 					break;
-				case 5:
+				case PICKUP_LOG:
 					Log l = getLogAtPosition(getPosition()[0], getPosition()[1], getPosition()[2]);
 					l.startBeingCarried(this);
 					getWorld().removeLog(l);
-					this.workJob = -1;
+					work = workJob.WAIT;
 					break;
-				case 6:
+				case CHOP_LOG:
+					System.out.println("chop wood");
 					int[][][] terrainTypes = getWorld().getTerrainType();
 					terrainTypes[(int) this.getPosition()[0]][(int) this.getPosition()[1]][(int) this.getPosition()[2]] = 0;
 					getWorld().setTerrainType(terrainTypes);
 					Log NewLog = new Log(getPosition());
 					getWorld().addLog(NewLog);
 					getWorld().TerrainChangeListener.notifyTerrainChanged((int) this.getPosition()[0], (int) this.getPosition()[1], (int) this.getPosition()[2]);
-					this.workJob = -1;
+					work = workJob.WAIT;
 					break;
-				case 7:
+				case MINE_ROCK:
 					int[][][] terrainTypes2 = getWorld().getTerrainType();
 					terrainTypes2[(int) this.getPosition()[0]][(int) this.getPosition()[1]][(int) this.getPosition()[2]] = 0;
 					getWorld().setTerrainType(terrainTypes2);
 					Boulder NewBoulder = new Boulder(getPosition());
-					System.out.println(NewBoulder.getWeight());
 					getWorld().addBoulder(NewBoulder);
 					getWorld().TerrainChangeListener.notifyTerrainChanged((int) this.getPosition()[0], (int) this.getPosition()[1], (int) this.getPosition()[2]);
-					this.workJob = -1;
+					work = workJob.WAIT;
 					break;
-				default:
+				case WAIT:
 					break;
 				} 
 			}
@@ -1650,8 +1653,8 @@ public class Unit {
 	 * 		|this.isWorking == false
 	 */
 	private void stopWorking(){
-		this.isWorking = false;
-		this.workJob = -1;
+		behaviour = UnitBehaviour.NO_JOB;
+		work = workJob.NO_WORK;
 	}
 
 	/**
@@ -2063,9 +2066,9 @@ public class Unit {
 		int ActionChance = random.nextInt(4);
 		if(ActionChance == 1){
 			int[] cube = {0,0,0};
-			cube[0] = random.nextInt(50);
-			cube[1] = random.nextInt(50);
-			cube[2] = random.nextInt(50);
+			cube[0] = random.nextInt(getWorld().getXLength());
+			cube[1] = random.nextInt(getWorld().getYLength());
+			cube[2] = random.nextInt(getWorld().getZLength());
 			int SprintChance = random.nextInt(2);
 			if (SprintChance == 1)
 				this.startSprinting();

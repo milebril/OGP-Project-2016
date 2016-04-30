@@ -350,7 +350,7 @@ public class World {
 		
 		System.out.println(x + " " + y + " " + z);
 		
-		while (!(isCubePassable(x, y, z) && (z != 0 || getCubeType(x, y, z-1) != 1))) {
+		while (!(isCubePassable(x, y, z) && (z == 0 || getCubeType(x, y, z-1) != 1))) {
 			x = rand.nextInt(getXLength());
 			y = rand.nextInt(getYLength());
 			z = rand.nextInt(getZLength());
