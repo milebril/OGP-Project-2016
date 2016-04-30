@@ -1,5 +1,10 @@
 package hillbillies.model;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import be.kuleuven.cs.som.annotate.*;
 
 /**
@@ -16,6 +21,10 @@ import be.kuleuven.cs.som.annotate.*;
  * @invar  The assignedUnit of each task must be a valid assignedUnit for any
  *         task.
  *       | isValidAssignedUnit(getAssignedUnit())
+ *       
+ * @invar  The list of schedulers of each Task must be a valid list of schedulers for any
+ *         Task.
+ *       | isValidListOfSchedulers(getListOfSchedulers())
  *       
  * @author Emil Peters
  * @author Sjaan Vandebeek
@@ -50,12 +59,11 @@ public class Task {
 	 *         assignedUnit.
 	 *       | new.getAssignedUnit() == assignedUnit
 	 */
-	public Task(int prioirty, String name, Unit assignedUnit){
+	public Task(String name, int prioirty, List<Object> activities){
 		this.setPriority(priority);
 		assert this.canHaveAsName(name);
 			this.name = name;
-		if(isValidAssignedUnit(assignedUnit))
-			this.setAssignedUnit(assignedUnit);
+		this.listOfSchedulers = new HashSet<Scheduler>();
 		//TODO constructor
 	}
 	
@@ -204,4 +212,36 @@ public class Task {
 	 * Variable registering the State Of performance of this task.
 	 */
 	private boolean StateOfPerformance = false;
+	
+//////////////////////////////////// List of Scheduler ////////////////////////////////////	
+	/**
+	 * Return the list of schedulers of this Task.
+	 */
+	@Basic @Raw
+	public Set<Scheduler> getListOfSchedulers() {
+		return this.listOfSchedulers;
+	}
+	
+	/**
+	 * Check whether the given list of schedulers is a valid list of schedulers for
+	 * any Task.
+	 *  
+	 * @param  list of schedulers
+	 *         The list of schedulers to check.
+	 * @return 
+	 *       | result == 
+	*/
+	public static boolean isValidListOfSchedulers(List<Task> listOfSchedulers) {
+		//TODO wat is een valid list?
+		return false;
+	}
+	
+	/**
+	 * Variable registering the list of schedulers of this Task.
+	 */
+	public Set<Scheduler> listOfSchedulers;
+	
+////////////////////////////////////List of Activities ////////////////////////////////////	
+	
+	//TODO list of activities maken
 }

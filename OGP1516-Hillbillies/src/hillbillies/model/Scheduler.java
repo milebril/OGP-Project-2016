@@ -13,6 +13,7 @@ public class Scheduler {
 	
 	public void addTask (Task task){
 		this.priorityQueue.add(task);
+		task.listOfSchedulers.add(this);
 	}
 	
 	public void removeTask(Task task){

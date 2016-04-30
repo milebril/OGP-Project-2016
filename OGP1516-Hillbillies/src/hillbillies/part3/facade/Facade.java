@@ -1097,8 +1097,7 @@ public class Facade implements IFacade{
 	 */
 	@Override
 	public Set<Scheduler> getSchedulersForTask(Task task) throws ModelException {
-		// TODO Auto-generated method stub
-		return null;
+		return task.getListOfSchedulers();
 	}
 
 	/**
