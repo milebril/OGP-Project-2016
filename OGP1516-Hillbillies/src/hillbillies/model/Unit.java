@@ -8,6 +8,7 @@ import ogp.framework.util.ModelException;
 
 import static java.lang.Math.PI;
 
+import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.Queue;
@@ -341,7 +342,7 @@ public class Unit {
 	 * Return the lowest weight for all units
 	 */
 	private int getMinWeight(){
-		return (int)((double) this.strength * (double) this.agility / 2);
+		return (int)(((double) this.strength + (double) this.agility) / 2);
 	}
 	
 	/**
@@ -994,7 +995,7 @@ public class Unit {
 		else if (this.isWalking == true)
 			this.walking(dt);
 		else if (this.isPathfinding == true)
-			this.pathfinding(dt);
+			this.pathFindingAlgorithm();
 		else if (this.isAttacking == true) {
 			attTime += dt;
 			updateOrientation(defenderClone);
@@ -1007,6 +1008,10 @@ public class Unit {
 			this.defaultBehavior(dt);
 		} else if ((Math.round(unitLifetimeInSeconds) % 20) == 0 && unitLifetimeInSeconds > 1 && canRest()) {
 			startResting();
+		}
+		
+		if (this.isCarryingItem()) {
+			this.carriedItem.advanceTimeOfItem(dt, getWorld().getTerrainType());
 		}
 	}
 	
@@ -1326,11 +1331,15 @@ public class Unit {
 	private int[] pathfindingTo = {0,0,0};
 
 /////////////////////////////////////////////New Path Finding/////////////////////////////////////////////
-	//TODO Nieuwe pathfinding
+	//TODO Nieuwe pathfinding, A* impl als tijd
 		
-	public void pathFindingAlgorithm(int[] destination) {
+	public void pathFindingAlgorithm() {
+		int[] destination = this.pathfindingTo;
+		
 		Queue<Object[]> Queue = new LinkedList<>();
 		while (castDoubleToInt(getPosition()) != destination) {
+			System.out.println("calcing...");
+			
 			Object[] o = {destination, 0};
 			Queue.add(o);
 			while ((!inQue(Queue, destination)) && (Queue.peek() != null)) {
@@ -1461,7 +1470,7 @@ public class Unit {
 	 * Checks if the unit can work. This is possible when it's not in combat or not working
 	 */
 	private boolean canWork( ) {
-		if (isAttacking() == true || this.isDefending == true || this.timeLeftWorking == 0)
+		if (isAttacking() == true || this.isDefending == true)
 			return false;
 		return true;
 	}
@@ -1475,16 +1484,17 @@ public class Unit {
 	 * 		new.timeLeftWorking = (500 / getStrenght())
 	 */
 	public void startWorking(int[] positionOfCube){
-		if(castDoubleToInt(getPosition()) == positionOfCube || isAttacking() == true || isDefending() == true || isFalling() == true) {
+		if (!(Arrays.equals(castDoubleToInt(getPosition()), positionOfCube))) {
+			System.out.println("Begin met werken");
+			startPathfinding(positionOfCube);
+		}
+		
+		if(isAttacking() == true || isDefending() == true || isFalling() == true) {
 			System.out.println('d');
 			return;
 		}
-		if (this.isCarryingItem()){
-			this.carriedItem.stopBeingCarried();
-			this.stopCarryingItem();
-		}
+		
 		this.isWorking = true;
-		System.out.println(this.isWorking);
 		stopResting();
 		stopWalking();
 		isPathfinding();
@@ -1492,24 +1502,26 @@ public class Unit {
 		this.workJob = whatWorkToDo();
 		
 		this.timeLeftWorking = (500 / getStrength());
-		
-		System.out.println(this.workJob);
 	}
 	
 	public int whatWorkToDo() {
 		if (getTerrainType(castDoubleToInt(this.getPosition())) == 3 &&
 				logAtCurrentPos() && boulderAtCurrentPos()) {
 			return 1;
-		} else if (boulderAtCurrentPos()) {
+		} else if (isCarryingBoulder()) {
 			return 2;
-		} else if (logAtCurrentPos()) {
+		} else if (isCarryingLog()) {
 			return 3;
-		} else if (getTerrainType(castDoubleToInt(this.getPosition())) == 2) {
+		} else if (boulderAtCurrentPos()) {
 			return 4;
-		} else if (getTerrainType(castDoubleToInt(this.getPosition())) == 1) {
+		} else if (logAtCurrentPos()) {
 			return 5;
+		} else if (getTerrainType(castDoubleToInt(this.getPosition())) == 2) {
+			return 6;
+		} else if (getTerrainType(castDoubleToInt(this.getPosition())) == 1) {
+			return 7;
 		}
-		return -1;
+		return 0;
 	}
 	
 	/**
@@ -1531,38 +1543,62 @@ public class Unit {
 					this.timeLeftWorking = 0;
 				}
 				//The working
-				//TODO kijken of het andere werkt
 				switch(workJob) {
+				case 0:
+					stopWorking();
+					break;
 				case 1:
+					System.out.println("maak armour");
 					getWorld().removeBoulder(getBoulderAtPosition(getPosition()[0], getPosition()[1], getPosition()[2]));
 					getWorld().removeLog(getLogAtPosition(getPosition()[0], getPosition()[1], getPosition()[2]));
 					this.setToughness(getToughness() + 5); 
 					this.setWeight(getWeight() + 5); 
+					this.workJob = -1;
 					break;
 				case 2:
-					getBoulderAtPosition(getPosition()[0], getPosition()[1], getPosition()[2]).startBeingCarried(this);
+					getWorld().addBoulder((Boulder) this.carriedItem);
+					stopCarryingItem();
+					this.workJob = -1;
 					break;
 				case 3:
-					getLogAtPosition(getPosition()[0], getPosition()[1], getPosition()[2]).startBeingCarried(this);
+					getWorld().addLog((Log) this.carriedItem);
+					stopCarryingItem();
+					this.workJob = -1;
 					break;
 				case 4:
+					Boulder b = getBoulderAtPosition(getPosition()[0], getPosition()[1], getPosition()[2]);
+					b.startBeingCarried(this);
+					getWorld().removeBoulder(b);
+					
+					System.out.println(this.carriedItem.getWeight());
+					this.workJob = -1;
+					break;
+				case 5:
+					Log l = getLogAtPosition(getPosition()[0], getPosition()[1], getPosition()[2]);
+					l.startBeingCarried(this);
+					getWorld().removeLog(l);
+					this.workJob = -1;
+					break;
+				case 6:
 					int[][][] terrainTypes = getWorld().getTerrainType();
 					terrainTypes[(int) this.getPosition()[0]][(int) this.getPosition()[1]][(int) this.getPosition()[2]] = 0;
 					getWorld().setTerrainType(terrainTypes);
-					Log NewLog = new Log(putUnitInCenter(getPosition()));
+					Log NewLog = new Log(getPosition());
 					getWorld().addLog(NewLog);
 					getWorld().TerrainChangeListener.notifyTerrainChanged((int) this.getPosition()[0], (int) this.getPosition()[1], (int) this.getPosition()[2]);
 					this.workJob = -1;
 					break;
-				case 5:
-					System.out.println("hier");
+				case 7:
 					int[][][] terrainTypes2 = getWorld().getTerrainType();
 					terrainTypes2[(int) this.getPosition()[0]][(int) this.getPosition()[1]][(int) this.getPosition()[2]] = 0;
 					getWorld().setTerrainType(terrainTypes2);
-					Boulder NewBoulder = new Boulder(putUnitInCenter(getPosition()));
+					Boulder NewBoulder = new Boulder(getPosition());
+					System.out.println(NewBoulder.getWeight());
 					getWorld().addBoulder(NewBoulder);
 					getWorld().TerrainChangeListener.notifyTerrainChanged((int) this.getPosition()[0], (int) this.getPosition()[1], (int) this.getPosition()[2]);
 					this.workJob = -1;
+					break;
+				default:
 					break;
 				} 
 			}
@@ -1642,7 +1678,6 @@ public class Unit {
 		if (castDoubleToInt(getPosition()) == castDoubleToInt(i.getPosition()) || isFalling())
 			return;
 		this.carriedItem = i;
-		stopWorking();
 	}
 	
 	/**

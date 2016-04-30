@@ -178,6 +178,7 @@ import java.io.ObjectInputStream.GetField;
 		 * @post the position of the stone is updated.
 		 */
 		public void advanceTimeOfItem(double dt, int[][][] terrainTypes){
+			//System.out.println(this.isCarried);
 			
 			if (this.isCarried == true){
 				this.position = this.unitCarryingBoulder.getPosition();
@@ -209,7 +210,7 @@ import java.io.ObjectInputStream.GetField;
 		 */
 		public void stopBeingCarried(){
 			this.isCarried = false;
-			this.unitCarryingBoulder.setWeight(this.unitCarryingBoulder.getWeight() + this.getWeight());
+			getCarrier().setWeight(getCarrier().getWeight() - this.getWeight());
 			this.unitCarryingBoulder = null;
 		}
 		
