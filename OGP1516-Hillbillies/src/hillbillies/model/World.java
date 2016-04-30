@@ -2,8 +2,6 @@ package hillbillies.model;
 
 import java.util.*;
 import be.kuleuven.cs.som.annotate.*;
-import hillbillies.model.item.Boulder;
-import hillbillies.model.item.Log;
 import hillbillies.part2.listener.TerrainChangeListener;
 import hillbillies.util.ConnectedToBorder;
 import ogp.framework.util.ModelException;

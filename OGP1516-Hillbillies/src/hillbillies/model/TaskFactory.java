@@ -5,7 +5,7 @@ import java.util.List;
 import hillbillies.part3.programs.ITaskFactory;
 import hillbillies.part3.programs.SourceLocation;
 
-public class TaskFactory implements ITaskFactory {
+public class TaskFactory implements ITaskFactory<Object, Object, Object> {
 	/* TASKS */
 
 	/**
@@ -404,6 +404,12 @@ public class TaskFactory implements ITaskFactory {
 	 * Create an expression that evaluates to false.
 	 */
 	public Object createFalse(SourceLocation sourceLocation){
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Object createPositionOf(Object unit, SourceLocation sourceLocation) {
 		// TODO Auto-generated method stub
 		return null;
 	}

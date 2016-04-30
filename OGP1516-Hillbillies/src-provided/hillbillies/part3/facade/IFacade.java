@@ -4,13 +4,13 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Set;
 
+import hillbillies.model.Boulder;
 import hillbillies.model.Faction;
+import hillbillies.model.Log;
 import hillbillies.model.Scheduler;
 import hillbillies.model.Task;
 import hillbillies.model.Unit;
 import hillbillies.model.World;
-import hillbillies.model.item.Boulder;
-import hillbillies.model.item.Log;
 import hillbillies.part2.facade.Facade;
 import hillbillies.part3.programs.ITaskFactory;
 import hillbillies.part3.programs.TaskParser;

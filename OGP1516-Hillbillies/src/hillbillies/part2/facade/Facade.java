@@ -2,11 +2,11 @@ package hillbillies.part2.facade;
 
 import java.util.Set;
 
+import hillbillies.model.Boulder;
 import hillbillies.model.Faction;
+import hillbillies.model.Log;
 import hillbillies.model.Unit;
 import hillbillies.model.World;
-import hillbillies.model.item.Boulder;
-import hillbillies.model.item.Log;
 import hillbillies.part2.listener.TerrainChangeListener;
 import ogp.framework.util.ModelException;
 
@@ -853,74 +853,34 @@ public class Facade implements IFacade{
 		return unit.isDefaultBehaviorOn();
 	}
 
-	/* BOULDERS */
-
-	/**
-	 * Get the precise coordinates of the given boulder.
-	 * 
-	 * @param boulder
-	 *            The boulder for which to return the position.
-	 * @return The coordinate of the center of the boulder, as an array with 3
-	 *         doubles {x, y, z}.
-	 * @throws ModelException
-	 *             A precondition was violated or an exception was thrown.
-	 */
 	@Override
-	public double[] getPosition(Boulder boulder) throws ModelException {
-		return boulder.getPosition();
-	}
-
-	/**
-	 * Return all boulders that are part of the given world.
-	 * 
-	 * @param world
-	 *            The world from which to retrieve the boulders.
-	 * @return A set containing all boulders present in the given world (i.e.,
-	 *         not picked up, consumed, destroyed, ...).
-	 * @throws ModelException
-	 *             A precondition was violated or an exception was thrown.
-	 */
-	@Override
-	public Set<Boulder> getBoulders(World world) throws ModelException {
-		return world.getSetOfBoulders();
-	}
-
-	/* LOGS */
-
-	/**
-	 * Get the precise coordinate of the given log.
-	 * 
-	 * @param log
-	 *            The log for which to return the position.
-	 * @return The coordinate of the center of the log, as an array with 3
-	 *         doubles {x, y, z}.
-	 * @throws ModelException
-	 *             A precondition was violated or an exception was thrown.
-	 */
-	@Override
-	public double[] getPosition(Log log) throws ModelException {
-		return log.getPosition();
-	}
-
-	/**
-	 * Return all logs that are part of the given world.
-	 * 
-	 * @param world
-	 *            The world from which to retrieve the logs.
-	 * @return A set containing all logs present in the given world (i.e., not
-	 *         picked up, consumed, destroyed, ...).
-	 * @throws ModelException
-	 *             A precondition was violated or an exception was thrown.
-	 */
-	@Override
-	public Set<Log> getLogs(World world) throws ModelException {
-		return world.getSetOfLogs();
-	}
-
-	@Override
-	@Deprecated
 	public Unit createUnit(String name, int[] initialPosition, int weight, int agility, int strength, int toughness,
 			boolean enableDefaultBehavior) throws ModelException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public double[] getPosition(Boulder boulder) throws ModelException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Set<Boulder> getBoulders(World world) throws ModelException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public double[] getPosition(Log log) throws ModelException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Set<Log> getLogs(World world) throws ModelException {
+		// TODO Auto-generated method stub
 		return null;
 	}
 }

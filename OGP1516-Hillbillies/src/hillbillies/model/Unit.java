@@ -1,9 +1,7 @@
 package hillbillies.model;
 
 import be.kuleuven.cs.som.annotate.*;
-import hillbillies.model.item.Boulder;
 import hillbillies.model.item.Item;
-import hillbillies.model.item.Log;
 import ogp.framework.util.ModelException;
 
 import static java.lang.Math.PI;
