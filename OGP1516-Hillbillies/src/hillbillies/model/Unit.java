@@ -6,9 +6,14 @@ import ogp.framework.util.ModelException;
 
 import static java.lang.Math.PI;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
+import java.util.List;
+import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.Random;
 import java.util.Set;
@@ -992,8 +997,6 @@ public class Unit {
 			this.working(dt);
 		else if (this.isWalking == true)
 			this.walking(dt);
-		else if (this.isPathfinding == true)
-			this.pathFindingAlgorithm();
 		else if (this.isAttacking == true) {
 			attTime += dt;
 			updateOrientation(defenderClone);
@@ -1240,6 +1243,8 @@ public class Unit {
 		stopResting();
 		stopWorking();
 		stopWalking();
+		findPath(putUnitInCenter(castIntToDouble(cube)));
+		walkPath();
 		this.pathfindingTo = cube.clone();
 	}
 	
@@ -1262,47 +1267,6 @@ public class Unit {
 	 * @param dt
 	 * 		  the given time interval
 	 */
-	private void pathfinding (double dt) {
-		if (this.isWalking == true) {
-			return;
-		} else {
-			double[] moveTo = castIntToDouble(pathfindingTo);
-			putUnitInCenter(moveTo);
-			int dx = 0, dy = 0, dz = 0;
-			
-			if (getPosition()[0] == moveTo[0] && getPosition()[1] == moveTo[1] && getPosition()[2] == moveTo[2]){
-				this.isPathfinding = false;
-				stopSprinting();
-				return;
-			}
-			
-			if (getPosition()[0] == moveTo[0]) {
-				dx = 0;
-			} else if (getPosition()[0] < moveTo[0]) {
-				dx = 1;
-			} else {
-				dx = -1;
-			}
-			
-			if (getPosition()[1] == moveTo[1]) {
-				dy = 0;
-			} else if (getPosition()[1] < moveTo[1]) {
-				dy = 1;
-			} else {
-				dy = -1;
-			}
-			
-			if (getPosition()[2] == moveTo[2]) {
-				dz = 0;
-			} else if (getPosition()[2] < moveTo[2]) {
-				dz = 1;
-			} else {
-				dz = -1;
-			}
-			
-			startWalking(dx, dy, dz);
-			}
-	}
 	
 	/**
 	 * make a unit stopPathfinding.
@@ -1329,77 +1293,100 @@ public class Unit {
 	private int[] pathfindingTo = {0,0,0};
 
 /////////////////////////////////////////////New Path Finding/////////////////////////////////////////////
-	//TODO Nieuwe pathfinding, A* impl als tijd
 		
-	public void pathFindingAlgorithm() {
-		int[] destination = this.pathfindingTo;
+	private Node bestNode;
+	
+	public void walkPath() {
+		System.out.println("wandel het pad");
+		List<double[]> path= path();
+		System.out.println(path.size());
+		for (double[] pos : path) {
+			System.out.println(pos[0] + " " + pos[1] + " " + pos[2] + " ");
+			startWalking((int) (getPosition()[0] - pos[0]),(int) (getPosition()[1] - pos[1]),(int) (getPosition()[2] - pos[2]));
+			//TODO zorgen dat voor elke keer we wandelen! dan is pathfinding af!!!!!!!!!!!
+		}
 		
-		Queue<Object[]> Queue = new LinkedList<>();
-		while (castDoubleToInt(getPosition()) != destination) {
-			System.out.println("calcing...");
+	}
+	
+	class Node implements Comparable<Node>{
+		public double[] position;
+		private Node parent = null;
+		private int distance, moves;
+		private int fcost;
+		
+		public Node(double[] pos, int moves, int dist, Node parent) {
+			this.moves = moves;
+			this.position = pos;
+			this.parent = parent;
+			this.distance = dist;
 			
-			Object[] o = {destination, 0};
-			Queue.add(o);
-			while ((!inQue(Queue, destination)) && (Queue.peek() != null)) {
-				Object[] something = Queue.poll();
-				search(Queue, something);
-			}
-			if (inQue(Queue, castDoubleToInt(getPosition()))) {
-				int[] next = getNextElement(Queue);
-				startWalking(next[0], next[1], next[2]);
-			} else
+			this.fcost = this.distance + this.moves;
+		}
+		
+		@Override
+		public int compareTo(Node node) {
+			return this.fcost - node.fcost;
+		}
+	}
+	
+	public void findPath(double[] goal) {
+		PriorityQueue<Node> openPQ =  new PriorityQueue<Node>();
+		PriorityQueue<Node> closedPQ =  new PriorityQueue<Node>();
+		
+		openPQ.add(new Node(getPosition(), 0, 0, null));
+		
+		boolean done = false;
+		System.out.println("endpos: " + goal[0] + " " + goal[1] + " " + goal[2]);
+		while (!openPQ.isEmpty()) {
+			//System.out.println("bereken het pad...");
+			
+			Node current = openPQ.poll();
+
+			
+			if (Arrays.equals(current.position, goal)) {
+				System.out.println("Doel berijkt");
+				this.bestNode = current;
 				break;
-		}
+			}
+			
+			Set<int[]> neighbors = getAdjacentCubes(castDoubleToInt(current.position));
+			for (int[] i : neighbors) {
+				double [] nodePos = putUnitInCenter(castIntToDouble(i));
+				if (! getWorld().isCubePassable((int) nodePos[0], (int) nodePos[1], (int) nodePos[2])) //TODO deze if weglaten, en we kunnen overal lopen
+					continue;
 				
-	}
-	private int[] getNextElement(Queue<Object[]> Queue) {
-		int maxNum = Integer.MAX_VALUE;
-		int[] nextElement = null;
-		
-		for (Object[] o : Queue) {
-			if ((int) o[1] <= maxNum) {
-				maxNum = (int) o[1];
-				nextElement = (int[]) o[1];
+				Node temp = new Node(nodePos, current.moves + 1, getDistance(nodePos, goal), current);
+				if (sameQueueLowerF(openPQ, temp)) {
+					continue;
+				} else if (sameQueueLowerF(closedPQ, temp)) {
+					continue;
+				} else {
+					openPQ.add(temp);
+				}
 			}
-		}
-		
-		return nextElement;
-	}
+			closedPQ.add(current);
 
-	private boolean inQue(Queue<Object[]> Queue, int[] destination) {
-		for (Object[] o : Queue) {
-			if (((int[]) o[0]).equals(destination)) {
+			
+		}
+	
+	}
+	
+	public boolean sameQueueLowerF(PriorityQueue<Node> queue, Node node) {
+		for (Node n : queue) {
+			if (Arrays.equals(n.position, node.position) && n.fcost < node.fcost) {
 				return true;
 			}
 		}
 		return false;
 	}
+	
+	private int getDistance(double[] nodePos, double[] goal) {
+		
+		int distX = (int) Math.abs(nodePos[0] - goal[0]);
+        int distY = (int) Math.abs(nodePos[1] - goal[1]);
+        int distZ = (int) Math.abs(nodePos[2] - goal[2]);
 
-	
-	private void search(Queue<Object[]> Queue, Object[] something) {
-		int[] position = ((int[]) something[0]);
-		int n0 = ((int) something[1]);
-		search(Queue, position, n0);
-		
-		Set<int[]> adjacentCubes = this.getAdjacentCubes(castDoubleToInt(getPosition()));
-		for (int[] cube: adjacentCubes) {
-			if ((getWorld().isCubePassable(cube[0], cube[1], cube[2]) && (isNeighbouringSolidTerrain(cube))
-					&& (isNotInQueue(Queue, position, n0)))) {
-				Object[] somethingNew = {cube, n0+1};
-				Queue.add(somethingNew);
-			}
-		}
-	}
-	
-	private boolean isNotInQueue(Queue<Object[]> Queue, int[] position, int n0) {
-		
-		if (Queue.size() == 0) 
-			return true;
-		for (Object[] something: Queue) { 
-			if ((something[0] == position) && (((int) something[1]) >= n0))
-				return true;
-		}
-		return false;
+        return distX + distY + distZ;
 	}
 	
 	public Set<int[]> getAdjacentCubes(int[] position) {
@@ -1423,6 +1410,21 @@ public class Unit {
 		}
 		
 		return adjacentCubes;
+	}
+	
+	public List<double[]> path()
+	{
+		List<double[]> l = new ArrayList<double[]>();
+		Node cur = this.bestNode;
+		System.out.println("bestnode:" + this.bestNode.position[0]);
+		System.out.println("endpos: " + cur.position[0] + " " + cur.position[1] + cur.position[2]);
+		while (cur != null) {
+			l.add(cur.position);
+			cur = cur.parent;
+		}
+		Collections.reverse(l);
+		
+		return l;
 	}
 	
 	private boolean isNeighbouringSolidTerrain(int[] cube) {
