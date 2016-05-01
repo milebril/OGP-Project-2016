@@ -996,13 +996,13 @@ public class Unit {
 		//this.canFall(getWorld().getTerrainType());
 		if (isFalling())
 			this.fall(dt, getWorld().getTerrainType());
-		else if (this.isResting == true)
+		else if (this.behaviour == UnitBehaviour.RESTING)
 			this.resting(dt);
 		else if (this.behaviour == UnitBehaviour.WORKING)
 			this.working(dt);
-		else if (this.isWalking == true)
+		else if (this.behaviour == UnitBehaviour.WALKING)
 			this.walking(dt);
-		else if (this.isAttacking == true) {
+		else if (this.behaviour == UnitBehaviour.FIGHTING) {
 			attTime += dt;
 			updateOrientation(defenderClone);
 			if (attTime >= 1) {
@@ -1011,7 +1011,6 @@ public class Unit {
 			}
 		}
 		else if(defaultBehaviour == true){
-			System.out.println("vast in defailt");
 			this.defaultBehavior(dt);
 		} else if ((Math.round(unitLifetimeInSeconds) % 20) == 0 && unitLifetimeInSeconds > 1 && canRest()) {
 			startResting();
@@ -1033,21 +1032,6 @@ public class Unit {
 	private boolean isSprinting = false;
 	
 	/**
-	 * boolean registering if a unit is working or not.
-	 */
-	private boolean isWorking = false;
-	
-	/**
-	 * boolean registering if a unit is resting or not.
-	 */
-	private boolean isResting = false;
-	
-	/**
-	 * boolean registering if a unit is attacking or not.
-	 */
-	private boolean isAttacking = false;
-	
-	/**
 	 * boolean registering if a unit is defending or not.
 	 */
 	private boolean isDefending = false;
@@ -1058,11 +1042,6 @@ public class Unit {
 	private boolean defaultBehaviour = false;
 	
 	/**
-	 * boolean registering if a unit is walking or not.
-	 */
-	private boolean isWalking = false;
-	
-	/**
 	 *Variable registering the attacking time of this unit.
 	 */
 	private double attTime = 0;
@@ -1071,6 +1050,7 @@ public class Unit {
 	 *Variable registering the life time of this unit.
 	 */
 	private double unitLifetime = 0;
+	
 	
 	/* Movement */
 	/**
@@ -1089,9 +1069,7 @@ public class Unit {
 		if (dx == 0 && dy ==0 && dz == 0) {
 			return;
 		}
-		this.isWalking = true;
-		stopWorking();
-		stopResting();
+		behaviour = UnitBehaviour.WALKING;
 		stopPathfinding();
 		
 		double[] pos = getPosition();
@@ -1110,7 +1088,7 @@ public class Unit {
 	 * 			false if the unit isn't moving.
 	 */
 	public boolean isWalking(){
-		return this.isWalking;
+		return behaviour == UnitBehaviour.WALKING;
 	}
 	
 	/**
@@ -1172,7 +1150,7 @@ public class Unit {
 		double vz = speed * (dz / distance);
 		
 		if (!isValidPosition(walkingTo)){
-			this.isWalking = false;
+			stopWalking();
 			return;
 		}
 		if (this.isSprinting == true){
@@ -1200,7 +1178,7 @@ public class Unit {
 	private void canMove(double dx, double dy, double dz, double vx, double vy, double vz, double dt){
 		if(Math.abs(dx) <= Math.abs(vx) * dt && Math.abs(dy) <= Math.abs(vy) * dt && Math.abs(dz) <= Math.abs(vz) * dt){
 			setUnitPosition(this.walkingTo.clone());
-			this.isWalking = false;
+			stopWalking();
 		}
 	}
 	
@@ -1219,7 +1197,7 @@ public class Unit {
 	 * make the unit stop walking.
 	 */
 	private void stopWalking(){
-		this.isWalking = false;
+		behaviour = UnitBehaviour.NO_JOB;
 	}
 	
 	/**
@@ -1249,9 +1227,7 @@ public class Unit {
 		if (isAttacking() || isDefending() || isFalling())
 			return;
 		this.isPathfinding = true;
-		stopResting();
-		stopWorking();
-		stopWalking();
+		behaviour = UnitBehaviour.NO_JOB;
 		findPath(putUnitInCenter(castIntToDouble(cube)));
 		walkPath();
 	}
@@ -1301,7 +1277,6 @@ public class Unit {
 	
 	public void walkPath() {
 		List<double[]> path= path();
-		System.out.println(path.size());
 		for (double[] pos : path) {
 			startWalking((int) (-getPosition()[0] + pos[0]),(int) (-getPosition()[1] + pos[1]),(int) (-getPosition()[2] + pos[2]));
 		}
@@ -1374,7 +1349,7 @@ public class Unit {
 		if (bestNode == null) {
 			System.out.println("imposible to get");
 			stopPathfinding();
-			stopWalking();
+			behaviour = UnitBehaviour.NO_JOB;
 		}
 	
 	}
@@ -1543,7 +1518,6 @@ public class Unit {
 				stopWorking();
 			} else {
 				this.timeLeftWorking -= dt;
-				System.out.println(timeLeftWorking);
 				if(this.timeLeftWorking <= 0){
 					this.timeLeftWorking = 0;
 				}
@@ -1724,15 +1698,12 @@ public class Unit {
 	public void startAttacking(Unit defender) {
 		if (isFalling() || defender.isFalling()) return;
 		if (targetOnValidPosition(defender) && targetFromDifferentFaction(defender)) {
-			stopWorking();
-			stopResting();
+			behaviour = UnitBehaviour.FIGHTING;
 			stopPathfinding();
-			stopWalking();
-			defender.stopWorking();
-			defender.stopResting();
+			defender.behaviour = UnitBehaviour.NO_JOB;
 			defender.stopPathfinding();
-			defender.stopWalking();
-			this.isAttacking = true;
+			
+			defenderClone = defender;
 		}
 		
 	}
@@ -1743,15 +1714,14 @@ public class Unit {
 	 * 		  the defending unit
 	 */
 	private void attacking(Unit defender) {
-		this.isAttacking = true;
-		defender.isDefending = true;
+		defender.behaviour = UnitBehaviour.DEFENDING;
 		try {
 			defender.defending(defender);
 		} catch (ModelException e) { 
 			
 		}
 		stopAttacking();
-		defender.isDefending = false;
+		stopDefending();
 	}
 	
 	/**
@@ -1777,7 +1747,14 @@ public class Unit {
 	 * return if a unit is defending or not.
 	 */
 	private boolean isDefending(){
-		return this.isDefending;
+		return behaviour == UnitBehaviour.DEFENDING;
+	}
+	
+	/**
+	 * make a unit stop defending
+	 */
+	private void stopDefending() {
+		behaviour = UnitBehaviour.NO_JOB;
 	}
 	
 	/**
@@ -1815,14 +1792,14 @@ public class Unit {
 	 * @return if the unit is attacking return true.
 	 */
 	public boolean isAttacking() {
-		return this.isAttacking;
+		return behaviour == UnitBehaviour.FIGHTING;
 	}
 	
 	/**
 	 * make a unit stop attacking
 	 */
 	private void stopAttacking() {
-		this.isAttacking = false;
+		behaviour = UnitBehaviour.NO_JOB;
 	}
 	
 	/**
@@ -1936,7 +1913,7 @@ public class Unit {
 	 */
 	@Basic @Raw
 	public boolean isTheUnitResting() {
-		return this.isResting;
+		return behaviour == UnitBehaviour.RESTING;
 	}
 	
 	/**
@@ -1952,9 +1929,7 @@ public class Unit {
 			totalHPRestored = -5;
 		}
 		stopPathfinding();
-		stopWalking();
-		stopWorking();
-		this.isResting = true;
+		behaviour = UnitBehaviour.RESTING;
 	}
 	
 	/**
@@ -1975,9 +1950,6 @@ public class Unit {
 	 * 		  the time interval dt
 	 */
 	private void resting (double dt) {
-		this.isResting = true;
-		stopWorking();
-		
 		if (getHitpoints() < getMaxHitpoints()){
 			restoreHitpoints(dt);
 			return;
@@ -1985,8 +1957,7 @@ public class Unit {
 			restoreStamina(dt);
 			return;
 		}
-		this.stopResting();
-		return;
+		stopResting();
 	}
 	
 	/**
@@ -2021,7 +1992,7 @@ public class Unit {
 	 */
 	private void stopResting (){
 		if (totalHPRestored >= 0 || totalHPRestored == -5)
-			this.isResting = false;
+			behaviour = UnitBehaviour.NO_JOB;
 	}
 	
 	/**
