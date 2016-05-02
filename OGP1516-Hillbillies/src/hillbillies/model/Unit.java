@@ -1137,6 +1137,7 @@ public class Unit {
 	 * 		  the given time period dt.
 	 */
 	private void walking(double dt){
+		
 		double dx = (this.walkingTo[0] - this.unitPosition[0]);
 		double dy = (this.walkingTo[1] - this.unitPosition[1]);
 		double dz = (this.walkingTo[2] - this.unitPosition[2]);
@@ -1198,6 +1199,10 @@ public class Unit {
 	 */
 	private void stopWalking(){
 		behaviour = UnitBehaviour.NO_JOB;
+		
+		if (wantToWork) {
+			startWorking(castDoubleToInt(getPosition()));
+		}
 	}
 	
 	/**
@@ -1312,7 +1317,6 @@ public class Unit {
 		int counter = 0;
 		
 		while (!openPQ.isEmpty()) {
-			
 			Node current = openPQ.poll();
 
 			
@@ -1347,9 +1351,9 @@ public class Unit {
 		}
 		
 		if (bestNode == null) {
-			System.out.println("imposible to get");
 			stopPathfinding();
 			behaviour = UnitBehaviour.NO_JOB;
+			wantToWork = false;
 		}
 	
 	}
@@ -1451,6 +1455,8 @@ public class Unit {
 		return true;
 	}
 	
+	private boolean wantToWork = false;
+	
 	/**
 	 * Let the unit start working
 	 * @return The unit stops walking and resting, and start working for a certain amount of seconds
@@ -1461,12 +1467,12 @@ public class Unit {
 	 */
 	public void startWorking(int[] positionOfCube){
 		if (!(Arrays.equals(castDoubleToInt(getPosition()), positionOfCube))) {
+			wantToWork = true;
 			startPathfinding(positionOfCube);
-			startWorking(positionOfCube);
+			return;
 		}
 		
 		if(isAttacking() == true || isDefending() == true || isFalling() == true) {
-			System.out.println('d');
 			return;
 		}
 		
@@ -1527,7 +1533,6 @@ public class Unit {
 					stopWorking();
 					break;
 				case MAKE_ARMOUR:
-					System.out.println("maak armour");
 					getWorld().removeBoulder(getBoulderAtPosition(getPosition()[0], getPosition()[1], getPosition()[2]));
 					getWorld().removeLog(getLogAtPosition(getPosition()[0], getPosition()[1], getPosition()[2]));
 					this.setToughness(getToughness() + 5); 
@@ -1557,7 +1562,6 @@ public class Unit {
 					work = workJob.WAIT;
 					break;
 				case CHOP_LOG:
-					System.out.println("chop wood");
 					int[][][] terrainTypes = getWorld().getTerrainType();
 					terrainTypes[(int) this.getPosition()[0]][(int) this.getPosition()[1]][(int) this.getPosition()[2]] = 0;
 					getWorld().setTerrainType(terrainTypes);
@@ -1629,6 +1633,7 @@ public class Unit {
 	private void stopWorking(){
 		behaviour = UnitBehaviour.NO_JOB;
 		work = workJob.NO_WORK;
+		wantToWork = false;
 	}
 
 	/**
@@ -2035,18 +2040,17 @@ public class Unit {
 	private void defaultBehavior(double dt){
 		Random random = new Random();
 		int ActionChance = random.nextInt(4);
+		int[] cube = null;
+		if (ActionChance == 1 || ActionChance == 2)
+			cube = getRandomPosRadius8(ActionChance);
 		if(ActionChance == 1){
-			int[] cube = {0,0,0};
-			cube[0] = random.nextInt(getWorld().getXLength());
-			cube[1] = random.nextInt(getWorld().getYLength());
-			cube[2] = random.nextInt(getWorld().getZLength());
 			int SprintChance = random.nextInt(2);
 			if (SprintChance == 1)
 				this.startSprinting();
 			this.startPathfinding(cube);
 		}
 		else if(ActionChance == 2){
-			this.startWorking(castDoubleToInt(getPosition()));
+			this.startWorking(cube);
 		}
 		else if(ActionChance == 3){
 			this.startResting();
@@ -2057,6 +2061,52 @@ public class Unit {
 				}
 			}
 		}
+	}
+	
+	private int[] getRandomPosRadius8(int work) {
+		Random random = new Random();
+		double[] cube = {getPosition()[0],getPosition()[1],getPosition()[2]};
+		cube[0] += random.nextInt(16) - 8;
+		cube[1] += random.nextInt(16) - 8;
+		cube[2] += random.nextInt(16) - 8;
+		
+		int[] intCube = castDoubleToInt(cube);
+		int counter = 0;
+		switch(work) {
+		case 1:
+			while (!isInsideWorld(intCube) && !getWorld().isCubePassable(intCube[0], intCube[0], intCube[0])) {
+				counter++;
+				if (counter > 100) {
+					intCube[0] = (int) getPosition()[0];
+					intCube[1] = (int) getPosition()[1];
+					intCube[2] = (int) getPosition()[2];
+					break;
+				}
+				System.out.println("lus1");
+				cube[0] += random.nextInt(16) - 8;
+				cube[1] += random.nextInt(16) - 8;
+				cube[2] += random.nextInt(16) - 8;
+			}
+			break;
+		case 2:
+			while (!isInsideWorld(intCube)) {
+				counter++;
+				if (counter > 100) {
+					intCube[0] = (int) getPosition()[0];
+					intCube[1] = (int) getPosition()[1];
+					intCube[2] = (int) getPosition()[2];
+					break;
+				}
+				System.out.println("lus2");
+				cube[0] += random.nextInt(16) - 8;
+				cube[1] += random.nextInt(16) - 8;
+				cube[2] += random.nextInt(16) - 8;
+			}
+			break;
+		}
+		
+		
+		return intCube;
 	}
 	
 /////////////////////////////////////////////Death/////////////////////////////////////////////
