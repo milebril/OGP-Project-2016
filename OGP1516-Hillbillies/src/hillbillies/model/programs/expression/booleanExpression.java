@@ -1,11 +1,6 @@
 package hillbillies.model.programs.expression;
 
-public class booleanExpression extends Expression{
+public abstract class booleanExpression extends Expression{
 
-	@Override
-	public void evaluate() {
-		// TODO Auto-generated method stub
-		
-	}
-
+		public abstract boolean evaluate();
 }

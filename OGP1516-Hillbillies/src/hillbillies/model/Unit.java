@@ -288,7 +288,7 @@ public class Unit {
 	 * return the world of the unit.
 	 */
 	@Basic
-	private static World getWorld() {
+	public static World getWorld() {
 		return world;
 	}
 	
