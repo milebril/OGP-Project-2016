@@ -6,12 +6,12 @@ import hillbillies.model.Unit;
 import java.io.ObjectInputStream.GetField;
 	import java.util.Random;
 	/**
-	 * A class that deals with a boulder and all the properties of the boulder 
+	 * A class that deals with a Item and all the properties of the Item 
 	 * in a given game world.
 	 * 
-	 * @invar  Each Boulder can have its weight as weight.
+	 * @invar  Each Item can have its weight as weight.
 	 *       | canHaveAsWeight(this.getWeight())
-	 * @invar Each boulder should be above a solid terrainType or should be falling.
+	 * @invar Each Item should be above a solid terrainType or should be falling.
 	 * 	
 	 * @author Emil Peters
 	 * @author Sjaan Vandebeek
@@ -21,15 +21,15 @@ import java.io.ObjectInputStream.GetField;
 
 	////////////////////////////////////////////Constructor////////////////////////////////////////////
 		/**
-		 * Initialize this new Boulder with given weight.
+		 * Initialize this new item with given weight.
 		 * 
 		 * @param  Weight
-		 *         The weight for this new Boulder.
-		 * @post   The weight of this new Boulder is equal to the given
+		 *         The weight for this new Item.
+		 * @post   The weight of this new Item is equal to the given
 		 *         weight.
 		 *       | new.getWeight() == Weight
 		 * @throws ExceptionName_Java
-		 *         This new Boulder cannot have the given weight as its weight.
+		 *         This new Item cannot have the given weight as its weight.
 		 *       | ! canHaveAsWeight(this.getWeight())
 		 *       
 		 * Initialize this new log with given position.
@@ -53,7 +53,7 @@ import java.io.ObjectInputStream.GetField;
 	////////////////////////////////////////////Weight////////////////////////////////////////////
 
 		/**
-		 * Return the weight of this Boulder.
+		 * Return the weight of this Item.
 		 */
 		@Basic @Raw @Immutable
 		public int getWeight() {
@@ -61,7 +61,7 @@ import java.io.ObjectInputStream.GetField;
 		}
 		
 		/**
-		 * Check whether this Boulder can have the given weight as its weight.
+		 * Check whether this Item can have the given weight as its weight.
 		 *  
 		 * @param  Weight
 		 *         The weight to check.
@@ -76,28 +76,28 @@ import java.io.ObjectInputStream.GetField;
 		}
 		
 		/**
-		 * Return the highest weight for all boulders
+		 * Return the highest weight for all Items
 		 */
 		private static int getMaxWeight(){
 			return 50;
 		}
 		
 		/**
-		 * Return the lowest weight for all boulders
+		 * Return the lowest weight for all Items
 		 */
 		private static int getMinWeight(){
 			return 10;
 		}
 			
 		/**
-		 * Variable registering the weight of this Boulder.
+		 * Variable registering the weight of this Item.
 		 */
 		private final int weight;
 
 	////////////////////////////////////////////Position////////////////////////////////////////////	
 
 		/**
-		 * Return the position of this boulder.
+		 * Return the position of this Item.
 		 */
 		@Basic @Raw
 		public double[] getPosition() {
@@ -106,7 +106,7 @@ import java.io.ObjectInputStream.GetField;
 		
 		/**
 		 * Check whether the given position is a valid position for
-		 * any boulder.
+		 * any Item.
 		 *  
 		 * @param  position
 		 *         The position to check.
@@ -124,16 +124,16 @@ import java.io.ObjectInputStream.GetField;
 		}
 		
 		/**
-		 * Set the position of this boulder to the given position.
+		 * Set the position of this Item to the given position.
 		 * 
-		 * @param  boulder
-		 *         The new position for this boulder.
+		 * @param  Item
+		 *         The new position for this Item.
 		 * @post   The position of this new log is equal to
 		 *         the given position.
-		 *       | new.getPosition() == boulder
+		 *       | new.getPosition() == Item
 		 * @throws illegalArgumentException
 		 *         The given position is not a valid position for any
-		 *         boulder.
+		 *         Item.
 		 *       | ! isValidPosition(getPosition())
 		 */
 		@Raw
@@ -168,7 +168,7 @@ import java.io.ObjectInputStream.GetField;
 		}
 		
 		/**
-		 * Variable registering the position of this boulder.
+		 * Variable registering the position of this Item.
 		 */
 		private double[] position;
 	////////////////////////////////////////////Advance Time////////////////////////////////////////////	
@@ -178,12 +178,11 @@ import java.io.ObjectInputStream.GetField;
 		 * @post the position of the stone is updated.
 		 */
 		public void advanceTimeOfItem(double dt, int[][][] terrainTypes){
-			//System.out.println(this.isCarried);
 			
 			if (this.isCarried == true){
-				this.position = this.unitCarryingBoulder.getPosition();
+				this.position = this.unitCarryingItem.getPosition();
 			}
-			if ( !this.isCarried  && this.canFall(terrainTypes)){ //TODO terug aanzetten als canFallw erkt
+			if ( !this.isCarried  && this.canFall(terrainTypes)){
 				this.fall(dt, terrainTypes);
 			}
 			
@@ -194,49 +193,48 @@ import java.io.ObjectInputStream.GetField;
 	////////////////////////////////////////////Carried////////////////////////////////////////////
 		
 		/**
-		 * Make a boulder start being carried.
+		 * Make an Item start being carried.
 		 */
 		public void startBeingCarried(Unit unit) throws IllegalStateException{
-			if (this.isCarried == true || this.unitCarryingBoulder != null)
+			if (this.isCarried == true || this.unitCarryingItem != null)
 				throw new IllegalStateException();
 			this.isCarried = true;
-			this.unitCarryingBoulder = unit;
+			this.unitCarryingItem = unit;
 			unit.setWeight(unit.getWeight() + this.getWeight());
 			unit.startCarryingItem(this);
 		}
 		
 		/**
-		 * Make a boulder stop being carried.
+		 * Make an Item stop being carried.
 		 */
 		public void stopBeingCarried(){
 			this.isCarried = false;
 			getCarrier().setWeight(getCarrier().getWeight() - this.getWeight());
-			this.unitCarryingBoulder = null;
+			this.unitCarryingItem = null;
 		}
 		
 		/**
-		 * return the carrier of this boulder.
-		 * @return the carrier if the boulder is carried or null when there is no carrier.
+		 * return the carrier of this Item.
+		 * @return the carrier if the Item is carried or null when there is no carrier.
 		 */
 		public Unit getCarrier(){
-			return this.unitCarryingBoulder;
+			return this.unitCarryingItem;
 		}
 		
 		/**
-		 * variable registering which unit is carrying the boulder.
+		 * variable registering which unit is carrying the Item.
 		 */
-		public Unit unitCarryingBoulder = null;
+		public Unit unitCarryingItem = null;
 		
 		/**
-		 * Boolean registering if a boulder is carried or not.
+		 * Boolean registering if a Item is carried or not.
 		 */
 		private boolean isCarried = false; 
 			
 	////////////////////////////////////////////Falling////////////////////////////////////////////	
 		/**
-		 * check if a boulder can fall.
+		 * check if a Item can fall.
 		 */
-		//TODO hier zit een fout dus, we moeten optijd stoppen, en zorgen dat we niet uit de wereld valln!
 		private boolean canFall(int[][][] terrainTypes){
 			if(isCarried) {
 				return false;
@@ -261,16 +259,14 @@ import java.io.ObjectInputStream.GetField;
 		}
 		
 		/**
-		 * return the speed of falling in m/s.
+		 * Variable registering the speed an item falls
 		 */
-		private static int speedOfFalling() {
-			return 3;
-		}
+		private final int velocityOfFalling = 3;
 		
 		/**
-		 * move the boulder over a given time period dt.
+		 * move the Item over a given time period dt.
 		 */
 		private void fall(double dt, int[][][] terrainTypes) {		
-			this.setPosition(new double[] {getPosition()[0], getPosition()[1], getPosition()[2] - speedOfFalling() * dt});
+			this.setPosition(new double[] {getPosition()[0], getPosition()[1], getPosition()[2] - velocityOfFalling * dt});
 		}
 	}

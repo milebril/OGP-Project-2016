@@ -1,5 +1,7 @@
 package hillbillies.model.programs.expression;
 
-public class Expression {
-
+public abstract class Expression {
+	
+	public abstract void evaluate();
+	
 }

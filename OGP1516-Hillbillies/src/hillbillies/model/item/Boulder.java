@@ -1,7 +1,6 @@
-package hillbillies.model;
+package hillbillies.model.item;
 
 import be.kuleuven.cs.som.annotate.*;
-import hillbillies.model.item.Item;
 
 import java.io.ObjectInputStream.GetField;
 import java.util.Random;

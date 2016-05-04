@@ -1,7 +1,9 @@
 package hillbillies.model;
 
 import be.kuleuven.cs.som.annotate.*;
+import hillbillies.model.item.Boulder;
 import hillbillies.model.item.Item;
+import hillbillies.model.item.Log;
 import ogp.framework.util.ModelException;
 
 import static java.lang.Math.PI;
@@ -71,7 +73,6 @@ import java.util.Set;
  *
  */
 
-//TODO Alles rond behaviour maken
 public class Unit {
 	
 	private UnitBehaviour behaviour;
@@ -287,7 +288,7 @@ public class Unit {
 	 * return the world of the unit.
 	 */
 	@Basic
-	private static World getWorld() {
+	public static World getWorld() {
 		return world;
 	}
 	
@@ -685,9 +686,7 @@ public class Unit {
 			if (unitPosition[i] < getMinValueCoordinate() || unitPosition[i] > getMaxValueCoordinate())
 				return false;
 		} 
-		//TODO zorgen dat deze static kan blijven
-		//if(getTerrainType(castDoubleToInt(getPosition())) == 1) return false;
-		//if(getTerrainType(castDoubleToInt(getPosition())) == 2) return false;
+		
 		return true;
 	}
 	
@@ -987,6 +986,7 @@ public class Unit {
 	 * 		  the period dt.
 	 */
 	public void advanceTimeOfUnit(double dt){
+		defBehaviourDel += 10;
 		unitLifetime += dt;
 		if (unitLifetime >= 1) {
 			unitLifetimeInSeconds++;
@@ -1430,7 +1430,8 @@ public class Unit {
 	}
 	
 	private boolean isInsideWorld(int[] position) {
-		if (position[0] <= getWorld().getXLength() && position[1] <= getWorld().getYLength() && position[2] <= getWorld().getZLength())
+		if (position[0] <= getWorld().getXLength() && position[1] <= getWorld().getYLength() && position[2] <= getWorld().getZLength() &&
+				position[0] >= 0 && position[1] >= 0 && position[2] >= 0)
 			return true;
 		return false;
 	}
@@ -2034,14 +2035,20 @@ public class Unit {
 		this.defaultBehaviour = value;
 	}
 	
+	private double defBehaviourDel = 10;
+	
 	/**
 	 * if default behavior is enabled start doing an action.
 	 */
 	private void defaultBehavior(double dt){
+		if (defBehaviourDel <= 10) {
+			return;
+		}
+		
 		Random random = new Random();
 		int ActionChance = random.nextInt(4);
 		int[] cube = null;
-		if (ActionChance == 1 || ActionChance == 2)
+		if (ActionChance == 1)
 			cube = getRandomPosRadius8(ActionChance);
 		if(ActionChance == 1){
 			int SprintChance = random.nextInt(2);
@@ -2050,10 +2057,11 @@ public class Unit {
 			this.startPathfinding(cube);
 		}
 		else if(ActionChance == 2){
-			this.startWorking(cube);
+			this.startWorking(castDoubleToInt(getPosition())	);
 		}
 		else if(ActionChance == 3){
-			this.startResting();
+			if (canRest())
+				this.startResting();
 		} else if (ActionChance == 4) {
 			for (Unit unit : getWorld().getSetOfUnits()) {
 				if (targetOnValidPosition(unit) && targetFromDifferentFaction(unit)) {
@@ -2072,37 +2080,20 @@ public class Unit {
 		
 		int[] intCube = castDoubleToInt(cube);
 		int counter = 0;
-		switch(work) {
-		case 1:
-			while (!isInsideWorld(intCube) && !getWorld().isCubePassable(intCube[0], intCube[0], intCube[0])) {
-				counter++;
-				if (counter > 100) {
-					intCube[0] = (int) getPosition()[0];
-					intCube[1] = (int) getPosition()[1];
-					intCube[2] = (int) getPosition()[2];
-					break;
-				}
-				System.out.println("lus1");
-				cube[0] += random.nextInt(16) - 8;
-				cube[1] += random.nextInt(16) - 8;
-				cube[2] += random.nextInt(16) - 8;
+		while (!isInsideWorld(intCube)) {
+			System.out.println(isInsideWorld(intCube));
+			System.out.println(cube[0] + " " + cube[1] + " " + cube[2]);
+			counter++;
+			if (counter > 10) {
+				intCube[0] = (int) getPosition()[0];
+				intCube[1] = (int) getPosition()[1];
+				intCube[2] = (int) getPosition()[2];
+				return intCube;
 			}
-			break;
-		case 2:
-			while (!isInsideWorld(intCube)) {
-				counter++;
-				if (counter > 100) {
-					intCube[0] = (int) getPosition()[0];
-					intCube[1] = (int) getPosition()[1];
-					intCube[2] = (int) getPosition()[2];
-					break;
-				}
-				System.out.println("lus2");
-				cube[0] += random.nextInt(16) - 8;
-				cube[1] += random.nextInt(16) - 8;
-				cube[2] += random.nextInt(16) - 8;
-			}
-			break;
+			System.out.println("lus1");
+			intCube[0] += random.nextInt(16) - 8;
+			intCube[1] += random.nextInt(16) - 8;
+			intCube[2] += random.nextInt(16) - 8;
 		}
 		
 		
