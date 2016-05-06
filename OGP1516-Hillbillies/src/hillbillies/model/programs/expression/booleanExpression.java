@@ -1,6 +1,8 @@
 package hillbillies.model.programs.expression;
 
-public abstract class booleanExpression extends Expression{
+import hillbillies.model.Unit;
 
-		public abstract boolean evaluate();
+public abstract class BooleanExpression extends Expression<TypeBool>{
+
+	public abstract TypeBool evaluate(Unit unit);
 }

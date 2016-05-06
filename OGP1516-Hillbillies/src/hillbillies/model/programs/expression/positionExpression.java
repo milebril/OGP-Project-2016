@@ -1,5 +1,5 @@
 package hillbillies.model.programs.expression;
 
-public class positionExpression {
+public class PositionExpression {
 
 }

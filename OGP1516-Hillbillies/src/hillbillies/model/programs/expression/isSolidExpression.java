@@ -2,25 +2,22 @@ package hillbillies.model.programs.expression;
 
 import hillbillies.model.Unit;
 
-public class isSolidExpression extends booleanExpression{
+public class IsSolidExpression extends BooleanExpression{
 	
-	private positionExpression expression;
+	private UnitExpression expression;
 	
-	public isSolidExpression(positionExpression exp) {
+	public IsSolidExpression(UnitExpression exp) {
 		expression = exp;
 	}
 
-	public positionExpression getExpression() {
+	public UnitExpression getExpression() {
 		return expression;
 	}
 	
 	@Override
-	public boolean evaluate(Unit unit) {
-		// TODO Auto-generated method stub
-		return (! unit.getWorld().isCubePassable(expression[0], expression[1], expression[2]))
+	public TypeBool evaluate(Unit unit) {
+		double[] position = ((Unit) getExpression().evaluate(unit).getType()).getPosition();
+		int[] intPosition = {(int) position[0], (int) position[1], (int) position[2]};
+		return new TypeBool(! (unit.getWorld().isCubePassable(intPosition[0], intPosition[1], intPosition[2])));
 	}
-	
-	
-	
-	
 }
