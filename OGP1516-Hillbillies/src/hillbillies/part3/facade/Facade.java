@@ -7,16 +7,20 @@ import java.util.Set;
 import hillbillies.model.Faction;
 import hillbillies.model.Scheduler;
 import hillbillies.model.Task;
+import hillbillies.model.TaskFactory;
 import hillbillies.model.Unit;
 import hillbillies.model.World;
 import hillbillies.model.item.Boulder;
 import hillbillies.model.item.Log;
+import hillbillies.model.programs.expression.Expression;
+import hillbillies.model.programs.statement.Statement;
 import hillbillies.part3.facade.Facade;
 import hillbillies.part2.listener.TerrainChangeListener;
 import hillbillies.part3.programs.ITaskFactory;
 import hillbillies.part3.programs.TaskParser;
 import hillbillies.tests.facade.Part3TestPartial;
 import ogp.framework.util.ModelException;
+
 /**
  * Implement this interface to connect your code to the graphical user interface
  * (GUI).
@@ -970,9 +974,9 @@ public class Facade implements IFacade{
 	 *         interface for an explanation of its parameters.
 	 */
 	@Override
-	public ITaskFactory<?, ?, Task> createTaskFactory() {
-		// TODO Auto-generated method stub
-		return null;
+	public ITaskFactory<Expression, Statement, Task> createTaskFactory() {
+		System.out.println("[createTaskFactory]");
+		return new TaskFactory();
 	}
 
 	/**
@@ -1159,13 +1163,6 @@ public class Facade implements IFacade{
 	}
 
 	@Override
-	@Deprecated
-	public Unit createUnit(String name, int[] initialPosition, int weight, int agility, int strength, int toughness,
-			boolean enableDefaultBehavior) throws ModelException {
-		return null;
-	}
-
-	@Override
 	public double[] getPosition(Boulder boulder) throws ModelException {
 		return boulder.getPosition();
 	}
@@ -1183,6 +1180,13 @@ public class Facade implements IFacade{
 	@Override
 	public Set<Log> getLogs(World world) throws ModelException {
 		return world.getSetOfLogs();
+	}
+
+	@Override
+	public Unit createUnit(String name, int[] initialPosition, int weight, int agility, int strength, int toughness,
+			boolean enableDefaultBehavior) throws ModelException {
+		// TODO Auto-generated method stub
+		return new Unit(name, initialPosition, weight, agility, strength, toughness, enableDefaultBehavior);
 	}
 
 }

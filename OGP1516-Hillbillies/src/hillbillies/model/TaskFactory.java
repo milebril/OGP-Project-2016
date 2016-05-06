@@ -1,9 +1,12 @@
 package hillbillies.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import hillbillies.model.programs.expression.Expression;
 import hillbillies.model.programs.statement.Statement;
+import hillbillies.model.programs.statement.sequenceStatement;
+import hillbillies.model.programs.statement.workStatement;
 import hillbillies.part3.programs.ITaskFactory;
 import hillbillies.part3.programs.SourceLocation;
 import hillbillies.part3.programs.TaskParser;
@@ -77,9 +80,20 @@ public class TaskFactory implements ITaskFactory<Expression, Statement, Task> {
 	 */
 
 	@Override
-	public List<Task> createTasks(String name, int priority, Statement activity, List<int[]> selectedCubes) {
-		// TODO Auto-generated method stub
-		return null;
+	public List<Task> createTasks(String name, int priority, Statement activity, List<int[]> selectedCubes) { //TODO selectedCubes
+		System.out.println("[createTasks] " + activity.whoAmI());
+		
+		List<Task> taskList = new ArrayList<Task>();
+		
+		if (activity instanceof sequenceStatement) {
+			for (Statement statement : ((sequenceStatement) activity).getSequence()) {
+				taskList.add(new Task(name, priority, statement));
+			}
+		} else {
+			taskList.add(new Task(name, priority, activity));
+		}
+		
+		return taskList;
 	}
 
 	/* STATEMENTS */
@@ -191,8 +205,7 @@ public class TaskFactory implements ITaskFactory<Expression, Statement, Task> {
 	 */
 	@Override
 	public Statement createWork(Expression position, SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+		return new workStatement(position);
 	}
 
 	/**

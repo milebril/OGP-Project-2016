@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Set;
 
 import be.kuleuven.cs.som.annotate.*;
+import hillbillies.model.programs.statement.Statement;
 
 /**
  * a class that deals with all the tasks that a scheduler can consist of.
@@ -59,13 +60,16 @@ public class Task {
 	 *         assignedUnit.
 	 *       | new.getAssignedUnit() == assignedUnit
 	 */
-	public Task(String name, int prioirty, List<Object> activities){
-		this.setPriority(priority);
+	public Task(String name, int priority, Statement activities){
+		setPriority(priority);
 		assert this.canHaveAsName(name);
 			this.name = name;
-		this.listOfSchedulers = new HashSet<Scheduler>();
+		//this.listOfSchedulers = new HashSet<Scheduler>();
 		//TODO constructor
+		this.activity = activities;
 	}
+	
+	private Statement activity;
 	
 //////////////////////////////////// priority ////////////////////////////////////
 	
@@ -87,7 +91,7 @@ public class Task {
 	 *       | result == 
 	*/
 	public static boolean isValidPriority(int priority) {
-		return false;
+		return true;
 	}
 
 	/**
@@ -240,6 +244,14 @@ public class Task {
 	 * Variable registering the list of schedulers of this Task.
 	 */
 	public Set<Scheduler> listOfSchedulers;
+
+	
+	
+	public void execute(Unit unit) {
+		if (activity.canExecute(unit))
+			this.activity.execute(unit);
+			
+	}
 	
 ////////////////////////////////////List of Activities ////////////////////////////////////	
 	

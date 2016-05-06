@@ -9,6 +9,7 @@ public class assignmentStatement extends Statement{
 	private Expression expression;
 	
 	public assignmentStatement(String name, Expression value) {
+		super(true);
 		this.name = name;
 		this.expression = value;
 	}

@@ -211,10 +211,7 @@ public class Unit {
 	 * 
 	 */
 	public Unit (String name, int[] initialPosition, int weight, int agility, int strength, int toughness,
-			boolean enableDefaultBehavior, World world) throws IllegalArgumentException, ModelException {
-		/* World */ 
-		setWorld(world);
-		
+			boolean enableDefaultBehavior) throws IllegalArgumentException, ModelException {	
 		/* Weight */
 		if (weight > 100)
 			this.setWeight(100);
@@ -258,7 +255,6 @@ public class Unit {
 				
 		/* Position */
 		double[] position = putUnitInCenter(castIntToDouble(initialPosition));
-		if (! isValidPosition(position)) throw new IllegalArgumentException();
 		this.setUnitPosition(position);
 		
 		/* Hitpoints */
@@ -280,7 +276,7 @@ public class Unit {
 	 * @param world
 	 * 		  the given world
 	 */
-	private static void setWorld(World worldForUnits) {
+	public static void setWorld(World worldForUnits) {
 		world = worldForUnits;
 	}
 	
@@ -705,7 +701,7 @@ public class Unit {
 	 */
 	@Raw
 	public void setUnitPosition(double[] position) throws IllegalArgumentException {
-		if (! isValidPosition(position))
+		if (getWorld() != null && ! isValidPosition(position))
 			throw new IllegalArgumentException(); 
 		this.unitPosition = position;	
 
@@ -1467,6 +1463,8 @@ public class Unit {
 	 * 		new.timeLeftWorking = (500 / getStrenght())
 	 */
 	public void startWorking(int[] positionOfCube){
+		System.out.println("[startWorking]");
+		
 		if (!(Arrays.equals(castDoubleToInt(getPosition()), positionOfCube))) {
 			wantToWork = true;
 			startPathfinding(positionOfCube);
@@ -2081,8 +2079,6 @@ public class Unit {
 		int[] intCube = castDoubleToInt(cube);
 		int counter = 0;
 		while (!isInsideWorld(intCube)) {
-			System.out.println(isInsideWorld(intCube));
-			System.out.println(cube[0] + " " + cube[1] + " " + cube[2]);
 			counter++;
 			if (counter > 10) {
 				intCube[0] = (int) getPosition()[0];
@@ -2090,7 +2086,6 @@ public class Unit {
 				intCube[2] = (int) getPosition()[2];
 				return intCube;
 			}
-			System.out.println("lus1");
 			intCube[0] += random.nextInt(16) - 8;
 			intCube[1] += random.nextInt(16) - 8;
 			intCube[2] += random.nextInt(16) - 8;

@@ -112,9 +112,43 @@ public class World {
 	public void addUnit(Unit unit) throws ModelException{
 		if(getAmountOfUnits() < getMaxAmountOfUnits()) {
 			this.setOfUnits.add(unit);
+			unit.setWorld(this);
+			
+			if ( ! isInsideWorld(castDoubleToInt(unit.getPosition()))) {
+				throw new ModelException();
+			}
+			
+			if (getAmountOfFaction() < getMaxAmountOfFactions()) {
+				Faction f = new Faction(this);
+				createFaction(f);
+				f.addUnitToFaction(unit);
+				unit.setFaction(f);
+			} else {
+				Faction f = lowestMemberFaction();
+				f.addUnitToFaction(unit);
+				unit.setFaction(f);
+			}
+			
 			
 		} else
 			throw new ModelException();
+	}
+	
+	/**
+	 * cast an array of doubles in an array of integers
+	 * @param arrayInDoubles
+	 * @return arrayInInt
+	 */
+	public int[] castDoubleToInt (double[] arrayInDoubles){
+		int[] arrayInInt = {(int) arrayInDoubles[0],(int) arrayInDoubles[1],(int) arrayInDoubles[2]};
+		return arrayInInt;
+	}
+	
+	private boolean isInsideWorld(int[] position) {
+		if (position[0] <= getXLength() && position[1] <= getYLength() && position[2] <= getZLength() &&
+				position[0] >= 0 && position[1] >= 0 && position[2] >= 0)
+			return true;
+		return false;
 	}
 	
 	public void removeUnit(Unit unit) {
@@ -363,18 +397,7 @@ public class World {
 		int agility = rand.nextInt(75) + 25;
 		int toughness = rand.nextInt(75) + 25;
 		
-		Unit newUnit = new Unit("New Unit", new int[] {x, y, z}, weight, agility, strength, toughness, enableDefaultBehavior, this);
-		
-		if (getAmountOfFaction() < getMaxAmountOfFactions()) {
-			Faction f = new Faction(this);
-			createFaction(f);
-			f.addUnitToFaction(newUnit);
-			newUnit.setFaction(f);
-		} else {
-			Faction f = lowestMemberFaction();
-			f.addUnitToFaction(newUnit);
-			newUnit.setFaction(f);
-		}
+		Unit newUnit = new Unit("New Unit", new int[] {x, y, z}, weight, agility, strength, toughness, enableDefaultBehavior);
 		
 		addUnit(newUnit);
 		
@@ -415,6 +438,14 @@ public class World {
 		Object[] listOfUnits = this.getSetOfUnits().toArray();
 		for(int i = 0; i < listOfUnits.length; i++) {
 			((Unit) listOfUnits[i]).advanceTimeOfUnit(dt);
+		}
+		
+		//TODO scheduler verder uitwerken
+		
+		for (Faction fac : getSetOfFactions()) {
+			Scheduler sched = fac.getScheduler();
+			System.out.println(sched.getHighestPriorityTask().getName());
+			sched.getHighestPriorityTask().execute((Unit) setOfUnits.toArray()[0]);
 		}
 	}
 	

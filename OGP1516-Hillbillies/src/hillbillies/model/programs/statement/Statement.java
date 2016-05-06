@@ -9,12 +9,20 @@ public abstract class Statement {
 	
 	private boolean isExecuted;
 	
+	public Statement(boolean isExecuted) {
+		this.isExecuted = isExecuted;
+	}
+	
 	public boolean isExcecuted() {
-		return isExecuted;
+		return this.isExecuted;
 	}
 	
 	public void setExecutedTrue() {
 		this.isExecuted = true;
+	}
+	
+	public Object whoAmI() {
+		return this.getClass();
 	}
 	
 	

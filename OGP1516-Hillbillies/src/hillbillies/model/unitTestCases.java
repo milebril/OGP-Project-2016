@@ -32,9 +32,9 @@ public class unitTestCases {
 		
 		
 		int[] pos = {0,0,0};
-		testunit = new Unit("Emil", pos, 50, 50, 50, 50, false, testworld);
+		testunit = new Unit("Emil", pos, 50, 50, 50, 50, false);
 		testunit.putUnitInCenter(testunit.castIntToDouble(pos));
-		testunit2 = new Unit("Emil", pos, 50, 50, 50, 50, false, testworld);
+		testunit2 = new Unit("Emil", pos, 50, 50, 50, 50, false);
 		testunit2.putUnitInCenter(testunit.castIntToDouble(pos));
 	}
 	/*
@@ -229,7 +229,7 @@ public class unitTestCases {
 	
 	@Test
 	public void isValidPosition_LegalCase() {
-		assertTrue(Unit.isValidPosition(new double[] {2.5, 3.5, 5.5}));
+		assertTrue(Unit.isValidPosition(new double[] {2.5, 3.5, 5.5})); //TODO addUnit + facade in construcot
 	}
 	
 	@Test
@@ -278,7 +278,7 @@ public class unitTestCases {
 	@Test
 	public void newUnitLives_TrueCase() throws IllegalArgumentException, ModelException {
 		int[] pos = {0,0,0};
-		Unit alive = new Unit("Emil", pos, 50, 50, 50, 50, false, testworld);
+		Unit alive = new Unit("Emil", pos, 50, 50, 50, 50, false);
 		testunit2.putUnitInCenter(testunit.castIntToDouble(pos));
 		
 		assertTrue(alive.isUnitAlive());
@@ -291,9 +291,9 @@ public class unitTestCases {
 	@Test
 	public void unitLevels() throws IllegalArgumentException, ModelException  {
 		int[] pos = {0,0,0};
-		Unit test = new Unit("Emil", pos, 50, 50, 50, 50, false, testworld);
+		Unit test = new Unit("Emil", pos, 50, 50, 50, 50, false);
 		
-		Unit test2 = new Unit("Emil", pos, 50, 50, 50, 50, false, testworld);
+		Unit test2 = new Unit("Emil", pos, 50, 50, 50, 50, false);
 		
 		test.setExperience(50);
 		
