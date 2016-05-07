@@ -1,5 +1,5 @@
 package hillbillies.model.programs.expression;
 
-public class PositionExpression {
+public class ReadVariableExpression {
 
 }

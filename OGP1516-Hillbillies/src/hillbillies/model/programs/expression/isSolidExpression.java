@@ -1,6 +1,7 @@
 package hillbillies.model.programs.expression;
 
 import hillbillies.model.Unit;
+import hillbillies.model.programs.expression.type.TypeBool;
 
 public class IsSolidExpression extends BooleanExpression{
 	

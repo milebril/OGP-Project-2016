@@ -22,9 +22,12 @@ public class BoulderLogTestCases {
 	public Boulder boulder;
 	public World testWorld;
 	public Unit testunit;
+	public Facade facade;
 	
 	@Before
 	public void setUp() throws Exception {
+		facade = new Facade();
+		
 		TerrainChangeListener modelListener = new TerrainChangeListener() {
 			
 			@Override
@@ -37,7 +40,8 @@ public class BoulderLogTestCases {
 		 boulder = new Boulder( new double[] {4,4,4});
 		 
 		 int[] pos = {0,0,0};
-		testunit = new Unit("Emil", pos, 50, 50, 50, 50, false, testWorld);
+		testunit = new Unit("Emil", pos, 50, 50, 50, 50, false);
+		facade.addUnit(testunit, testWorld);
 	}
 
 	@Test
@@ -104,8 +108,9 @@ public class BoulderLogTestCases {
 		
 		assertEquals(world.getSetOfBoulders().size(), 0);
 		
-		Unit unit = new Unit("Emil", new int[] {1,1,1}, 50, 50, 50, 50, false, world);
+		Unit unit = new Unit("Emil", new int[] {1,1,1}, 50, 50, 50, 50, false);
 		facade.addUnit(unit, world);
+		
 		assertTrue(facade.isSolidConnectedToBorder(world, 1, 1, 0));
 		assertTrue(facade.isSolidConnectedToBorder(world, 1, 1, 1));
 		facade.workAt(unit, 1, 1, 1);
@@ -137,7 +142,7 @@ public class BoulderLogTestCases {
 
 		World world = facade.createWorld(types, new DefaultTerrainChangeListener());
 	
-		Unit unit = new Unit("Emil", new int[] {1,1,1}, 50, 50, 50, 50, false, world);
+		Unit unit = new Unit("Emil", new int[] {1,1,1}, 50, 50, 50, 50, false);
 		facade.addUnit(unit, world);
 		assertTrue(facade.isSolidConnectedToBorder(world, 1, 1, 0));
 		assertTrue(facade.isSolidConnectedToBorder(world, 1, 1, 1));

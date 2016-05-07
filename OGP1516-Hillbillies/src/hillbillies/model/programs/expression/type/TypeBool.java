@@ -1,4 +1,4 @@
-package hillbillies.model.programs.expression;
+package hillbillies.model.programs.expression.type;
 
 public class TypeBool extends ExprType{
 
