@@ -11,14 +11,17 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import hillbillies.part2.listener.TerrainChangeListener;
+import hillbillies.part3.facade.Facade;
 import ogp.framework.util.ModelException;
 
 public class factionTestCases {
 	
 	public World testWorld;
+	public Facade facade;
 
 	@Before
 	public void setUp() throws ModelException  {
+		facade = new Facade();
 		TerrainChangeListener modelListener = new TerrainChangeListener() {
 			
 			@Override
@@ -31,7 +34,7 @@ public class factionTestCases {
 	@Test
 	public void add_removeUnitToFaction() throws IllegalArgumentException, ModelException {
 		int[] pos = {0,0,0};
-		Unit alive = new Unit("Emil", pos, 50, 50, 50, 50, false, testWorld);
+		Unit alive = new Unit("Emil", pos, 50, 50, 50, 50, false);
 		Faction f = new Faction(testWorld);
 		
 		f.addUnitToFaction(alive);
@@ -76,7 +79,7 @@ public class factionTestCases {
 		int agility = rand.nextInt(75) + 25;
 		int toughness = rand.nextInt(75) + 25;
 		
-		Unit newUnit = new Unit("New Unit", new int[] {x, y, z}, weight, agility, strength, toughness, false, testWorld);
+		Unit newUnit = new Unit("New Unit", new int[] {x, y, z}, weight, agility, strength, toughness, false);
 		
 		return newUnit;
 	}

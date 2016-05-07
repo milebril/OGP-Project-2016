@@ -1,8 +1,8 @@
 package hillbillies.model;
 
-import hillbillies.part1.facade.Facade;
-import hillbillies.part2.facade.IFacade;
+import hillbillies.part2.facade.Facade;
 import hillbillies.part2.listener.TerrainChangeListener;
+import hillbillies.part3.facade.IFacade;
 import ogp.framework.util.ModelException;
 import ogp.framework.util.Util;
 
@@ -228,14 +228,16 @@ public class unitTestCases {
 	 */
 	
 	@Test
-	public void isValidPosition_LegalCase() {
-		assertTrue(Unit.isValidPosition(new double[] {2.5, 3.5, 5.5})); //TODO addUnit + facade in construcot
+	public void isValidPosition_LegalCase() throws ModelException {
+		
+		facade.addUnit(testunit, testworld);
+		assertTrue(testunit.isValidPosition(new double[] {2.5, 3.5, 5.5})); //TODO addUnit + facade in construcot
 	}
 	
 	@Test
 	public void isValidPosition_IllegalCase() {
-		assertFalse(Unit.isValidPosition(new double[] {-2.5, 3.5, 5.5}));
-		assertFalse(Unit.isValidPosition(new double[] {2.5, 3.5, 50.5}));
+		assertFalse(testunit.isValidPosition(new double[] {-2.5, 3.5, 5.5}));
+		assertFalse(testunit.isValidPosition(new double[] {2.5, 3.5, 50.5}));
 	}
 	
 	@Test
