@@ -1363,7 +1363,7 @@ public class Unit {
 		return false;
 	}
 	
-	private int getDistance(double[] nodePos, double[] goal) {
+	public static int getDistance(double[] nodePos, double[] goal) {
 		
 		int distX = (int) Math.abs(nodePos[0] - goal[0]);
         int distY = (int) Math.abs(nodePos[1] - goal[1]);
