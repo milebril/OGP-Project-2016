@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import hillbillies.model.programs.expression.Expression;
+import hillbillies.model.programs.expression.WorkshopPositionExpression;
 import hillbillies.model.programs.statement.Statement;
 import hillbillies.model.programs.statement.sequenceStatement;
 import hillbillies.model.programs.statement.workStatement;
@@ -405,8 +406,7 @@ public class TaskFactory implements ITaskFactory<Expression, Statement, Task> {
 	 */
 	@Override
 	public Expression createWorkshopPosition(SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+		return new WorkshopPositionExpression();
 	}
 
 	/**
