@@ -1372,7 +1372,7 @@ public class Unit {
         return distX + distY + distZ;
 	}
 	
-	public Set<int[]> getAdjacentCubes(int[] position) {
+	public static Set<int[]> getAdjacentCubes(int[] position) {
 		Set<int[]> adjacentCubes = new LinkedHashSet<>();
 		
 		int X = position[0];
@@ -1425,7 +1425,7 @@ public class Unit {
 			
 	}
 	
-	private boolean isInsideWorld(int[] position) {
+	private static boolean isInsideWorld(int[] position) {
 		if (position[0] <= getWorld().getXLength() && position[1] <= getWorld().getYLength() && position[2] <= getWorld().getZLength() &&
 				position[0] >= 0 && position[1] >= 0 && position[2] >= 0)
 			return true;
