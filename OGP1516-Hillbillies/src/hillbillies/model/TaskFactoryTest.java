@@ -1,4 +1,4 @@
-package hillbillies.tests.facade;
+package hillbillies.model;
 
 import static org.junit.Assert.*;
 
@@ -8,18 +8,13 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
-import hillbillies.model.Faction;
-import hillbillies.model.Scheduler;
-import hillbillies.model.Task;
-import hillbillies.model.Unit;
-import hillbillies.model.World;
 import hillbillies.part2.listener.DefaultTerrainChangeListener;
 import hillbillies.part3.facade.Facade;
 import hillbillies.part3.facade.IFacade;
 import hillbillies.part3.programs.TaskParser;
 import ogp.framework.util.ModelException;
 
-public class Part3TestPartial {
+public class TaskFactoryTest {
 
 	private Facade facade;
 
@@ -32,9 +27,9 @@ public class Part3TestPartial {
 	public void setup() {
 		this.facade = new Facade();
 	}
-
+	
 	@Test
-	public void testTaskExecuted() throws ModelException {
+	public void executeWorkTask() throws ModelException {
 		int[][][] types = new int[3][3][3];
 		types[1][1][0] = TYPE_ROCK;
 		types[1][1][1] = TYPE_ROCK;
@@ -42,16 +37,15 @@ public class Part3TestPartial {
 		types[2][2][2] = TYPE_WORKSHOP;
 
 		World world = facade.createWorld(types, new DefaultTerrainChangeListener());
-		Unit unit = facade.createUnit("Test", new int[] { 0, 0, 0 }, 50, 50, 50, 50, true);
+		Unit unit = facade.createUnit("Test", new int[] { 1, 1, 1}, 50, 50, 50, 50, false);
 		facade.addUnit(unit, world);
 		Faction faction = facade.getFaction(unit);
 
 		Scheduler scheduler = facade.getScheduler(faction);
 
 		List<Task> tasks = TaskParser.parseTasksFromString(
-				"name: \"work task\"\npriority: 1\nactivities: work here;", facade.createTaskFactory(),
-				Collections.singletonList(new int[] { 1, 1, 1 }));
-
+				"name: \"work task\"\npriority: 1\nactivities: work here;", facade.createTaskFactory(), null);
+		
 		// tasks are created
 		assertNotNull(tasks);
 		// there's exactly one task
@@ -71,7 +65,8 @@ public class Part3TestPartial {
 		// work task is removed from scheduler
 		assertFalse(facade.areTasksPartOf(scheduler, Collections.singleton(task)));
 	}
-
+	
+	
 	/**
 	 * Helper method to advance time for the given world by some time.
 	 * 
@@ -86,5 +81,4 @@ public class Part3TestPartial {
 			facade.advanceTime(world, step);
 		facade.advanceTime(world, time - n * step);
 	}
-
 }

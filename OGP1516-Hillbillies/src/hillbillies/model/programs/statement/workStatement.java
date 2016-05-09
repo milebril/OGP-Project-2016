@@ -10,16 +10,19 @@ public class workStatement extends Statement {
 	
 	public workStatement(PositionExpression e) {
 		super(false);
-		System.out.println("workStatement entry");
+		System.out.println("workStatement entry " + e);
 		this.exp = e;
 	}
 	
-
+	public double[] getPositionExpression(Unit unit) {
+		return (double[]) exp.evaluate(unit).getType();
+	}
 	
 	@Override
 	public void execute(Unit unit) {
 		System.out.println("voer uit");
-		unit.startWorking(exp.evaluate(unit));
+		unit.startWorking(new int[] {(int) getPositionExpression(unit)[0] , (int) getPositionExpression(unit)[1], 
+				(int) getPositionExpression(unit)[2]});
 		setExecutedTrue();
 		
 	}
@@ -38,6 +41,5 @@ public class workStatement extends Statement {
 	public boolean isWellFormed() {
 		return true;
 	}
-	
 
 }

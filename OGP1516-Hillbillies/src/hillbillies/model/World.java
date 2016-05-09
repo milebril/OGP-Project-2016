@@ -444,8 +444,11 @@ public class World {
 		
 		for (Faction fac : getSetOfFactions()) {
 			Scheduler sched = fac.getScheduler();
-			System.out.println(sched.getHighestPriorityTask().getName());
-			sched.getHighestPriorityTask().execute((Unit) setOfUnits.toArray()[0]);
+			if (sched.getIterator().hasNext()) {
+				System.out.println(sched.getHighestPriorityTask().getName());
+				sched.getHighestPriorityTask().execute((Unit) setOfUnits.toArray()[0]); 
+				//TODO een unit een task laten uitvoeren duie zelf niks doet
+			}
 		}
 	}
 	

@@ -1,7 +1,5 @@
 package hillbillies.model.programs.expression;
 
-import java.util.Random;
-
 import hillbillies.model.Unit;
 import hillbillies.model.programs.expression.type.TypeUnit;
 
@@ -13,17 +11,22 @@ public class AnyExpression extends UnitExpression{
 	
 	@Override
 	public TypeUnit evaluate(Unit unit) {
-		Random rand = new Random();
-		int n = rand.nextInt(unit.getWorld().getAmountOfUnits());
+		Unit closest = null;
 		
-		Unit temp = (Unit) unit.getWorld().getSetOfUnits().toArray()[n];
-		
-		while (temp.equals(unit)) {
-			n = rand.nextInt(unit.getWorld().getAmountOfUnits());
-			temp = (Unit) unit.getWorld().getSetOfUnits().toArray()[n];
+		for (Unit temp : unit.getWorld().getSetOfUnits()) {
+			if (closest == null) {
+				closest = temp;
+			} else if (Unit.getDistance(unit.getPosition(), temp.getPosition()) <
+						Unit.getDistance(unit.getPosition(), closest.getPosition())) {
+				closest = temp;
+			}
 		}
 		
-		return new TypeUnit(temp);
+		if (closest == null) {
+			return new TypeUnit(null);
+		}
+		
+		return new TypeUnit(closest);
 		
 	}
 

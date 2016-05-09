@@ -2056,7 +2056,7 @@ public class Unit {
 			this.startPathfinding(cube);
 		}
 		else if(ActionChance == 2){
-			this.startWorking(castDoubleToInt(getPosition())	);
+			this.startWorking(castDoubleToInt(getPosition()));
 		}
 		else if(ActionChance == 3){
 			if (canRest())
