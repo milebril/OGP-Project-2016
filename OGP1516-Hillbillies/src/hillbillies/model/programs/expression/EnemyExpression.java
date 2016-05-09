@@ -11,9 +11,16 @@ public class EnemyExpression extends UnitExpression{
 	
 	@Override
 	public TypeUnit evaluate(Unit unit) {
+		Unit closest = null;
+		
 		for (Unit u : unit.getWorld().getSetOfUnits()) {
 			if (!u .equals(unit) && u.getFaction() != unit.getFaction()) {
-				return new TypeUnit(u);
+				if (closest == null) {
+					closest = u;
+				} else if (Unit.getDistance(unit.getPosition(), u.getPosition()) <
+							Unit.getDistance(unit.getPosition(), closest.getPosition())) {
+					closest = u;
+				}
 			}
 		}
 		

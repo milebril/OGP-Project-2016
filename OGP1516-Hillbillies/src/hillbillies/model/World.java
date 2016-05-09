@@ -441,12 +441,12 @@ public class World {
 		}
 		
 		//TODO scheduler verder uitwerken
-		/*
+		
 		for (Faction fac : getSetOfFactions()) {
 			Scheduler sched = fac.getScheduler();
 			System.out.println(sched.getHighestPriorityTask().getName());
 			sched.getHighestPriorityTask().execute((Unit) setOfUnits.toArray()[0]);
-		}*/
+		}
 	}
 	
 ////////////////////////////////////////////World dimensions////////////////////////////////////////////

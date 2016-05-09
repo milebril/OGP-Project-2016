@@ -1066,8 +1066,7 @@ public class Facade implements IFacade{
 	 */
 	@Override
 	public boolean areTasksPartOf(Scheduler scheduler, Collection<Task> tasks) throws ModelException {
-		// TODO Auto-generated method stub
-		return false;
+		return scheduler.areTasksPartOf(tasks);
 	}
 
 	/**
@@ -1185,7 +1184,6 @@ public class Facade implements IFacade{
 	@Override
 	public Unit createUnit(String name, int[] initialPosition, int weight, int agility, int strength, int toughness,
 			boolean enableDefaultBehavior) throws ModelException {
-		// TODO Auto-generated method stub
 		return new Unit(name, initialPosition, weight, agility, strength, toughness, enableDefaultBehavior);
 	}
 

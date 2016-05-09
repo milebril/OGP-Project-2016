@@ -64,9 +64,10 @@ public class Task {
 		setPriority(priority);
 		assert this.canHaveAsName(name);
 			this.name = name;
-		//this.listOfSchedulers = new HashSet<Scheduler>();
 		//TODO constructor
 		this.activity = activities;
+		
+		this.listOfSchedulers = new HashSet<Scheduler>();
 	}
 	
 	private Statement activity;
@@ -88,7 +89,7 @@ public class Task {
 	 * @param  priority
 	 *         The priority to check.
 	 * @return 
-	 *       | result == 
+	 *       | result == true
 	*/
 	public static boolean isValidPriority(int priority) {
 		return true;
@@ -246,14 +247,14 @@ public class Task {
 	public Set<Scheduler> listOfSchedulers;
 
 	
+	/*
+	 * Executing the Task
+	 */
 	
-	public void execute(Unit unit) {
+	public void execute(Unit unit) { //TODO zet de unit die deze task uitvoert
 		if (activity.canExecute(unit))
 			this.activity.execute(unit);
 			
 	}
 	
-////////////////////////////////////List of Activities ////////////////////////////////////	
-	
-	//TODO list of activities maken
 }

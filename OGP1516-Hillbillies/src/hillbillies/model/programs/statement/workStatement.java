@@ -2,15 +2,16 @@ package hillbillies.model.programs.statement;
 
 import hillbillies.model.Unit;
 import hillbillies.model.programs.expression.Expression;
+import hillbillies.model.programs.expression.PositionExpression;
 
 public class workStatement extends Statement {
 
-	private Expression expression;
+	private PositionExpression exp;
 	
-	public workStatement(Expression exp) {
+	public workStatement(PositionExpression e) {
 		super(false);
 		System.out.println("workStatement entry");
-		this.expression = exp;
+		this.exp = e;
 	}
 	
 
@@ -18,7 +19,7 @@ public class workStatement extends Statement {
 	@Override
 	public void execute(Unit unit) {
 		System.out.println("voer uit");
-		unit.startWorking(new int[] {1,1,1});
+		unit.startWorking(exp.evaluate(unit));
 		setExecutedTrue();
 		
 	}
@@ -28,6 +29,13 @@ public class workStatement extends Statement {
 		if (isExcecuted()) {
 			return false;
 		}
+		return true;
+	}
+
+
+
+	@Override
+	public boolean isWellFormed() {
 		return true;
 	}
 	

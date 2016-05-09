@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import hillbillies.model.programs.expression.Expression;
+import hillbillies.model.programs.expression.PositionExpression;
 import hillbillies.model.programs.expression.WorkshopPositionExpression;
 import hillbillies.model.programs.statement.Statement;
 import hillbillies.model.programs.statement.sequenceStatement;
@@ -206,7 +207,7 @@ public class TaskFactory implements ITaskFactory<Expression, Statement, Task> {
 	 */
 	@Override
 	public Statement createWork(Expression position, SourceLocation sourceLocation) {
-		return new workStatement(position);
+		return new workStatement((PositionExpression) position);
 	}
 
 	/**

@@ -1,5 +1,6 @@
 package hillbillies.model;
 
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.PriorityQueue;
@@ -13,20 +14,28 @@ public class Scheduler {
 	
 	public void addTask (Task task){
 		this.priorityQueue.add(task);
-		//task.listOfSchedulers.add(this);
+		task.listOfSchedulers.add(this);
 	}
 	
 	public void removeTask(Task task){
-		this.priorityQueue.remove(task);
+		priorityQueue.remove(task);
+		task.listOfSchedulers.remove(this);
 	}
 	
 	public void replaceTask (Task oldTask, Task newTask){
 		this.priorityQueue.remove(oldTask);
+		oldTask.listOfSchedulers.remove(this);
 		this.priorityQueue.add(newTask);
+		newTask.listOfSchedulers.add(this);
 	}
 	
-	public boolean isPartOf(Task task){
-		return this.priorityQueue.contains(task);
+	public boolean areTasksPartOf(Collection<Task> taskCollection){
+		for (Task t : taskCollection) {
+			if (! priorityQueue.contains(t)) {
+				return false;
+			}
+		}
+		return true;
 	}
 	
 	public Task getHighestPriorityTask(){

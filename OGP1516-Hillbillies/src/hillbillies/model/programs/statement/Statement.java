@@ -30,4 +30,6 @@ public abstract class Statement {
 	
 	public abstract boolean canExecute(Unit unit);
 	
+	public abstract boolean isWellFormed();
+	
 }

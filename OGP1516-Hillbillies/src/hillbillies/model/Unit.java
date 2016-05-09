@@ -853,6 +853,7 @@ public class Unit {
 			setHitpoints(getMaxHitpoints());
 		else 
 			setHitpoints(getHitpoints() + hitpoints);
+
 	}
 	
 	
@@ -2387,7 +2388,7 @@ public class Unit {
 	 *       | result == 
 	*/
 	public static boolean isValidTask(Task task) {
-		return false;
+		return true;
 		//TODO is vallid task
 	}
 	

@@ -13,11 +13,17 @@ public class FriendExpression extends UnitExpression{
 	@Override
 	public TypeUnit evaluate(Unit unit) {
 		Faction f = unit.getFaction();
+		Unit closest = null;
 		
 		if (f.getAmountOfUnitsInFaction() >= 2) {
 			for (Unit temp : f.getUnitsInFaction()) {
 				if (! temp.equals(unit)) {
-					return new TypeUnit(temp);
+					if (closest == null) {
+						closest = temp;
+					} else if (Unit.getDistance(unit.getPosition(), temp.getPosition()) <
+								Unit.getDistance(unit.getPosition(), closest.getPosition())) {
+						closest = temp;
+					}
 				}
 			}
 		}
