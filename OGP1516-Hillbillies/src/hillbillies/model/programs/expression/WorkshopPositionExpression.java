@@ -16,7 +16,7 @@ public class WorkshopPositionExpression extends PositionExpression{
 		
 		for (int x = 0; x < terraintypes.length; x++) {
 			for (int y = 0; y < terraintypes[0].length; y++) {
-				for (int z = 0; x < terraintypes[0][0].length; x++) {
+				for (int z = 0; z < terraintypes[0][0].length; z++) {
 					if (terraintypes[x][y][z] == 3) {
 						double[] temp = {x+0.5,y+0.5,z+0.5};
 						if (closest == null) {

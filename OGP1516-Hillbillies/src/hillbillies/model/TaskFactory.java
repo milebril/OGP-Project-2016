@@ -3,18 +3,43 @@ package hillbillies.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import hillbillies.model.programs.expression.AndExpression;
+import hillbillies.model.programs.expression.AnyExpression;
+import hillbillies.model.programs.expression.BooleanExpression;
+import hillbillies.model.programs.expression.BoulderPositionExpression;
+import hillbillies.model.programs.expression.CarriesItemExpression;
+import hillbillies.model.programs.expression.EnemyExpression;
 import hillbillies.model.programs.expression.Expression;
+import hillbillies.model.programs.expression.FalseExpression;
+import hillbillies.model.programs.expression.FriendExpression;
 import hillbillies.model.programs.expression.HereExpression;
+import hillbillies.model.programs.expression.IsAliveExpression;
+import hillbillies.model.programs.expression.IsEnemyExpression;
+import hillbillies.model.programs.expression.IsFriendExpression;
+import hillbillies.model.programs.expression.IsPassableExpression;
+import hillbillies.model.programs.expression.IsSolidExpression;
+import hillbillies.model.programs.expression.LiteralPositionExpression;
+import hillbillies.model.programs.expression.LogPositionExpression;
+import hillbillies.model.programs.expression.NextToExpression;
+import hillbillies.model.programs.expression.NotExpression;
+import hillbillies.model.programs.expression.OrExpression;
 import hillbillies.model.programs.expression.PositionExpression;
+import hillbillies.model.programs.expression.PositionOfExpression;
+import hillbillies.model.programs.expression.ThisExpression;
+import hillbillies.model.programs.expression.UnitExpression;
 import hillbillies.model.programs.expression.WorkshopPositionExpression;
+import hillbillies.model.programs.expression.type.TypeBool;
 import hillbillies.model.programs.expression.type.TypePosition;
+import hillbillies.model.programs.expression.type.TypeUnit;
 import hillbillies.model.programs.statement.Statement;
+import hillbillies.model.programs.statement.moveToStatement;
 import hillbillies.model.programs.statement.sequenceStatement;
 import hillbillies.model.programs.statement.workStatement;
 import hillbillies.part3.programs.ITaskFactory;
 import hillbillies.part3.programs.SourceLocation;
 import hillbillies.part3.programs.TaskParser;
 import hillbillies.tests.facade.Part3TestPartial;
+import javafx.scene.shape.MoveTo;
 
 /**
  * A task factory is used by the parser ({@link TaskParser}) to construct an
@@ -60,7 +85,7 @@ import hillbillies.tests.facade.Part3TestPartial;
  * 
  * 
  */
-public class TaskFactory implements ITaskFactory<Expression, Statement, Task> {
+public class TaskFactory implements ITaskFactory<Expression<?>, Statement, Task> {
 
 	/* TASKS */
 
@@ -196,9 +221,8 @@ public class TaskFactory implements ITaskFactory<Expression, Statement, Task> {
 	 *            The position to which to move
 	 */
 	@Override
-	public Statement createMoveTo(Expression position, SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+	public Statement createMoveTo(Expression<?> position, SourceLocation sourceLocation) {
+		return new moveToStatement((PositionExpression) position);
 	}
 
 	/**
@@ -208,7 +232,7 @@ public class TaskFactory implements ITaskFactory<Expression, Statement, Task> {
 	 *            The position on which to work
 	 */
 	@Override
-	public Statement createWork(Expression position, SourceLocation sourceLocation) {
+	public Statement createWork(Expression<?> position, SourceLocation sourceLocation) {
 		return new workStatement((PositionExpression) position);
 	}
 
@@ -259,9 +283,8 @@ public class TaskFactory implements ITaskFactory<Expression, Statement, Task> {
 	 *            The position expression
 	 */
 	@Override
-	public Expression createIsSolid(Expression position, SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+	public Expression<TypeBool> createIsSolid(Expression<?> position, SourceLocation sourceLocation) {
+		return new IsSolidExpression((PositionExpression) position);
 	}
 	
 	/**
@@ -272,9 +295,8 @@ public class TaskFactory implements ITaskFactory<Expression, Statement, Task> {
 	 *            The position expression
 	 */
 	@Override
-	public Expression createIsPassable(Expression position, SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+	public Expression<TypeBool> createIsPassable(Expression<?> position, SourceLocation sourceLocation) {
+		return new IsPassableExpression((PositionExpression) position);
 	}
 
 	/**
@@ -285,9 +307,8 @@ public class TaskFactory implements ITaskFactory<Expression, Statement, Task> {
 	 *            The unit expression
 	 */
 	@Override
-	public Expression createIsFriend(Expression unit, SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+	public Expression<TypeBool> createIsFriend(Expression<?> unit, SourceLocation sourceLocation) {
+		return new IsFriendExpression((UnitExpression) unit);
 	}
 
 	/**
@@ -298,9 +319,8 @@ public class TaskFactory implements ITaskFactory<Expression, Statement, Task> {
 	 *            The unit expression
 	 */
 	@Override
-	public Expression createIsEnemy(Expression unit, SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+	public Expression<TypeBool> createIsEnemy(Expression<?> unit, SourceLocation sourceLocation) {
+		return new IsEnemyExpression((UnitExpression) unit);
 	}
 
 	/**
@@ -311,9 +331,8 @@ public class TaskFactory implements ITaskFactory<Expression, Statement, Task> {
 	 *            The unit expression
 	 */
 	@Override
-	public Expression createIsAlive(Expression unit, SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+	public Expression<TypeBool> createIsAlive(Expression<?> unit, SourceLocation sourceLocation) {
+		return new IsAliveExpression((UnitExpression) unit);
 	}
 
 	/**
@@ -324,9 +343,8 @@ public class TaskFactory implements ITaskFactory<Expression, Statement, Task> {
 	 *            The unit expression
 	 */
 	@Override
-	public Expression createCarriesItem(Expression unit, SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+	public Expression<TypeBool> createCarriesItem(Expression<?> unit, SourceLocation sourceLocation) {
+		return new CarriesItemExpression((UnitExpression) unit);
 	}
 
 	/**
@@ -336,9 +354,8 @@ public class TaskFactory implements ITaskFactory<Expression, Statement, Task> {
 	 * @param expression
 	 */
 	@Override
-	public Expression createNot(Expression expression, SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+	public Expression<TypeBool> createNot(Expression<?> expression, SourceLocation sourceLocation) {
+		return new NotExpression((BooleanExpression) expression);
 	}
 
 	/**
@@ -349,9 +366,8 @@ public class TaskFactory implements ITaskFactory<Expression, Statement, Task> {
 	 *       when the left expression evaluates to false.
 	 */
 	@Override
-	public Expression createAnd(Expression left, Expression right, SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+	public Expression<TypeBool> createAnd(Expression<?> left, Expression<?> right, SourceLocation sourceLocation) {
+		return new AndExpression((BooleanExpression) left, (BooleanExpression) right);
 	}
 
 	/**
@@ -362,9 +378,8 @@ public class TaskFactory implements ITaskFactory<Expression, Statement, Task> {
 	 *       when the left expression evaluates to true.
 	 */
 	@Override
-	public Expression createOr(Expression left, Expression right, SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+	public Expression<TypeBool> createOr(Expression<?> left, Expression<?> right, SourceLocation sourceLocation) {
+		return new OrExpression((BooleanExpression) left, (BooleanExpression) right);
 	}
 
 	/**
@@ -383,9 +398,8 @@ public class TaskFactory implements ITaskFactory<Expression, Statement, Task> {
 	 *       unit that is executing the task.
 	 */
 	@Override
-	public Expression createLogPosition(SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+	public Expression<TypePosition> createLogPosition(SourceLocation sourceLocation) {
+		return new LogPositionExpression();
 	}
 
 	/**
@@ -395,9 +409,8 @@ public class TaskFactory implements ITaskFactory<Expression, Statement, Task> {
 	 *       the unit that is executing the task.
 	 */
 	@Override
-	public Expression createBoulderPosition(SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+	public Expression<TypePosition> createBoulderPosition(SourceLocation sourceLocation) {
+		return new BoulderPositionExpression();
 	}
 
 	/**
@@ -407,7 +420,7 @@ public class TaskFactory implements ITaskFactory<Expression, Statement, Task> {
 	 *       to the unit that is executing the task.
 	 */
 	@Override
-	public Expression createWorkshopPosition(SourceLocation sourceLocation) {
+	public Expression<TypePosition> createWorkshopPosition(SourceLocation sourceLocation) {
 		return new WorkshopPositionExpression();
 	}
 
@@ -431,9 +444,8 @@ public class TaskFactory implements ITaskFactory<Expression, Statement, Task> {
 	 * 
 	 */
 	@Override
-	public Expression createNextToPosition(Expression position, SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+	public Expression<TypePosition> createNextToPosition(Expression<?> position, SourceLocation sourceLocation) {
+		return new NextToExpression((PositionExpression) position);
 	}
 
 	/**
@@ -442,9 +454,8 @@ public class TaskFactory implements ITaskFactory<Expression, Statement, Task> {
 	 * @param unit
 	 */
 	@Override
-	public Expression createPositionOf(Expression unit, SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+	public Expression<TypePosition> createPositionOf(Expression<?> unit, SourceLocation sourceLocation) {
+		return new PositionOfExpression((UnitExpression) unit);
 	}
 
 	/**
@@ -456,9 +467,8 @@ public class TaskFactory implements ITaskFactory<Expression, Statement, Task> {
 	 * @param z
 	 */
 	@Override
-	public Expression createLiteralPosition(int x, int y, int z, SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+	public Expression<TypePosition> createLiteralPosition(int x, int y, int z, SourceLocation sourceLocation) {
+		return new LiteralPositionExpression(x, y, z);
 	}
 
 	/**
@@ -466,9 +476,8 @@ public class TaskFactory implements ITaskFactory<Expression, Statement, Task> {
 	 * executing the task.
 	 */
 	@Override
-	public Expression createThis(SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+	public Expression<TypeUnit> createThis(SourceLocation sourceLocation) {
+		return new ThisExpression();
 	}
 
 	/**
@@ -476,9 +485,8 @@ public class TaskFactory implements ITaskFactory<Expression, Statement, Task> {
 	 * faction as the unit currently executing the task.
 	 */
 	@Override
-	public Expression createFriend(SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+	public Expression<TypeUnit> createFriend(SourceLocation sourceLocation) {
+		return new FriendExpression();
 	}
 
 	/**
@@ -486,36 +494,31 @@ public class TaskFactory implements ITaskFactory<Expression, Statement, Task> {
 	 * same faction as the unit currently executing the task.
 	 */
 	@Override
-	public Expression createEnemy(SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+	public Expression<TypeUnit> createEnemy(SourceLocation sourceLocation) {
+		return new EnemyExpression();
 	}
 
 	/**
 	 * Create an expression that evaluates to any unit (other than this).
 	 */
 	@Override
-	public Expression createAny(SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+	public Expression<TypeUnit> createAny(SourceLocation sourceLocation) {
+		return new AnyExpression();
 	}
 
 	/**
 	 * Create an expression that evaluates to true.
 	 */
 	@Override
-	public Expression createTrue(SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+	public Expression<TypeBool> createTrue(SourceLocation sourceLocation) {
+		return new TrueExpression();
 	}
 
 	/**
 	 * Create an expression that evaluates to false.
 	 */
 	@Override
-	public Expression createFalse(SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
-	}  //TODO moet <Expression, Statement, Task zijn>
-	
+	public Expression<TypeBool> createFalse(SourceLocation sourceLocation) {
+		return new FalseExpression();
+	} 
 }

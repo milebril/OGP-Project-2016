@@ -30,5 +30,11 @@ public class assignmentStatement extends Statement{
 	public String getAssignmentName() {
 		return name;
 	}
+
+	@Override
+	public boolean isWellFormed() {
+		// TODO Auto-generated method stub
+		return false;
+	}
 	
 }

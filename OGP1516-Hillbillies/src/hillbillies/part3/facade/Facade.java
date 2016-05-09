@@ -974,7 +974,7 @@ public class Facade implements IFacade{
 	 *         interface for an explanation of its parameters.
 	 */
 	@Override
-	public ITaskFactory<Expression, Statement, Task> createTaskFactory() {
+	public ITaskFactory<Expression<?>, Statement, Task> createTaskFactory() {
 		System.out.println("[createTaskFactory]");
 		return new TaskFactory();
 	}

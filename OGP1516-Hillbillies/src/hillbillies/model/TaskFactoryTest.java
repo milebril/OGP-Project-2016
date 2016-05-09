@@ -13,6 +13,7 @@ import hillbillies.part3.facade.Facade;
 import hillbillies.part3.facade.IFacade;
 import hillbillies.part3.programs.TaskParser;
 import ogp.framework.util.ModelException;
+import ogp.framework.util.Util;
 
 public class TaskFactoryTest {
 
@@ -62,6 +63,54 @@ public class TaskFactoryTest {
 		System.out.println(world.getCubeType(1, 1, 1));
 		// work task has been executed
 		assertEquals(TYPE_AIR, facade.getCubeType(world, 1, 1, 1));
+		// work task is removed from scheduler
+		assertFalse(facade.areTasksPartOf(scheduler, Collections.singleton(task)));
+	}
+	
+	@Test
+	public void executeMoveToTask() throws ModelException {
+		int[][][] types = new int[3][3][3];
+		
+		for (int x = 0; x < types.length; x++) {
+			for (int y = 0; y < types[0].length; y++) {
+				for (int z = 0; z < types[0][0].length; z++) {
+					if (z == 0) {
+						types[x][y][z]= TYPE_ROCK;
+					} else {
+						types[x][y][z]= TYPE_AIR;
+					}
+				}
+			}
+		}
+
+		World world = facade.createWorld(types, new DefaultTerrainChangeListener());
+		Unit unit = facade.createUnit("Test", new int[] { 0, 0, 1}, 50, 50, 50, 50, false);
+		facade.addUnit(unit, world);
+		Faction faction = facade.getFaction(unit);
+
+		Scheduler scheduler = facade.getScheduler(faction);
+
+		List<Task> tasks = TaskParser.parseTasksFromString(
+				"name: \"walk task\"\npriority: 1\nactivities: moveTo (2, 2, 1);", facade.createTaskFactory(), null);
+		
+		// tasks are created
+		assertNotNull(tasks);
+		// there's exactly one task
+		assertEquals(1, tasks.size());
+		Task task = tasks.get(0);
+		// test name
+		assertEquals("walk task", facade.getName(task));
+		// test priority
+		assertEquals(1, facade.getPriority(task));
+
+		facade.schedule(scheduler, task);
+		advanceTimeFor(facade, world, 50, 0.02);
+		
+		System.out.println(world.getCubeType(1, 1, 1));
+		// work task has been executed
+		assertEquals(2.5, unit.getPosition()[0], Util.DEFAULT_EPSILON);
+		assertEquals(2.5, unit.getPosition()[1], Util.DEFAULT_EPSILON);
+		assertEquals(1.5, unit.getPosition()[2], Util.DEFAULT_EPSILON);
 		// work task is removed from scheduler
 		assertFalse(facade.areTasksPartOf(scheduler, Collections.singleton(task)));
 	}

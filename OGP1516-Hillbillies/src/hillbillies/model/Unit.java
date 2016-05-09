@@ -1426,7 +1426,7 @@ public class Unit {
 			
 	}
 	
-	private static boolean isInsideWorld(int[] position) {
+	public static boolean isInsideWorld(int[] position) {
 		if (position[0] <= getWorld().getXLength() && position[1] <= getWorld().getYLength() && position[2] <= getWorld().getZLength() &&
 				position[0] >= 0 && position[1] >= 0 && position[2] >= 0)
 			return true;
