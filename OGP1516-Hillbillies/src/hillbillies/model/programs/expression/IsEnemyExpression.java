@@ -20,4 +20,7 @@ public class IsEnemyExpression extends BooleanExpression{
 		return new TypeBool(((Unit) getExpression().evaluate(unit).getType()).getFaction() != unit.getFaction());
 	}
 
+	public String toString() {
+		return "Is enemy";
+	}
 }

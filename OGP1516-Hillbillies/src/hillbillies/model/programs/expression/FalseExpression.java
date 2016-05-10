@@ -13,5 +13,8 @@ public class FalseExpression extends BooleanExpression{
 	public TypeBool evaluate(Unit unit) {
 		return new TypeBool(false);
 	}
-
+	
+	public String toString() {
+		return "False.";
+	}
 }

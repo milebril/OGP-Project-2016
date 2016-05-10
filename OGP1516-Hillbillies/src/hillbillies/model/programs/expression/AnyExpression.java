@@ -29,5 +29,8 @@ public class AnyExpression extends UnitExpression{
 		return new TypeUnit(closest);
 		
 	}
-
+	
+	public String toString() {
+		return "any Unit";
+	}
 }

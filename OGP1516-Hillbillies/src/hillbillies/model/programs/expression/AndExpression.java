@@ -26,4 +26,8 @@ public class AndExpression extends BooleanExpression{
 		return new TypeBool((boolean) getLeftExpression().evaluate(unit).getType() && 
 				(boolean) getRightExpression().evaluate(unit).getType());
 	}
+	
+	public String toString() {
+		return getLeftExpression().toString() + " and " + getRightExpression().toString();
+	}
 }

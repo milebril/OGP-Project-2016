@@ -29,4 +29,7 @@ public class NextToExpression extends PositionExpression{
 		return new TypePosition(null);
 	}
 
+	public String toString() {
+		return "Is next to";
+	}
 }

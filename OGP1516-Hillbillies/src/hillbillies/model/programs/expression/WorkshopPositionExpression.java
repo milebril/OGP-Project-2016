@@ -37,6 +37,9 @@ public class WorkshopPositionExpression extends PositionExpression{
 		return new TypePosition(closest);
 	}
 	
+	public String toString() {
+		return "Workshop";
+	}
 	
 	
 }

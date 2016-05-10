@@ -27,4 +27,7 @@ public class EnemyExpression extends UnitExpression{
 		return new TypeUnit(null);
 	}
 	
+	public String toString() {
+		return "Enemy.";
+	}
 }

@@ -107,11 +107,11 @@ public class TaskFactoryTest {
 		advanceTimeFor(facade, world, 50, 0.02);
 		
 		System.out.println(world.getCubeType(1, 1, 1));
-		// work task has been executed
+		// walk task has been executed
 		assertEquals(2.5, unit.getPosition()[0], Util.DEFAULT_EPSILON);
 		assertEquals(2.5, unit.getPosition()[1], Util.DEFAULT_EPSILON);
 		assertEquals(1.5, unit.getPosition()[2], Util.DEFAULT_EPSILON);
-		// work task is removed from scheduler
+		// walk task is removed from scheduler
 		assertFalse(facade.areTasksPartOf(scheduler, Collections.singleton(task)));
 	}
 	

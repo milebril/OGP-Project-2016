@@ -20,4 +20,7 @@ public class IsAliveExpression extends BooleanExpression{
 		return new TypeBool(((Unit) exp.evaluate(unit).getType()).isUnitAlive());
 	}
 
+	public String toString() {
+		return "Is alive";
+	}
 }

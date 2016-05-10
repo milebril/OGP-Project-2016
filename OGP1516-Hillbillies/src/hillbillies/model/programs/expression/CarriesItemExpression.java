@@ -20,4 +20,7 @@ public class CarriesItemExpression extends BooleanExpression {
 		return new TypeBool(((Unit) unitExp.evaluate(unit).getType()).isCarryingItem());
 	}
 
+	public String toString() {
+		return "carries Item";
+	}
 }

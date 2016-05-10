@@ -14,4 +14,8 @@ public class ThisExpression extends UnitExpression{
 		return new TypeUnit(unit);
 	}
 	
+	public String toString() {
+		return "This";
+	}
+	
 }

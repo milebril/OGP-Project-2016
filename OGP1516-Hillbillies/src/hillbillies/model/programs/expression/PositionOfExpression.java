@@ -20,4 +20,8 @@ public class PositionOfExpression extends PositionExpression{
 		return new TypePosition(((Unit) getExpression().evaluate(unit).getType()).getPosition());
 	}
 
+	public String toString() {
+		return "Position of unit";
+	}
+	
 }

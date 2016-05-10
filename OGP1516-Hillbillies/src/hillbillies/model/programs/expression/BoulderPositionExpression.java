@@ -30,5 +30,9 @@ public class BoulderPositionExpression extends PositionExpression{
 		return new TypePosition(closest.getPosition());
 		
 	}
+	
+	public String toString() {
+		return "Boulder";
+	}
 
 }

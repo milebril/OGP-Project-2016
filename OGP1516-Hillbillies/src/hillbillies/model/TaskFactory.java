@@ -31,10 +31,11 @@ import hillbillies.model.programs.expression.WorkshopPositionExpression;
 import hillbillies.model.programs.expression.type.TypeBool;
 import hillbillies.model.programs.expression.type.TypePosition;
 import hillbillies.model.programs.expression.type.TypeUnit;
+import hillbillies.model.programs.statement.PrintStatement;
 import hillbillies.model.programs.statement.Statement;
-import hillbillies.model.programs.statement.moveToStatement;
-import hillbillies.model.programs.statement.sequenceStatement;
-import hillbillies.model.programs.statement.workStatement;
+import hillbillies.model.programs.statement.MoveToStatement;
+import hillbillies.model.programs.statement.SequenceStatement;
+import hillbillies.model.programs.statement.WorkStatement;
 import hillbillies.part3.programs.ITaskFactory;
 import hillbillies.part3.programs.SourceLocation;
 import hillbillies.part3.programs.TaskParser;
@@ -114,8 +115,8 @@ public class TaskFactory implements ITaskFactory<Expression<?>, Statement, Task>
 		
 		List<Task> taskList = new ArrayList<Task>();
 		
-		if (activity instanceof sequenceStatement) {
-			for (Statement statement : ((sequenceStatement) activity).getSequence()) {
+		if (activity instanceof SequenceStatement) {
+			for (Statement statement : ((SequenceStatement) activity).getSequence()) {
 				taskList.add(new Task(name, priority, statement));
 			}
 		} else {
@@ -197,9 +198,8 @@ public class TaskFactory implements ITaskFactory<Expression<?>, Statement, Task>
 	 *            The expression to evaluate and print
 	 */
 	@Override
-	public Statement createPrint(Expression value, SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+	public Statement createPrint(Expression<?> value, SourceLocation sourceLocation) {
+		return new PrintStatement(value);
 	}
 
 	/**
@@ -222,7 +222,7 @@ public class TaskFactory implements ITaskFactory<Expression<?>, Statement, Task>
 	 */
 	@Override
 	public Statement createMoveTo(Expression<?> position, SourceLocation sourceLocation) {
-		return new moveToStatement((PositionExpression) position);
+		return new MoveToStatement((PositionExpression) position);
 	}
 
 	/**
@@ -233,7 +233,7 @@ public class TaskFactory implements ITaskFactory<Expression<?>, Statement, Task>
 	 */
 	@Override
 	public Statement createWork(Expression<?> position, SourceLocation sourceLocation) {
-		return new workStatement((PositionExpression) position);
+		return new WorkStatement((PositionExpression) position);
 	}
 
 	/**

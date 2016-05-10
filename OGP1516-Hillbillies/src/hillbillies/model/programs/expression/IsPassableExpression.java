@@ -23,4 +23,7 @@ public class IsPassableExpression extends BooleanExpression{
 		return new TypeBool((unit.getWorld().isCubePassable(intPos[0], intPos[1], intPos[2])));
 	}
 
+	public String toString() {
+		return "Is passable";
+	}
 }

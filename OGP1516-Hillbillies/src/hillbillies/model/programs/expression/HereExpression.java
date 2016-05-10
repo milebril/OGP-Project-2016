@@ -15,4 +15,8 @@ public class HereExpression extends PositionExpression {
 		return new TypePosition(unit.getPosition()); //TODO soort ven positie expressie maken, heb geen idee of dit werkt!!!!!
 	}
 	
+	public String toString() {
+		return "Here.";
+	}
+	
 }

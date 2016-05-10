@@ -19,4 +19,8 @@ public class IsFriendExpression extends BooleanExpression{
 	public TypeBool evaluate(Unit unit) {
 		return new TypeBool(((Unit) getExpression().evaluate(unit).getType()).getFaction() == unit.getFaction());
 	}
+	
+	public String toString() {
+		return "Is friend";
+	}
 }

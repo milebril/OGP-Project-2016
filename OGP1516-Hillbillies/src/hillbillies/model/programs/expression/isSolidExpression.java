@@ -21,4 +21,8 @@ public class IsSolidExpression extends BooleanExpression{
 		int[] intPosition = {(int) position[0], (int) position[1], (int) position[2]};
 		return new TypeBool(! (unit.getWorld().isCubePassable(intPosition[0], intPosition[1], intPosition[2])));
 	}
+	
+	public String toString() {
+		return "Is solid";
+	}
 }

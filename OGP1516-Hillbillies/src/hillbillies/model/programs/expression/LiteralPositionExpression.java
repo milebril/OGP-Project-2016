@@ -19,4 +19,7 @@ public class LiteralPositionExpression extends PositionExpression{
 		return new TypePosition(position);
 	}
 	
+	public String toString() {
+		return "Literal position";
+	}
 }

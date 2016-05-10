@@ -30,5 +30,8 @@ public class FriendExpression extends UnitExpression{
 		
 		return new TypeUnit(null);
 	}
-
+	
+	public String toString() {
+		return "Friend.";
+	}
 }

@@ -28,6 +28,9 @@ public class LogPositionExpression extends PositionExpression{
 		}
 		
 		return new TypePosition(closest.getPosition());
-		
+	}
+	
+	public String toString() {
+		return "Log"; 
 	}
 }

@@ -20,5 +20,8 @@ public class NotExpression extends BooleanExpression{
 		return new TypeBool(! ((boolean) getExpression().evaluate(unit).getType()));
 	}
 
+	public String toString() {
+		return "Not " + getExpression().toString(); 
+	}
 	
 }
