@@ -4,11 +4,11 @@ import hillbillies.model.Unit;
 import hillbillies.model.programs.expression.Expression;
 import hillbillies.model.programs.expression.PositionExpression;
 
-public class workStatement extends Statement {
+public class WorkStatement extends Statement {
 
 	private PositionExpression exp;
 	
-	public workStatement(PositionExpression e) {
+	public WorkStatement(PositionExpression e) {
 		super(false);
 		System.out.println("workStatement entry " + e);
 		this.exp = e;

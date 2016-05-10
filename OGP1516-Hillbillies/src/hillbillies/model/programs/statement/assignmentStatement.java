@@ -3,12 +3,12 @@ package hillbillies.model.programs.statement;
 import hillbillies.model.Unit;
 import hillbillies.model.programs.expression.Expression;
 
-public class assignmentStatement extends Statement{
+public class AssignmentStatement extends Statement{
 
 	private String name;
 	private Expression expression;
 	
-	public assignmentStatement(String name, Expression value) {
+	public AssignmentStatement(String name, Expression value) {
 		super(true);
 		this.name = name;
 		this.expression = value;

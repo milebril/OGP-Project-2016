@@ -4,11 +4,11 @@ import java.util.List;
 
 import hillbillies.model.Unit;
 
-public class sequenceStatement extends Statement{
+public class SequenceStatement extends Statement{
 
 	private List<Statement> statements;
 	
-	public sequenceStatement(List<Statement> statements) {
+	public SequenceStatement(List<Statement> statements) {
 		super(false);
 		this.statements = statements;
 	}

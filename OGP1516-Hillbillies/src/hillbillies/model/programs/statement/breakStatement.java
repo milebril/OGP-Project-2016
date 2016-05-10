@@ -1,5 +1,5 @@
 package hillbillies.model.programs.statement;
 
-public class breakStatement {
+public class BreakStatement {
 
 }

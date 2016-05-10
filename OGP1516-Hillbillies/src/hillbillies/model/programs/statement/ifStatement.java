@@ -1,5 +1,5 @@
 package hillbillies.model.programs.statement;
 
-public class ifStatement {
+public class IfStatement {
 
 }

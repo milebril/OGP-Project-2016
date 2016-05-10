@@ -3,11 +3,11 @@ package hillbillies.model.programs.statement;
 import hillbillies.model.Unit;
 import hillbillies.model.programs.expression.PositionExpression;
 
-public class moveToStatement extends Statement{
+public class MoveToStatement extends Statement{
 
 	private PositionExpression exp;
 
-	public moveToStatement(PositionExpression e) {
+	public MoveToStatement(PositionExpression e) {
 		super(false);
 		this.exp = e;
 	}
