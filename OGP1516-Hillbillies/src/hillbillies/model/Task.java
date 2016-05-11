@@ -256,9 +256,7 @@ public class Task {
 			System.out.println("[In task execute]");
 			activity.execute(unit);
 			unit.setTask(this);
-			System.out.println(unit.getFaction().getScheduler().getIterator().hasNext());
 			unit.getFaction().getScheduler().removeTask(this);
-			System.out.println(unit.getFaction().getScheduler().getIterator().hasNext());
 	}
 	
 }

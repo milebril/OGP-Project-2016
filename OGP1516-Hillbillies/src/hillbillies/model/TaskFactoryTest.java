@@ -115,6 +115,74 @@ public class TaskFactoryTest {
 		assertFalse(facade.areTasksPartOf(scheduler, Collections.singleton(task)));
 	}
 	
+	@Test
+	public void executePrintTask() throws ModelException {
+		int[][][] types = new int[3][3][3];
+		
+		World world = facade.createWorld(types , new DefaultTerrainChangeListener());
+		Unit unit = facade.createUnit("Test", new int[] { 0, 0, 1}, 50, 50, 50, 50, false);
+		facade.addUnit(unit, world);
+		Faction faction = facade.getFaction(unit);
+
+		Scheduler scheduler = facade.getScheduler(faction);
+		
+		List<Task> tasks = TaskParser.parseTasksFromString(
+				"name: \"print task\"\npriority: 1\nactivities: print (2, 2, 1);", facade.createTaskFactory(), null);
+		
+		// tasks are created
+		assertNotNull(tasks);
+		// there's exactly one task
+		assertEquals(1, tasks.size());
+		Task task = tasks.get(0);
+		// test name
+		assertEquals("print task", facade.getName(task));
+		// test priority
+		assertEquals(1, facade.getPriority(task));
+
+		facade.schedule(scheduler, task);
+		advanceTimeFor(facade, world, 50, 0.02);
+	}
+	
+	@Test
+	public void executeAttackTask() throws ModelException {
+		int[][][] types = new int[3][3][3];
+		
+		World world = facade.createWorld(types , new DefaultTerrainChangeListener());
+		Unit attacker = facade.createUnit("Test", new int[] { 0, 0, 0}, 50, 50, 50, 50, false);
+		facade.addUnit(attacker, world);
+		Unit defender = facade.createUnit("Test", new int[] { 0, 1, 0}, 50, 50, 50, 50, false);
+		facade.addUnit(defender, world);
+		
+		int hitpoints = defender.getHitpoints();
+		System.out.println(defender.getHitpoints());
+		System.out.println(defender.getPosition()[0] + " " + defender.getPosition()[1]);
+		
+		Faction faction = facade.getFaction(attacker);
+
+		Scheduler scheduler = facade.getScheduler(faction);
+		
+		List<Task> tasks = TaskParser.parseTasksFromString(
+				"name: \"print task\"\npriority: 1\nactivities: attack enemy;", facade.createTaskFactory(), null);
+		
+		// tasks are created
+		assertNotNull(tasks);
+		// there's exactly one task
+		assertEquals(1, tasks.size());
+		Task task = tasks.get(0);
+		// test name
+		assertEquals("print task", facade.getName(task));
+		// test priority
+		assertEquals(1, facade.getPriority(task));
+
+		facade.schedule(scheduler, task);
+		advanceTimeFor(facade, world, 50, 0.02);
+		
+		System.out.println(defender.getHitpoints());
+		System.out.println(defender.getPosition()[0] + " " + defender.getPosition()[1]);
+		
+		assertFalse(hitpoints == defender.getHitpoints());
+	}
+	
 	
 	/**
 	 * Helper method to advance time for the given world by some time.

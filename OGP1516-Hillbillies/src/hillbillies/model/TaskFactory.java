@@ -33,6 +33,9 @@ import hillbillies.model.programs.expression.type.TypePosition;
 import hillbillies.model.programs.expression.type.TypeUnit;
 import hillbillies.model.programs.statement.PrintStatement;
 import hillbillies.model.programs.statement.Statement;
+import hillbillies.model.programs.statement.AssignmentStatement;
+import hillbillies.model.programs.statement.AttackStatement;
+import hillbillies.model.programs.statement.IfStatement;
 import hillbillies.model.programs.statement.MoveToStatement;
 import hillbillies.model.programs.statement.SequenceStatement;
 import hillbillies.model.programs.statement.WorkStatement;
@@ -137,9 +140,8 @@ public class TaskFactory implements ITaskFactory<Expression<?>, Statement, Task>
 	 *            An expression that evaluates to the assigned value
 	 */
 	@Override
-	public Statement createAssignment(String variableName, Expression value, SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+	public Statement createAssignment(String variableName, Expression<?> value, SourceLocation sourceLocation) {
+		return new AssignmentStatement(variableName, value);
 	}
 
 	/**
@@ -171,10 +173,9 @@ public class TaskFactory implements ITaskFactory<Expression<?>, Statement, Task>
 	 *            specified.
 	 */
 	@Override
-	public Statement createIf(Expression condition, Statement ifBody, Statement elseBody,
+	public Statement createIf(Expression<?> condition, Statement ifBody, Statement elseBody,
 			SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+		return new IfStatement((BooleanExpression) condition, ifBody, elseBody);
 	}
 
 	/**
@@ -255,9 +256,8 @@ public class TaskFactory implements ITaskFactory<Expression<?>, Statement, Task>
 	 *            The unit to attack
 	 */
 	@Override
-	public Statement createAttack(Expression unit, SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+	public Statement createAttack(Expression<?> unit, SourceLocation sourceLocation) {
+		return new AttackStatement((UnitExpression) unit);
 	}
 
 	/* EXPRESSIONS */

@@ -24,7 +24,11 @@ public class EnemyExpression extends UnitExpression{
 			}
 		}
 		
-		return new TypeUnit(null);
+		if (closest == null) {
+			return new TypeUnit(null);
+		}
+		
+		return new TypeUnit(closest);
 	}
 	
 	public String toString() {
