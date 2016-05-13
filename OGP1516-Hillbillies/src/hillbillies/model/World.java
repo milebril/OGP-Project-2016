@@ -382,14 +382,14 @@ public class World {
 	public Unit spawnUnit(boolean enableDefaultBehavior) throws ModelException {
 		int x = rand.nextInt(getXLength());
 		int y = rand.nextInt(getYLength());
-		int z = rand.nextInt(getZLength());
+		int z = rand.nextInt(getZLength() - 1);
 		
 		System.out.println(x + " " + y + " " + z);
 		
-		while (!(isCubePassable(x, y, z) && (z == 0 || getCubeType(x, y, z-1) != 1))) {
+		while (!(isCubePassable(x, y, z) && (z == 0 || getCubeType(x, y, z-1) != 1) && !isCubePassable(x, y, z-1))) {
 			x = rand.nextInt(getXLength());
 			y = rand.nextInt(getYLength());
-			z = rand.nextInt(getZLength());
+			z = rand.nextInt(getZLength()- 1) + 1;
 		}
 		
 		int weight = rand.nextInt(100);

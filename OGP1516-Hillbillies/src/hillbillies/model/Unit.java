@@ -990,8 +990,7 @@ public class Unit {
 			unitLifetime = 0;
 		}
 		//TODO Falling werkt niet, array out of bounds!!!!
-		//this.canFall(getWorld().getTerrainType());
-		if (isFalling())
+		if ( this.canFall(getWorld().getTerrainType()))
 			this.fall(dt, getWorld().getTerrainType());
 		else if (this.behaviour == UnitBehaviour.RESTING)
 			this.resting(dt);
@@ -2126,6 +2125,66 @@ public class Unit {
 /////////////////////////////////////////////Falling/////////////////////////////////////////////
 	
 	/**
+	 * check if a unit can fall.
+	 */
+	private boolean canFall(int[][][] terrainTypes){
+		
+		if (this.getPosition()[2] <= 0.5) {
+			this.stopFalling();
+			return false;
+		}
+		int[] position = castDoubleToInt(this.getPosition());
+		if (position[2] - 1 >= 0) {
+			if ((terrainTypes[position[0]][position[1]][position[2]-1] == 1 ||
+					terrainTypes[position[0]][position[1]][position[2]-1] == 2) &&
+					getPosition()[2] % position[2] <= 0.5) {
+				this.stopFalling();
+				return false;
+			}
+		if(position[0] > 0){
+			if (terrainTypes[position[0]-1][position[1]][position[2]] == 1 || terrainTypes[position[0]-1][position[1]][position[2]] == 2){
+				this.stopFalling();
+				return false;
+			}
+		}
+		if(position[0] < getWorld().getXLength()){
+			if (terrainTypes[position[0]+1][position[1]][position[2]] == 1 || terrainTypes[position[0]-1][position[1]][position[2]] == 2){
+				this.stopFalling();
+				return false;
+			}
+		}
+		if(position[1] > 0){
+			if (terrainTypes[position[0]-1][position[1]-1][position[2]] == 1 || terrainTypes[position[0]-1][position[1]][position[2]] == 2){
+				this.stopFalling();
+				return false;
+			}
+		}
+		if(position[1] > getWorld().getYLength()){
+			if (terrainTypes[position[0]-1][position[1]+1][position[2]] == 1 || terrainTypes[position[0]-1][position[1]][position[2]] == 2){
+				this.stopFalling();
+				return false;
+			}
+		}
+		}
+
+		this.startFalling();
+		return true;
+	}
+	
+	/**
+	 * Variable registering the speed when the unit falls
+	 */
+	private final int velocityOfFalling = 3;
+	
+	/**
+	 * move a unit over a given time period dt.
+	 */
+	private void fall(double dt, int[][][] terrainTypes) {		
+		this.setUnitPosition(new double[] {getPosition()[0], getPosition()[1], getPosition()[2] - velocityOfFalling * dt});
+		this.setNumberOfZLevelsFallen(this.numberOfZLevelsFallen + velocityOfFalling * dt);
+	}
+	
+	/**
 	 * Return if is unit is falling or not.
 	 */
 	@Basic @Raw
@@ -2138,8 +2197,8 @@ public class Unit {
 	 */
 	private void stopFalling() {
 		this.isFalling = false;
-		decreaseHitpoints((int)(this.numberOfZlevelsFallen * 10));
-		setNumberOfZlevelsFallen(0);
+		decreaseHitpoints((int)(this.numberOfZLevelsFallen * 10));
+		setNumberOfZLevelsFallen(0);
 	}
 	
 	/**
@@ -2162,84 +2221,14 @@ public class Unit {
 	/**
 	 * variable registering how many levels a units has fallen.
 	 */
-	private double numberOfZlevelsFallen = 0;
+	private double numberOfZLevelsFallen = 0;
 	
-	private void setNumberOfZlevelsFallen(double number){
-		this.numberOfZlevelsFallen = number;
+	private double getNumbersOfZLevelsFallen(){
+		return this.numberOfZLevelsFallen;
 	}
 	
-	/**
-	 * check if a unit can fall.
-	 */
-	private void canFall(int[][][] terrainTypes){
-		/*
-		int[] position = castDoubleToInt(this.getPosition());
-		if (position[0] - 1 >= 0){
-			if((terrainTypes[position[0]-1][position[1]][position[2]] == 1 || terrainTypes[position[0]-1][position[1]][position[2]-1] == 2)&&
-			getPosition()[1] % getPosition()[1] == 0) this.stopFalling();	
-		}
-		if (position[0] + 1 >= getWorld().getXLength()){
-			if((terrainTypes[position[0]+1][position[1]][position[2]] == 1 || terrainTypes[position[0]+1][position[1]][position[2]-1] == 2)&&
-			getPosition()[1] % getPosition()[1] == 0) this.stopFalling();
-		}
-		if (position[1] - 1 >= 0){
-			if((terrainTypes[position[0]][position[1]-1][position[2]] == 1 || terrainTypes[position[0]][position[1]-1][position[2]-1] == 2)&&
-			getPosition()[1] % getPosition()[1] == 0) this.stopFalling();	
-		}if (position[1] + 1 >= getWorld().getYLength()){
-			if((terrainTypes[position[0]][position[1]+1][position[2]] == 1 || terrainTypes[position[0]][position[1]+1][position[2]-1] == 2)&&
-			getPosition()[1] % getPosition()[1] == 0) this.stopFalling();
-		}
-		if(position[2]-1 >= 0){
-			if((terrainTypes[position[0]][position[1]][position[2]-1] == 1 || terrainTypes[position[0]][position[1]][position[2]-1] == 2)&& 
-				getPosition()[2] % getPosition()[2] == 0) this.stopFalling();
-		}
-		*/
-		
-		if ((int) getPosition()[2] == 0) {
-			startFalling();
-		}
-		
-		Iterable<int[]> it = getAdjacentCubes(castDoubleToInt(getPosition()));
-		
-		for (int[] pos : it) {
-			if (! getWorld().isCubePassable(pos[0], pos[1], pos[2])) {
-				stopFalling();
-			}
-		}
-		
-		
-		this.startFalling();
-	}
-	
-	/**
-	 * return the speed of falling in m/s.
-	 */
-	private static int speedOfFalling() {
-		return 3;
-	}
-	
-	/**
-	 * move the unit over a given time period dt.
-	 */
-	private void fall(double dt, int[][][] terrainTypes) {
-		double[] positionInInt = this.getPosition();
-		double distanceToFall = speedOfFalling() * dt;
-		if(distanceToFall < 1){
-			positionInInt[2] -= distanceToFall;
-			setNumberOfZlevelsFallen(this.numberOfZlevelsFallen + distanceToFall);
-		}
-		else {
-			int[] position = castDoubleToInt(this.getPosition());
-			int a = 0;
-			for( int i = 0; i < distanceToFall; i++){
-				if(terrainTypes[position[0]][position[1]][position[2]- i] == 0)
-					a++;
-			}
-			distanceToFall = a + distanceToFall % (int)distanceToFall;
-			positionInInt[2] -= distanceToFall;
-			setNumberOfZlevelsFallen(this.numberOfZlevelsFallen + distanceToFall);
-		}
-		this.setUnitPosition(positionInInt);
+	private void setNumberOfZLevelsFallen(double number){
+		this.numberOfZLevelsFallen = number;
 	}
 	
 /////////////////////////////////////////////Experience/////////////////////////////////////////////
