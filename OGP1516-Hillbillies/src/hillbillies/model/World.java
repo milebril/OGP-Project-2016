@@ -33,37 +33,15 @@ import ogp.framework.util.ModelException;
  * @invar  The amount of factions of each world must be a valid amount of factions for any
  *         world.
  *       | isValidFactionAmount(getFactionAmount())
+ *       
+ * @invar  Each world can have its terrainChangeListener as terrainChangeListener.
+ *       | canHaveAsTerrainChangeListener(this.getTerrainChangeListener())
  */
 public class World {
 	
 ////////////////////////////////////////////Constructor////////////////////////////////////////////
 
 	/**
-	 * Initialize this new world with given amount of units.
-	 * 
-	 * @param  amountOfUnits
-	 *         The amount of units for this new world.
-	 * @pre    The given amount of units must be a valid amount of units for any world.
-	 *       | isValidAmountOfUnits(amount of units)
-	 * @post   The amount of units of this new world is equal to the given
-	 *         amount of units.
-	 *       | new.getAmountOfUnits() == amountOfUnits
-	 *       
-	 * Initialize this new world with given amount of factions.
-	 *
-	 * @param  amountOfFactions
-	 *         The amount of factions for this new world.
-	 * @throws ModelException
-	 * 		   The given amount of factions is not a valid amount of factions for any
-	 *         world.
-	 *       | ! isValidFactionAmount(getFactionAmount())
-	 * @post   The amount of factions of this new world is equal to the given
-	 *         amount of factions.
-	 *       | new.getAmountOfFactions() == amountOfFactions
-	 * @effect The amount of factions of this new world is set to
-	 *         the given amount of factions.
-	 *       | this.setFactionAmount(amountOfFactions)
-	 *
 	 * Initialize this new world with given terrainType.
 	 *
 	 * @param  terrainTypes
@@ -72,17 +50,38 @@ public class World {
 	 *         the given terrainType.
 	 *       | this.setTerrainType(terrainTypes)
 	 *       
-	 * @effect create a new list that contains all the logs in a world.
+	 * Initialize the new world with a set that contains all the units in the world.
+	 *       
+	 * @effect create a new set that contains all the units in a world.
 	 * 
-	 * @effect create a new list that contains all the boulders in a world.
+	 * Initialize the new world with a set that contains all the factions in the world.
+	 * 
+	 * @effect create a new set that contains all the factions in a world.
+	 * 
+	 * Initialize the new world with a set that contains all the boulders in the world.
+	 * 
+	 * @effect create a new set that contains all the boulders in a world.
+	 * 
+	 * Initialize the new world with a set that contains all the logs in the world.
+	 * 
+	 * @effect create a new set that contains all the logs in a world.
+	 * 
+	 * Initialize this new world with given terrainChangeListener.
+	 * 
+	 * @param  modelListener
+	 *         The terrainChangeListener for this new world.
+	 * @post   The terrainChangeListener of this new world is equal to the given
+	 *         terrainChangeListener.
+	 *       | new.getTerrainChangeListener() == modelListener
+	 * 
 	 */
 	public World(int[][][] terrainTypes, TerrainChangeListener modelListener) throws ModelException{
 		this.setTerrainType(terrainTypes);
-		this.setOfUnits = new LinkedHashSet<>(); //initializing setOfUnits on creating world
-		this.setOfFactions = new LinkedHashSet<>(); //initializing setOfFactions on creating world
-		this.setOfBoulders = new LinkedHashSet<>(); //initializing setOfBoulders on creating world
-		this.setOfLogs = new LinkedHashSet<>(); //initializing setOfLogs on creating world
-		this.TerrainChangeListener = modelListener;
+		this.setOfUnits = new LinkedHashSet<>();
+		this.setOfFactions = new LinkedHashSet<>();
+		this.setOfBoulders = new LinkedHashSet<>();
+		this.setOfLogs = new LinkedHashSet<>(); 
+		this.TerrainChangeListener = modelListener; 
 	}
 
 ////////////////////////////////////////////List of all units////////////////////////////////////////////
@@ -144,6 +143,12 @@ public class World {
 		return arrayInInt;
 	}
 	
+	/**
+	 * check whether a given position is inside the game world
+	 * @param position
+	 * 		  the position to check
+	 * @return return true if the given position is inside the boundaries of the game world.
+	 */
 	private boolean isInsideWorld(int[] position) {
 		if (position[0] <= getXLength() && position[1] <= getYLength() && position[2] <= getZLength() &&
 				position[0] >= 0 && position[1] >= 0 && position[2] >= 0)
@@ -151,6 +156,13 @@ public class World {
 		return false;
 	}
 	
+	/**
+	 * remove the unit from the set of units.
+	 * @param unit
+	 * 		  the unit to remove
+	 * @effect remove the unit from the set of units
+	 * 		  |setOfUnits.remove(unit);
+	 */
 	public void removeUnit(Unit unit) {
 		this.setOfUnits.remove(unit);
 	}
@@ -574,8 +586,18 @@ public class World {
 		return connect.isSolidConnectedToBorder(x, y, z);
 	}
 	
+//////////////////////////////////////////// Terrain Change Listener ////////////////////////////////////////////
 	/**
-	 * variable registering the terrainchanglistener of a world.
+	 * Return the terrainChangeListener of this world.
 	 */
-	public TerrainChangeListener TerrainChangeListener;
+	@Basic @Raw @Immutable
+	public TerrainChangeListener getTerrainChangeListener() {
+		return this.TerrainChangeListener;
+	}
+
+	/**
+	 * Variable registering the terrainChangeListener of this world.
+	 */
+	private final TerrainChangeListener TerrainChangeListener;
+
 }
