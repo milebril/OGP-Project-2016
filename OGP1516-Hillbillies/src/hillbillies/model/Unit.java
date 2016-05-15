@@ -2114,6 +2114,7 @@ public class Unit {
 	@Raw
 	public void die() {
 		this.isAlive = false;
+		getWorld().removeUnit(this);
 	}
 	
 	/**

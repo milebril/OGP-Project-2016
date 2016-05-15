@@ -21,8 +21,7 @@ public class WhileStatement extends Statement{
 
 	@Override
 	public boolean canExecute(Unit unit) {
-		// TODO Auto-generated method stub
-		return false;
+		return body.canExecute(unit);
 	}
 
 	@Override

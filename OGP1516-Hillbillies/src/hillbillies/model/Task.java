@@ -252,11 +252,12 @@ public class Task {
 	 */
 	
 	public void execute(Unit unit) { //TODO zet de unit die deze task uitvoert
-		if (activity.canExecute(unit))
+		if (activity.canExecute(unit)) {
 			System.out.println("[In task execute]");
 			activity.execute(unit);
 			unit.setTask(this);
 			unit.getFaction().getScheduler().removeTask(this);
+		}
 	}
 	
 }
