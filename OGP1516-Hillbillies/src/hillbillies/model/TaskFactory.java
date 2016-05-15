@@ -33,8 +33,10 @@ import hillbillies.model.programs.expression.type.TypePosition;
 import hillbillies.model.programs.expression.type.TypeUnit;
 import hillbillies.model.programs.statement.PrintStatement;
 import hillbillies.model.programs.statement.Statement;
+import hillbillies.model.programs.statement.WhileStatement;
 import hillbillies.model.programs.statement.AssignmentStatement;
 import hillbillies.model.programs.statement.AttackStatement;
+import hillbillies.model.programs.statement.BreakStatement;
 import hillbillies.model.programs.statement.IfStatement;
 import hillbillies.model.programs.statement.MoveToStatement;
 import hillbillies.model.programs.statement.SequenceStatement;
@@ -154,9 +156,8 @@ public class TaskFactory implements ITaskFactory<Expression<?>, Statement, Task>
 	 *            statement).
 	 */
 	@Override
-	public Statement createWhile(Expression condition, Statement body, SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+	public Statement createWhile(Expression<?> condition, Statement body, SourceLocation sourceLocation) {
+		return new WhileStatement((BooleanExpression) condition, body);
 	}
 
 	/**
@@ -187,8 +188,7 @@ public class TaskFactory implements ITaskFactory<Expression<?>, Statement, Task>
 	 */
 	@Override
 	public Statement createBreak(SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+		return new BreakStatement();
 	}
 
 	/**
