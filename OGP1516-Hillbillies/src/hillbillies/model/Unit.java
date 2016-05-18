@@ -1566,7 +1566,7 @@ public class Unit {
 					getWorld().setTerrainType(terrainTypes);
 					Log NewLog = new Log(getPosition());
 					getWorld().addLog(NewLog);
-					getWorld().TerrainChangeListener.notifyTerrainChanged((int) this.getPosition()[0], (int) this.getPosition()[1], (int) this.getPosition()[2]);
+					getWorld().getTerrainChangeListener().notifyTerrainChanged((int) this.getPosition()[0], (int) this.getPosition()[1], (int) this.getPosition()[2]);
 					work = workJob.WAIT;
 					break;
 				case MINE_ROCK:
@@ -1575,7 +1575,7 @@ public class Unit {
 					getWorld().setTerrainType(terrainTypes2);
 					Boulder NewBoulder = new Boulder(getPosition());
 					getWorld().addBoulder(NewBoulder);
-					getWorld().TerrainChangeListener.notifyTerrainChanged((int) this.getPosition()[0], (int) this.getPosition()[1], (int) this.getPosition()[2]);
+					getWorld().getTerrainChangeListener().notifyTerrainChanged((int) this.getPosition()[0], (int) this.getPosition()[1], (int) this.getPosition()[2]);
 					work = workJob.WAIT;
 					break;
 				case WAIT:
