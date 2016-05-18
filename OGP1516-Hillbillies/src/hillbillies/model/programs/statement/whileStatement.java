@@ -1,5 +1,7 @@
 package hillbillies.model.programs.statement;
 
+import org.hamcrest.core.IsInstanceOf;
+
 import hillbillies.model.Unit;
 import hillbillies.model.programs.expression.BooleanExpression;
 
@@ -16,7 +18,14 @@ public class WhileStatement extends Statement{
 
 	@Override
 	public void execute(Unit unit) {
-		//TODO Deze
+		boolean condition = (boolean) this.condition.evaluate(unit).getType();
+		
+		while(condition) {
+			if (body instanceof BreakStatement) {
+				break;
+			}
+			body.execute(unit);
+		}
 	}
 
 	@Override

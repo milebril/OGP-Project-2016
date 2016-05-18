@@ -2115,6 +2115,10 @@ public class Unit {
 	public void die() {
 		this.isAlive = false;
 		getWorld().removeUnit(this);
+		getFaction().removeUnitFromFaction(this);
+		if (isCarryingItem()) {
+			stopCarryingItem();
+		}
 	}
 	
 	/**
